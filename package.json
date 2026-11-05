@@ -1,0 +1,17 @@
+{
+  "name": "bend-ui",
+  "version": "0.1.0",
+  "description": "Design system em Bend: tokens em TOKENS.bend, regras em LAWS.bend.",
+  "type": "module",
+  "main": "ui.js",
+  "exports": {
+    ".": "./ui.js",
+    "./ui.css": "./ui.css",
+    "./TOKENS.bend": "./TOKENS.bend"
+  },
+  "files": ["ui.js", "ui.css", "icons.js", "TOKENS.bend", "SPEC.bend", "LAWS.bend", "PROOF.bend", "ICONS-LICENSE", "docs"],
+  "scripts": {
+    "check": "bend PROOF.bend",
+    "docs": "cd docs && bun index.html"
+  }
+}

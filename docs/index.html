@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bend-UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script type="module" src="./main.js"></script>
+<style>
+  /* estilos só desta página de referência */
+  .ks { max-width: 1100px; margin: 0 auto; padding: var(--space-6) var(--space-4) var(--space-8); }
+  .ks > h1 { font-size: var(--text-2xl); margin: 0 0 var(--space-1); }
+  .ks > p { color: var(--text-2); margin: 0 0 var(--space-7); }
+  .ks > h2 { font-size: var(--text-md); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); margin: var(--space-7) 0 var(--space-3); }
+  .row { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-2); }
+  .swatch { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: var(--surface); }
+  .swatch div { height: 44px; }
+  .swatch span { display: block; padding: var(--space-1) var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-2); }
+  .space-row { display: flex; align-items: center; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-2); margin-bottom: var(--space-1); }
+  .space-row b { display: block; height: 12px; background: var(--accent); border-radius: var(--radius-xs); }
+  .space-row code { width: 90px; }
+  .radius-box { width: 64px; height: 64px; background: var(--accent-soft); border: 1px solid var(--accent); }
+  .nest { display: inline-block; padding: var(--space-2); border-radius: var(--radius-lg); background: var(--surface-2); border: 1px solid var(--border); }
+  .nest > div { width: 140px; height: 56px; background: var(--surface); border: 1px solid var(--border-strong); }
+  .demo-app { height: 620px; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg); }
+  .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(152px, 1fr)); gap: var(--space-2); }
+  .icon-cell { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text); }
+  .icon-cell span { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-2); }
+  .note { font-size: var(--text-sm); color: var(--text-2); margin-top: var(--space-2); }
+</style>
+</head>
+<body>
+<div class="ks">
+  <h1>Bend-UI</h1>
+  <p>Design system em Bend. Os valores moram em <code>TOKENS.bend</code> e as regras em <code>LAWS.bend</code>: um valor fora da regra não passa em <code>bend PROOF.bend</code>.</p>
+
+  <h2>Cor</h2>
+  <div class="grid">
+    <div class="swatch"><div style="background:var(--bg)"></div><span>--bg</span></div>
+    <div class="swatch"><div style="background:var(--surface)"></div><span>--surface</span></div>
+    <div class="swatch"><div style="background:var(--surface-2)"></div><span>--surface-2</span></div>
+    <div class="swatch"><div style="background:var(--border-strong)"></div><span>--border-strong</span></div>
+    <div class="swatch"><div style="background:var(--text)"></div><span>--text</span></div>
+    <div class="swatch"><div style="background:var(--accent)"></div><span>--accent</span></div>
+    <div class="swatch"><div style="background:var(--law)"></div><span>--law</span></div>
+    <div class="swatch"><div style="background:var(--draft)"></div><span>--draft</span></div>
+    <div class="swatch"><div style="background:var(--conflict)"></div><span>--conflict</span></div>
+  </div>
+
+  <h2>Espaçamento</h2>
+  <div class="space-row"><code>--space-hairline</code><b style="width:2px"></b>2</div>
+  <div class="space-row"><code>--space-1</code><b style="width:4px"></b>4</div>
+  <div class="space-row"><code>--space-2</code><b style="width:8px"></b>8</div>
+  <div class="space-row"><code>--space-3</code><b style="width:12px"></b>12</div>
+  <div class="space-row"><code>--space-4</code><b style="width:16px"></b>16</div>
+  <div class="space-row"><code>--space-5</code><b style="width:24px"></b>24</div>
+  <div class="space-row"><code>--space-6</code><b style="width:32px"></b>32</div>
+  <div class="space-row"><code>--space-7</code><b style="width:48px"></b>48</div>
+  <div class="space-row"><code>--space-8</code><b style="width:64px"></b>64</div>
+
+  <h2>Raio e aninhamento</h2>
+  <div class="row" style="gap:var(--space-4)">
+    <div class="radius-box" style="border-radius:var(--radius-sm)"></div>
+    <div class="radius-box" style="border-radius:var(--radius-md)"></div>
+    <div class="radius-box" style="border-radius:var(--radius-lg)"></div>
+    <div class="nest"><div style="border-radius:2px"></div></div>
+  </div>
+  <p class="note">Caixa aninhada: externo 10px = interno 2px + padding 8px. Curvas paralelas, sem "dente" no canto.</p>
+
+  <h2>Controles</h2>
+  <div class="row">
+    <button class="btn btn--primary">Primário</button>
+    <button class="btn">Padrão</button>
+    <button class="btn btn--ghost">Ghost</button>
+    <button class="btn btn--sm">Pequeno</button>
+    <button class="btn btn--icon" aria-label="Adicionar"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></button>
+    <input class="input" placeholder="Input">
+    <div class="segmented" role="group"><button aria-pressed="true">Um</button><button aria-pressed="false">Dois</button></div>
+  </div>
+
+  <h2>Ícones</h2>
+  <div class="icon-grid">
+    <div class="icon-cell"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg><span>plus</span></div>
+    <div class="icon-cell"><svg class="icon" aria-hidden="true"><use href="#i-file-text"/></svg><span>file-text</span></div>
+    <div class="icon-cell"><svg class="icon" aria-hidden="true"><use href="#i-scale"/></svg><span>scale</span></div>
+    <div class="icon-cell"><svg class="icon" aria-hidden="true"><use href="#i-triangle-alert"/></svg><span>triangle-alert</span></div>
+    <div class="icon-cell"><svg class="icon" aria-hidden="true"><use href="#i-circle-check"/></svg><span>circle-check</span></div>
+    <div class="icon-cell"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg><span>x</span></div>
+    <div class="icon-cell"><svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg><span>chevron-down</span></div>
+    <div class="icon-cell"><svg class="icon" aria-hidden="true"><use href="#i-list"/></svg><span>list</span></div>
+    <div class="icon-cell"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg><span>code</span></div>
+    <div class="icon-cell"><svg class="icon" aria-hidden="true"><use href="#i-wand-sparkles"/></svg><span>wand-sparkles</span></div>
+    <div class="icon-cell"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span>search</span></div>
+    <div class="icon-cell"><svg class="icon" aria-hidden="true"><use href="#i-panel-left"/></svg><span>panel-left</span></div>
+  </div>
+  <div class="row" style="margin-top:var(--space-3)">
+    <button class="btn btn--sm btn--icon" aria-label="sm"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></button>
+    <button class="btn btn--icon" aria-label="md"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></button>
+    <button class="btn btn--lg btn--icon" aria-label="lg"><svg class="icon icon--lg" aria-hidden="true"><use href="#i-plus"/></svg></button>
+  </div>
+  <p class="note">Botão só de ícone: 24 = 16 + 4 + 4 · 32 = 16 + 8 + 8 · 36 = 20 + 8 + 8. Vigiado por law.</p>
+
+  <h2>Tags</h2>
+  <div class="row">
+    <span class="tag">neutro</span>
+    <span class="tag tag--law">LAW</span>
+    <span class="tag tag--draft">afirmação</span>
+    <span class="tag tag--conflict">conflito</span>
+    <span class="tag tag--mono">L-012</span>
+    <span class="kbd">⌘L</span>
+  </div>
+</div>
+</body>
+</html>

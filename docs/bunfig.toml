@@ -1,0 +1,2 @@
+[serve.static]
+plugins = ["../../bend/bend2/main.ts"]
