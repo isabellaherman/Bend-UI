@@ -429,6 +429,49 @@ html:not([data-narrow]) .doc--split .doc__columns { display: grid; grid-template
 /* Follow (follow.js): the button that brings following back, bottom center of the main area. */
 .window__follow { position: absolute; left: 50%; bottom: var(--space-5); transform: translateX(-50%); z-index: var(--layer-dock); box-shadow: var(--shadow-float); }
 
+/* ---------- Chat: a conversation that flows, the composer fixed under it ----------
+   <main class="page"><div class="chat">…</div></main> <form class="composer">…</form>
+   Not a document: no dots, no progression. The person's message is .msg--me, a bubble at the right;
+   the agent's is .msg, plain text (put .prose inside for Markdown). The composer sits under the page,
+   in .window__main, and its textarea grows with the text up to --composer-max. */
+.chat {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--msg-gap);
+}
+html[data-narrow] .chat { padding: var(--space-5) var(--space-3); }
+.msg { min-width: 0; font-size: var(--text-lg); line-height: var(--leading-body); overflow-wrap: anywhere; }
+.msg .prose { font-size: inherit; }
+.msg .prose > :last-child { margin-bottom: 0; }
+.msg--me {
+  align-self: flex-end;
+  max-width: min(var(--msg-max), 100%);
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-lg);
+  white-space: pre-wrap;
+}
+.composer { flex: none; padding: var(--space-3) var(--space-5) var(--space-5); background: var(--bg); }
+html[data-narrow] .composer { padding: var(--space-2) var(--space-3) var(--space-3); }
+.composer__box {
+  max-width: var(--measure);
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+.composer textarea.input {
+  flex: 1;
+  min-height: var(--control-lg);
+  max-height: var(--composer-max);
+  padding: var(--space-2) var(--space-3);
+  resize: none;
+  field-sizing: content;
+}
+
 /* ---------- Window: the app as a framed window, like a native IDE ----------
    <body class="desk"><div class="window">…</div></body>
    Wide screens: framed, centered, at most --window-max wide. .is-full or narrow: fills the screen. */

@@ -26,6 +26,7 @@ const VARS = {
   "--side-padding": () => px(T.side_padding()), "--side-rail": () => px(T.side_rail()), "--side-width": () => px(T.side_width()),
   "--window-margin": () => px(T.window_margin()), "--window-max": () => px(T.window_max()),
   "--agent-sm": () => px(T.agent_sm()), "--agent-lg": () => px(T.agent_lg()),
+  "--msg-max": () => px(T.msg_max()), "--msg-gap": () => px(T.msg_gap()), "--composer-max": () => px(T.composer_max()),
   "--segmented-item": () => px(T.segmented_item()),
   "--layer-thread": () => String(T.layer_thread()), "--layer-foot": () => String(T.layer_foot()), "--layer-dock": () => String(T.layer_dock()), "--layer-menu": () => String(T.layer_menu()),
   "--font-sans": () => T.font_sans(), "--font-mono": () => T.font_mono(),

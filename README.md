@@ -121,6 +121,23 @@ A button that opens a menu. `ui.js` handles it and fires `pick` on the `.dropdow
 
 `menu--end` aligns the menu to the right edge of the button.
 
+## Chat
+
+A conversation that flows, with the composer fixed under the page. The agent's message is `.msg` (put `.prose` inside for Markdown); the person's is `.msg--me`.
+
+```html
+<div class="window__main">
+  <main class="page"><div class="chat">
+    <div class="msg msg--me">Why did this law fail?</div>
+    <div class="msg">It doesn't say how much a spell costs.</div>
+  </div></main>
+  <form class="composer"><div class="composer__box">
+    <textarea class="input" rows="1" placeholder="Message the agent…"></textarea>
+    <button class="btn btn--primary btn--lg" type="submit">Send</button>
+  </div></form>
+</div>
+```
+
 ## Responsive
 
 Below `breakpoint()` in `TOKENS.bend` (720px), `ui.js` sets `<html data-narrow>`, and the components adapt: the window fills the screen, the side bar becomes a drawer. CSS can't read variables in media queries, so the breakpoint lives in Bend and nowhere else.
@@ -156,10 +173,10 @@ Brand marks for AI options are in `brand/` (`claude.webp`, `openai.svg`); see `b
 
 | | |
 |---|---|
-| Components | `page`, `doc`, `pair`, `thread` + `node`, `follow`, `form`, `link`, `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent` |
+| Components | `page`, `doc`, `pair`, `thread` + `node`, `follow`, `chat` + `msg` + `composer`, `form`, `link`, `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent` |
 | Text | `display`, `heading`, `lead`, `text`, `list`, `meta`, `mono` |
 | Icons | plus, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left, book-open, lock, minimize-2, maximize-2, minimize, maximize, text, rows-2, columns-2, heading-1, pilcrow, check |
-| Tokens | space, radius, type, controls, icons, art, status, side bar, window, agent, motion, color (light theme) |
+| Tokens | space, radius, type, controls, icons, art, status, side bar, window, agent, chat, motion, color (light theme) |
 
 See everything: `bun run docs`.
 

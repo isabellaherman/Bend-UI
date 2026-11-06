@@ -85,6 +85,11 @@ def layer_menu() -> U32: 30
 def agent_sm() -> U32: control_md()
 def agent_lg() -> U32: 96
 
+# Chat: a conversation that flows, with the composer fixed under it
+def msg_max() -> U32: 480            # the person's message, at most this wide
+def msg_gap() -> U32: space_5()      # space between messages
+def composer_max() -> U32: 160       # the composer grows with its text up to this, then scrolls
+
 # Type
 def font_sans() -> String: "\"Inter\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
 def font_display() -> String: font_sans()
