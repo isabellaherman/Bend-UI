@@ -58,6 +58,22 @@ theme({
 
 A `.segmented` group switches on click by itself and fires `change` (the button is in `event.detail`). Add `data-manual` to the group to handle `aria-pressed` yourself.
 
+## Page, doc and pair
+
+```html
+<main class="page">
+  <div class="doc doc--stack">            <!-- or doc--split doc--wide, or plain doc -->
+    <div class="doc__columns"><span class="meta">Left</span><span class="meta">Right</span></div>
+    <div class="pair">
+      <div class="block">…</div>
+      <div class="block pair__aside">…</div>   <!-- empty: never shows -->
+    </div>
+  </div>
+</main>
+```
+
+A plain `doc` shows only the blocks; `doc--stack` shows each aside under its block; `doc--split` beside it (a stack on narrow screens). Every block starts at `block_min_lines()` lines; set `--block-min-lines` on a block to change it.
+
 ## Dropdown
 
 A button that opens a menu. `ui.js` handles it and fires `pick` on the `.dropdown` (the item is in `event.detail`). Opening or picking doesn't move the caret, so it works on the text being edited.
@@ -114,7 +130,7 @@ Brand marks for AI options are in `brand/` (`claude.webp`, `openai.svg`); see `b
 
 | | |
 |---|---|
-| Components | `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent` |
+| Components | `page`, `doc`, `pair`, `form`, `link`, `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent` |
 | Text | `display`, `heading`, `lead`, `text`, `list`, `meta`, `mono` |
 | Icons | plus, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left, book-open, lock, minimize-2, maximize-2, minimize, maximize, text, rows-2, columns-2, heading-1, pilcrow, check |
 | Tokens | space, radius, type, controls, icons, art, status, side bar, window, agent, motion, color (light theme) |

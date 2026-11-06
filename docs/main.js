@@ -47,3 +47,10 @@ document.addEventListener("pick", (e) => {
   btn.querySelector("span").textContent = e.detail.querySelector("span").textContent;
   btn.querySelector("use").setAttribute("href", e.detail.querySelector("use").getAttribute("href"));
 });
+
+// pair: plain doc, stack, split
+document.getElementById("pair-mode").addEventListener("change", (e) => {
+  const d = document.getElementById("pair-demo");
+  d.classList.remove("doc--stack", "doc--split");
+  if (e.detail.dataset.mode) d.classList.add(e.detail.dataset.mode);
+});

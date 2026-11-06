@@ -5,6 +5,7 @@
    ========================================================== */
 
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 body {
   margin: 0;
@@ -92,6 +93,8 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
 
 .field { display: flex; flex-direction: column; gap: var(--space-1); }
 .field__label { font-size: var(--text-sm); color: var(--text-2); font-weight: var(--weight-medium); }
+/* A form: fields in a column, form_gap apart (TOKENS.bend). */
+.form { display: flex; flex-direction: column; gap: var(--space-4); }
 
 /* ---------- Segmented ----------
    The nested-radius formula: container radius-md (6) with hairline padding (2)
@@ -105,7 +108,7 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
   border: var(--border-width) solid var(--border);
 }
 .segmented button {
-  height: calc(var(--control-md) - 6px);
+  height: var(--segmented-item);
   padding: 0 var(--space-3);
   border: 0;
   border-radius: var(--radius-sm);
@@ -116,7 +119,7 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
 }
 .segmented button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 0 0 1px var(--border); }
 /* Icon-only: give each button aria-label and title. */
-.segmented--icons button { width: calc(var(--control-md) - 6px + var(--space-1)); padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+.segmented--icons button { width: calc(var(--segmented-item) + var(--space-1)); padding: 0; display: inline-flex; align-items: center; justify-content: center; }
 
 /* ---------- Dropdown + menu ----------
    The same nesting as segmented: menu radius-md (6) = item radius-sm (4) + padding hairline (2).
@@ -124,7 +127,7 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
 .dropdown { position: relative; display: inline-flex; }
 .dropdown > .btn .icon--sm:last-child { color: var(--text-3); }
 .menu {
-  position: absolute; top: calc(100% + var(--space-1)); left: 0; z-index: 30;
+  position: absolute; top: calc(100% + var(--space-1)); left: 0; z-index: var(--layer-menu);
   min-width: calc(var(--space-8) * 3);
   display: flex; flex-direction: column; gap: var(--space-hairline);
   padding: var(--space-hairline);
@@ -176,6 +179,7 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
 }
 .toolbar__sep { width: var(--border-width); align-self: stretch; margin: var(--space-1) var(--space-1); background: var(--border); }
 .toolbar__spacer { flex: 1; }
+.toolbar > .btn--primary { margin-left: var(--space-2); }
 
 /* ---------- Tag ---------- */
 .tag {
@@ -229,6 +233,8 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
 .text { font-size: var(--text-lg); line-height: var(--leading-body); margin: 0 0 var(--space-4); }
 .list { margin: 0; padding-left: var(--space-4); font-size: var(--text-lg); line-height: var(--leading-body); }
 .meta { font-size: var(--text-sm); color: var(--text-3); margin: 0; }
+.link { color: var(--text-2); text-underline-offset: var(--space-hairline); }
+.link:hover { color: var(--text); }
 .mono { font-family: var(--font-mono); }
 
 /* ---------- Prose: rendered Markdown ---------- */
@@ -332,8 +338,44 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 .block__text:empty::before { content: attr(data-placeholder); color: var(--text-3); }
 .block--title .block__slot { height: calc(var(--text-2xl) * var(--leading-tight)); }
 .block--title .block__text { font-size: var(--text-2xl); font-weight: var(--weight-semibold); line-height: var(--leading-tight); }
+.block { min-height: calc(var(--text-lg) * var(--leading-body) * var(--block-min-lines) + var(--space-1) * 2); }
+.block--code .block__text { font-family: var(--font-mono); white-space: pre-wrap; }
 .block__out { grid-column: 2; margin: var(--space-1) 0 0; font-family: var(--font-mono); font-size: var(--text-sm); line-height: var(--leading-ui); white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text-2); }
 .block__out--error { color: var(--conflict); }
+
+/* ---------- Page and doc: a scrolling area with a column of blocks ----------
+   <main class="page"><div class="doc">…blocks…</div></main>
+   .doc--wide uses the window's width (for .doc--split). .doc__head, __note and __sub sit above or between
+   blocks, aligned with the block text; .doc .prose is aligned the same way. .actions: buttons at the end. */
+.page { flex: 1; min-height: 0; overflow: auto; }
+.doc {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-5) calc(var(--agent-lg) + var(--space-7) * 2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-hairline);
+}
+html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); }
+.doc--wide { max-width: var(--window-max); }
+.doc__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: 0 var(--space-2) var(--space-2); }
+.doc__note { padding: 0 var(--space-2) var(--space-4); }
+.doc__sub { padding: var(--space-6) var(--space-2) var(--space-2); }
+.doc :is(.prose, .form) { padding: 0 var(--space-2); }
+.actions { display: flex; justify-content: flex-end; gap: var(--space-2); }
+
+/* ---------- Pair: a block and the block that goes with it ----------
+   <div class="pair"><div class="block">…</div><div class="block pair__aside">…</div></div>
+   The aside is hidden in a plain .doc. .doc--stack shows it under its block; .doc--split beside it,
+   one row per pair, with .doc__columns as the column titles. An empty aside never shows.
+   Narrow screens show .doc--split as a stack. */
+.pair { display: flex; flex-direction: column; gap: var(--space-hairline); }
+.pair__aside { display: none; }
+:is(.doc--stack, .doc--split) .pair__aside:not(:empty) { display: grid; }
+.doc__columns { display: none; }
+html:not([data-narrow]) .doc--split .pair,
+html:not([data-narrow]) .doc--split .doc__columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--space-hairline); align-items: start; }
+.doc__columns { padding: 0 var(--space-2) var(--space-2); }
 
 /* ---------- Window: the app as a framed window, like a native IDE ----------
    <body class="desk"><div class="window">…</div></body>
@@ -358,6 +400,13 @@ html:not([data-narrow]) .window:not(.is-full) {
   box-shadow: var(--shadow-float);
 }
 .window__main { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; }
+/* Corners of the main area: __dock (bottom right, for the lg agent) and __foot (bottom left, for a credit line).
+   An agent can live in the corner or in the toolbar (.toolbar__dock): data-agent="lg" | "sm" on the window picks one. */
+.window__dock { position: absolute; right: var(--space-7); bottom: var(--space-7); z-index: var(--layer-dock); }
+.window__foot { position: absolute; left: var(--space-5); bottom: var(--space-5); z-index: var(--layer-foot); }
+.toolbar__dock { display: flex; align-items: center; }
+.window[data-agent="sm"] .window__dock,
+.window[data-agent="lg"] .toolbar__dock { display: none; }
 
 /* ---------- Side bar ----------
    Closed: a rail of icon buttons. .is-open: icon + label.

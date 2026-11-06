@@ -53,9 +53,13 @@ def form_gap() -> U32: space_4()
 def segmented_padding() -> U32: space_hairline()
 def segmented_outer_radius() -> U32: radius_md()
 def segmented_inner_radius() -> U32: radius_sm()
+# A segmented item: control_md minus padding and border on both sides (32 - 2 × (2 + 1)).
+def segmented_item() -> U32: 26
 
 # Status: the dot beside a line, and the ring around a round element
 def dot_size() -> U32: space_2()
+# A block is at least this many lines of its text tall. Every block in a document shares it.
+def block_min_lines() -> U32: 1
 def ring_offset() -> U32: space_1()
 def ring_width() -> U32: space_hairline()
 
@@ -68,6 +72,11 @@ def side_width() -> U32: 256
 def window_margin() -> U32: space_5()
 def window_max() -> U32: 1152
 def breakpoint() -> U32: 720
+
+# Layers: what sits above what (z-index). Higher is on top.
+def layer_foot() -> U32: 4
+def layer_dock() -> U32: 5
+def layer_menu() -> U32: 30
 
 # Agent: the face, in the toolbar (sm) or on its own (lg)
 def agent_sm() -> U32: control_md()
