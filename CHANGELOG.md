@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 (2026-11-06)
+
+- Icon: `github`.
+- Docs: a GitHub button in the toolbar opens the repository.
+
 ## 1.0.0 (2026-11-06)
 
 The first stable version. Everything in 0.3.9, now with a version you can pin: `bun add github:isabellaherman/Bend-UI#v1.0.0`.

@@ -243,7 +243,7 @@ Brand marks for AI options are in `brand/` (`claude.webp`, `openai.svg`); see `b
 |---|---|
 | Components | `page`, `doc`, `pair`, `thread` + `node`, `follow`, `chat` + `msg` + `composer`, `disclosure`, `form`, `link`, `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent` |
 | Text | `display`, `heading`, `lead`, `text`, `list`, `meta`, `mono` |
-| Icons | plus, arrow-up, shield, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left, book-open, lock, minimize-2, maximize-2, minimize, maximize, text, rows-2, columns-2, heading-1, pilcrow, check |
+| Icons | plus, arrow-up, shield, github, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left, book-open, lock, minimize-2, maximize-2, minimize, maximize, text, rows-2, columns-2, heading-1, pilcrow, check |
 | Tokens | space, radius, type, controls, icons, art, status, side bar, window, agent, chat, motion, color (light theme) |
 
 See everything: https://isabellaherman.github.io/Bend-UI/ (or `bun run docs`). After changing the docs, `bun run site` rebuilds `site/`; pushing it publishes the page.
