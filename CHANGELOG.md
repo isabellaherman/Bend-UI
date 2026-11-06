@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.6 (2026-11-06)
+
+Adds only; nothing that exists changes.
+
+- **chat motion**: `.msg--me.is-arriving` fades in; `.msg__word` (one per streamed word) fades in from a soft blur. Subtle: no travel. Off with reduced motion.
+- **msg--face** + **msg__face**: the agent's face beside its reply, centered on the first line; a reply stays as tall as its text.
+- **composer__field**: one box with `.composer__text` and a round `.composer__send` inside, as tall as `control_lg`; the button shows when there is text. **composer__bar**: quiet controls under it.
+- **menu--up**: a menu that opens upward, for dropdowns near the bottom of the screen.
+- Icons: `arrow-up`, `shield`.
+
 ## 0.3.5 (2026-11-06)
 
 - **chat**: a conversation that flows, with the composer fixed under it. Not a document: no dots, no progression. `.msg` is the agent's message (plain text; `.prose` inside for Markdown), `.msg--me` the person's, a bubble at the right. `.composer` + `.composer__box`: a `textarea.input` that grows with its text up to `composer_max`, and a button.

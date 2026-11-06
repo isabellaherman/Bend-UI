@@ -119,7 +119,7 @@ A button that opens a menu. `ui.js` handles it and fires `pick` on the `.dropdow
 </div>
 ```
 
-`menu--end` aligns the menu to the right edge of the button.
+`menu--end` aligns the menu to the right edge of the button; `menu--up` opens it upward.
 
 ## Chat
 
@@ -137,6 +137,20 @@ A conversation that flows, with the composer fixed under the page. The agent's m
   </div></form>
 </div>
 ```
+
+Or one field with the send button inside, and quiet controls under it:
+
+```html
+<form class="composer">
+  <div class="composer__box"><div class="composer__field">
+    <textarea class="composer__text" rows="1" placeholder="Message the agent…"></textarea>
+    <button class="btn btn--primary btn--sm btn--icon btn--round composer__send" type="submit" aria-label="Send" disabled><svg class="icon"><use href="#i-arrow-up"/></svg></button>
+  </div></div>
+  <div class="composer__bar">…dropdowns with .menu--up…</div>
+</form>
+```
+
+The agent's reply with its face: `<div class="msg msg--face"><div class="msg__face"><div></div></div><div>…</div></div>` (mount an `sm` agent in the inner div). Your new message gets `is-arriving`; a streamed answer puts each word in a `.msg__word`.
 
 ## Responsive
 
@@ -175,7 +189,7 @@ Brand marks for AI options are in `brand/` (`claude.webp`, `openai.svg`); see `b
 |---|---|
 | Components | `page`, `doc`, `pair`, `thread` + `node`, `follow`, `chat` + `msg` + `composer`, `form`, `link`, `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent` |
 | Text | `display`, `heading`, `lead`, `text`, `list`, `meta`, `mono` |
-| Icons | plus, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left, book-open, lock, minimize-2, maximize-2, minimize, maximize, text, rows-2, columns-2, heading-1, pilcrow, check |
+| Icons | plus, arrow-up, shield, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left, book-open, lock, minimize-2, maximize-2, minimize, maximize, text, rows-2, columns-2, heading-1, pilcrow, check |
 | Tokens | space, radius, type, controls, icons, art, status, side bar, window, agent, chat, motion, color (light theme) |
 
 See everything: `bun run docs`.

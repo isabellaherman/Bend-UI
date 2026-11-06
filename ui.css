@@ -137,6 +137,8 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
   box-shadow: var(--shadow-float);
 }
 .menu--end { left: auto; right: 0; }
+/* Near the bottom of the screen (a composer), the menu opens upward. */
+.menu--up { top: auto; bottom: calc(100% + var(--space-1)); }
 .menu__item {
   display: flex; align-items: center; gap: var(--space-2);
   height: var(--control-md); padding: 0 var(--space-2);
@@ -470,6 +472,52 @@ html[data-narrow] .composer { padding: var(--space-2) var(--space-3) var(--space
   padding: var(--space-2) var(--space-3);
   resize: none;
   field-sizing: content;
+}
+
+/* Messages arrive, subtly: yours fades in, barely rising; the agent's words (.msg__word, one per word
+   as the answer streams) fade in from a soft blur. No travel, nothing that moves the page. */
+.msg--me.is-arriving { animation: msg-in var(--duration-enter) var(--ease) both; }
+@keyframes msg-in { from { opacity: 0; transform: translateY(var(--space-hairline)); } }
+.msg__word { animation: word-in var(--duration-enter) var(--ease) both; }
+@keyframes word-in { from { opacity: 0; filter: blur(var(--space-hairline)); } }
+
+/* The agent's face beside its reply: <div class="msg msg--face"><div class="msg__face"><div>(agent sm)</div></div><div>text</div></div>.
+   The face cell is one text line tall, so a reply is as tall as its text; the face is centered on the first line. */
+.msg--face { display: grid; grid-template-columns: var(--agent-sm) minmax(0, 1fr); column-gap: var(--space-3); }
+.msg__face { height: calc(var(--text-lg) * var(--leading-body)); display: flex; align-items: center; overflow: visible; }
+
+/* The composer's field: one box, the text and a round send button inside it, as tall as a control_lg.
+   The button shows when there is text. .composer__bar sits under the box, for quiet controls (dropdowns). */
+.composer__field {
+  --field-inner: calc(var(--control-lg) - var(--space-hairline) * 2 - var(--border-width) * 2);
+  flex: 1; min-width: 0;
+  display: flex; align-items: flex-end; gap: var(--space-1);
+  padding: var(--space-hairline);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+}
+.composer__field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.composer__text {
+  flex: 1; min-width: 0;
+  min-height: var(--field-inner); max-height: var(--composer-max);
+  padding: 0 var(--space-2);
+  border: 0; outline: none; background: transparent; color: var(--text);
+  font: inherit; line-height: var(--field-inner);
+  resize: none; field-sizing: content;
+}
+.composer__text::placeholder { color: var(--text-3); }
+.composer__send {
+  flex: none; margin-bottom: calc((var(--field-inner) - var(--control-sm)) / 2);
+  transition: transform var(--duration-enter) var(--ease-spring), opacity var(--duration) var(--ease);
+}
+.composer__send:disabled { transform: scale(0); opacity: 0; }
+.composer__bar { max-width: var(--measure); margin: var(--space-1) auto 0; display: flex; align-items: center; gap: var(--space-hairline); }
+
+@media (prefers-reduced-motion: reduce) {
+  .msg--me.is-arriving, .msg__word { animation: none; }
+  .composer__send { transition: none; }
 }
 
 /* ---------- Window: the app as a framed window, like a native IDE ----------
