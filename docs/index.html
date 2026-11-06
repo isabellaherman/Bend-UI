@@ -18,6 +18,8 @@
   .v-col .v-item code { order: -1; width: 128px; flex: none; }
   .v-item code { font-family: var(--font-sans); font-size: var(--text-xs); color: var(--text-3); }
   /* A label: its plain name, and on hover its class, in the same place (so nothing moves). */
+  /* Two paragraphs in a row get room between them. */
+  .lead + .lead { margin-top: var(--space-3); }
   /* Laws: room above the section, and between one law and the next. */
   [data-laws] { margin-top: var(--space-6); }
   .docs-law { display: flex; flex-direction: column; gap: var(--space-hairline); }
@@ -51,9 +53,8 @@
     <main class="page" id="docs-main">
       <section class="view" data-page="overview" hidden><div class="doc doc--wide">
 <p class="display">Bend-UI</p>
-<p class="lead">A design system whose rules are laws. A padding off the scale, a radius that doesn't nest, a shortcut that clashes: <b>it doesn't compile.</b></p>
-<article class="prose"><h2>Built to grow fast</h2></article>
-<div data-checked></div>
+<p class="lead">Bend-UI takes advantage of Bend's Laws to make design rules enforceable at compile time. Agents can generate screens, create components, and expand the library without compromising consistency.</p>
+<p class="lead">Move fast without design drift. Let agents build freely while Laws enforce the same spacing, sizing, radii, and interaction rules across every component.</p>
 <article class="prose"><h2>Use it</h2></article>
 <article class="prose"><pre><code>bun add github:isabellaherman/Bend-UI
 

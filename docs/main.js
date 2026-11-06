@@ -118,15 +118,9 @@ document.querySelectorAll("[data-laws]").forEach((el) => {
     names.map((n) => lawBlock(byName[n])).join("") + `</details>`;
 });
 
-// Overview: what is checked, each with how many laws.
-const count = (pages) => pages.reduce((n, p) => n + (LAWS_OF[p] || []).length, 0);
+// Overview: the version and how many laws hold.
 $("docs-version").textContent = "v" + pkg.version;
 $("docs-status").lastChild.textContent = `${LAWS.length} laws · all proofs check`;
-document.querySelector("[data-checked]").innerHTML = [
-  ["Vibe code it", "Ask an agent for a new screen. If it reaches for a padding off the scale, the build fails before you ever see it."],
-  ["Rules that can't drift", "Spacing, sizes, radii and shortcuts aren't guidelines in a doc. They're laws the compiler proves on every build."],
-  ["No review debt", `Every new component is held to the same ${LAWS.length} laws, so the system grows without anyone policing it.`],
-].map(([a, b]) => line("dot dot--ok", `<b>${a}.</b> ${b}`)).join("");
 
 // Keyboard: the rules, and the lib's own keys.
 document.querySelector("[data-keys]").innerHTML = [
@@ -176,7 +170,7 @@ document.querySelectorAll("[data-page]").forEach((page) => {
 });
 
 // Code in the lib's own syntax (Snow).
-document.querySelectorAll("[data-code], [data-syntax-demo]").forEach(highlight);
+document.querySelectorAll('[data-code], [data-syntax-demo], [data-page="overview"] .prose pre').forEach(highlight);
 const chatFace = $("chat-face"); if (chatFace) mountAgent(chatFace, { size: "sm", items: [] });
 
 // Navigation: one page at a time; the side bar marks it.
