@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0 (2026-11-05)
+
+Testada no patch notes do Dungeon Bend: a página usa só a lib + layout.
+
+- `theme()`: tema por projeto. Troca só cor e fonte; espaço, raio e tamanhos continuam presos às laws.
+- Fonte de título do tema: `--font-display`, com carregamento embutido (`theme({ fontDisplay: { family, src } })`).
+- Texto: `.display`, `.heading`, `.lead`, `.text`, `.list`, `.meta`, `.mono`; token `--text-display` (56px).
+- Lista clicável: `.rows` + `.row` (`__lead`, `__title`, `__meta`).
+- Arte: `.art` (`--sm`, `--lg`); tokens `--art-sm`, `--art-md`, `--art-lg`.
+- Correção: `.btn` usado como link não fica mais sublinhado.
+
 ## 0.1.0 (2026-11-05)
 
 - Primeira versão, extraída do LawEditor.

@@ -32,6 +32,11 @@ def icon_md() -> U32: 16
 def icon_lg() -> U32: 20
 def icon_stroke() -> String: "1.75"
 
+# Arte (imagens do jogo/produto): altura
+def art_sm() -> U32: space_6()
+def art_md() -> U32: space_8()
+def art_lg() -> U32: 240
+
 # Componentes: as escolhas que as laws vigiam
 def btn_padding_x() -> U32: space_3()
 def btn_height() -> U32: control_md()
@@ -51,6 +56,7 @@ def segmented_inner_radius() -> U32: radius_sm()
 
 # Tipografia
 def font_sans() -> String: "\"Inter\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+def font_display() -> String: font_sans()
 def font_mono() -> String: "\"JetBrains Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace"
 def text_xs() -> U32: 11
 def text_sm() -> U32: 12
@@ -58,6 +64,7 @@ def text_md() -> U32: 13
 def text_lg() -> U32: 15
 def text_xl() -> U32: 18
 def text_2xl() -> U32: 24
+def text_display() -> U32: 56
 def weight_regular() -> U32: 400
 def weight_medium() -> U32: 500
 def weight_semibold() -> U32: 600

@@ -23,9 +23,12 @@ const VARS = {
   "--icon-sm": () => px(T.icon_sm()), "--icon-md": () => px(T.icon_md()),
   "--icon-lg": () => px(T.icon_lg()), "--icon-stroke": () => T.icon_stroke(),
   "--font-sans": () => T.font_sans(), "--font-mono": () => T.font_mono(),
+  "--font-display": () => T.font_display(),
   "--text-xs": () => px(T.text_xs()), "--text-sm": () => px(T.text_sm()),
   "--text-md": () => px(T.text_md()), "--text-lg": () => px(T.text_lg()),
   "--text-xl": () => px(T.text_xl()), "--text-2xl": () => px(T.text_2xl()),
+  "--text-display": () => px(T.text_display()),
+  "--art-sm": () => px(T.art_sm()), "--art-md": () => px(T.art_md()), "--art-lg": () => px(T.art_lg()),
   "--weight-regular": () => String(T.weight_regular()),
   "--weight-medium": () => String(T.weight_medium()),
   "--weight-semibold": () => String(T.weight_semibold()),
@@ -47,6 +50,37 @@ const VARS = {
 
 for (const [name, get] of Object.entries(VARS)) {
   document.documentElement.style.setProperty(name, get());
+}
+
+// ---------- Tema por projeto ----------
+// Tema troca só COR e FONTE. Espaço, raio e tamanhos ficam presos às laws.
+//   import { theme } from "bend-ui";
+//   theme({ accent: "#ffd21f", accentFg: "#02090a", fontDisplay: { family: "Jaro", src: jaroUrl } });
+const THEME_KEYS = {
+  bg: "--bg", surface: "--surface", surface2: "--surface-2", border: "--border", borderStrong: "--border-strong",
+  text: "--text", text2: "--text-2", text3: "--text-3",
+  accent: "--accent", accentFg: "--accent-fg", accentSoft: "--accent-soft",
+  law: "--law", lawSoft: "--law-soft", draft: "--draft", draftSoft: "--draft-soft",
+  conflict: "--conflict", conflictSoft: "--conflict-soft",
+};
+const FONT_KEYS = { fontSans: "--font-sans", fontDisplay: "--font-display", fontMono: "--font-mono" };
+
+export function theme(t = {}) {
+  const root = document.documentElement.style;
+  for (const [k, v] of Object.entries(t)) {
+    if (THEME_KEYS[k]) { root.setProperty(THEME_KEYS[k], v); continue; }
+    if (FONT_KEYS[k]) {
+      const font = typeof v === "string" ? { family: v } : v;
+      if (font.src) {
+        const style = document.createElement("style");
+        style.textContent = `@font-face { font-family: "${font.family}"; src: url("${font.src}"); font-display: swap; }`;
+        document.head.appendChild(style);
+      }
+      root.setProperty(FONT_KEYS[k], `"${font.family}", ${T.font_sans()}`);
+      continue;
+    }
+    console.warn(`bend-ui: "${k}" não é uma chave de tema (só cor e fonte).`);
+  }
 }
 
 function mountIcons() {

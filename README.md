@@ -14,7 +14,7 @@ bun add github:isabellaherman/Bend-UI
 bun update bend-ui
 ```
 
-Para fixar uma versão: `bun add github:isabellaherman/Bend-UI#v0.1.0`.
+Para fixar uma versão: `bun add github:isabellaherman/Bend-UI#v0.2.0`.
 
 ## Usar
 
@@ -39,13 +39,29 @@ O projeto precisa do loader do Bend no `bunfig.toml`, apontando para um clone do
 plugins = ["../bend/bend2/main.ts"]
 ```
 
+## Tema
+
+O tema troca só cor e fonte. Espaço, raio e tamanhos continuam presos às laws.
+
+```js
+import { theme } from "bend-ui";
+import jaro from "./jaro.woff2";
+
+theme({
+  accent: "#ffd21f",
+  accentFg: "#02090a",
+  fontDisplay: { family: "Jaro", src: jaro },
+});
+```
+
 ## O que vem
 
 | | |
 |---|---|
-| Componentes | `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`), `input`, `field`, `segmented`, `panel`, `toolbar`, `tag`, `kbd`, `icon` |
+| Componentes | `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`), `input`, `field`, `segmented`, `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art` |
+| Texto | `display`, `heading`, `lead`, `text`, `list`, `meta`, `mono` |
 | Ícones | plus, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left |
-| Tokens | espaço, raio, tipografia, controles, ícones, cor (tema claro) |
+| Tokens | espaço, raio, tipografia (inclui `--font-display`, `--text-display`), controles, ícones, arte, cor (tema claro) |
 
 Vitrine de tudo: `bun run docs`.
 
