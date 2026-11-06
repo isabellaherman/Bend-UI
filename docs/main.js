@@ -108,9 +108,9 @@ const LAWS_OF = {
   agent: ["agent_sm_in_scale", "agent_lg_on_grid"],
 };
 const byName = Object.fromEntries(LAWS.map((l) => [l.name, l]));
-const lawBlock = (l) =>
+const lawBlock = (l) => `<div class="docs-law">` +
   line("dot dot--ok", esc(l.what.charAt(0).toUpperCase() + l.what.slice(1))) +
-  `<div class="block block--code" data-code><div class="block__slot"></div><div class="block__text">${esc(l.code)}</div></div>`;
+  `<div class="block block--code" data-code><div class="block__slot"></div><div class="block__text">${esc(l.code)}</div></div></div>`;
 document.querySelectorAll("[data-laws]").forEach((el) => {
   const names = LAWS_OF[el.dataset.laws] || [];
   if (!names.length) return;
@@ -123,12 +123,10 @@ const count = (pages) => pages.reduce((n, p) => n + (LAWS_OF[p] || []).length, 0
 $("docs-version").textContent = "v" + pkg.version;
 $("docs-status").lastChild.textContent = `${LAWS.length} laws · all proofs check`;
 document.querySelector("[data-checked]").innerHTML = [
-  ["Space", "Every padding and gap is on the scale: 2, 4, 8, 12, 16, 24, 32, 48, 64.", ["space", "button", "segmented", "panel", "dot", "ring", "window"]],
-  ["Controls", "A control is 24, 32 or 36 tall; an icon-only button is icon + 2 × padding.", ["button"]],
-  ["Radius", "An outer radius is the inner radius plus the padding between them.", ["radius"]],
-  ["Grid", "The side bar, the window and the agent sit on the 4 grid.", ["size", "agent"]],
-  ["Keyboard", "Shortcuts never clash, keep the browser's keys, and never fire while you type.", ["keyboard"]],
-].map(([a, b]) => line("dot dot--ok", `<b>${a}</b>. ${b}`)).join("");
+  ["Vibe code it", "Ask an agent for a new screen. If it reaches for a padding off the scale, the build fails before you ever see it."],
+  ["Rules that can't drift", "Spacing, sizes, radii and shortcuts aren't guidelines in a doc. They're laws the compiler proves on every build."],
+  ["No review debt", `Every new component is held to the same ${LAWS.length} laws, so the system grows without anyone policing it.`],
+].map(([a, b]) => line("dot dot--ok", `<b>${a}.</b> ${b}`)).join("");
 
 // Keyboard: the rules, and the lib's own keys.
 document.querySelector("[data-keys]").innerHTML = [

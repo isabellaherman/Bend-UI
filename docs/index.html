@@ -18,6 +18,11 @@
   .v-col .v-item code { order: -1; width: 128px; flex: none; }
   .v-item code { font-family: var(--font-sans); font-size: var(--text-xs); color: var(--text-3); }
   /* A label: its plain name, and on hover its class, in the same place (so nothing moves). */
+  /* Laws: room above the section, and between one law and the next. */
+  [data-laws] { margin-top: var(--space-6); }
+  .docs-law { display: flex; flex-direction: column; gap: var(--space-hairline); }
+  .docs-law + .docs-law { margin-top: var(--space-4); }
+  .disclosure > .docs-law:first-of-type { margin-top: var(--space-3); }
   .v-item > code { display: grid; }
   .v-item > code > span { grid-area: 1 / 1; }
   .v-item > code > .v-class, .v-item:hover > code > .v-name, .v-item:focus-within > code > .v-name { visibility: hidden; }
@@ -47,7 +52,7 @@
       <section class="view" data-page="overview" hidden><div class="doc doc--wide">
 <p class="display">Bend-UI</p>
 <p class="lead">A design system whose rules are laws. A padding off the scale, a radius that doesn't nest, a shortcut that clashes: <b>it doesn't compile.</b></p>
-<article class="prose"><h2>What is checked</h2></article>
+<article class="prose"><h2>Built to grow fast</h2></article>
 <div data-checked></div>
 <article class="prose"><h2>Use it</h2></article>
 <article class="prose"><pre><code>bun add github:isabellaherman/Bend-UI
@@ -55,8 +60,6 @@
 import "bend-ui";   // tokens + components + icons
 
 &lt;button class="btn btn--primary"&gt;Create LAW&lt;/button&gt;</code></pre></article>
-<article class="prose"><h2>Try to break it</h2></article>
-<article class="prose"><p>Change <code>btn_padding_x</code> to <code>10</code> in <code>TOKENS.bend</code> and run <code>bun run check</code>.</p></article>
       </div></section>
       <section class="view" data-page="color" hidden><div class="doc doc--wide">
 <p class="heading">Color</p>
