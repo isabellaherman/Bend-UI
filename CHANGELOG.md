@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0 (2026-11-06)
+
+The first stable version. Everything in 0.3.9, now with a version you can pin: `bun add github:isabellaherman/Bend-UI#v1.0.0`.
+
+- Docs online: https://isabellaherman.github.io/Bend-UI/
+
 ## 0.3.9 (2026-11-06)
 
 - **side bar groups** are closed unless the toggle has `aria-expanded="true"` (before, a toggle without it showed its items).

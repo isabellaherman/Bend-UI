@@ -14,7 +14,7 @@ bun add github:isabellaherman/Bend-UI
 bun update bend-ui
 ```
 
-To pin a version: `bun add github:isabellaherman/Bend-UI#v0.3.0`.
+To pin a version: `bun add github:isabellaherman/Bend-UI#v1.0.0`.
 
 ## Use
 
@@ -246,7 +246,7 @@ Brand marks for AI options are in `brand/` (`claude.webp`, `openai.svg`); see `b
 | Icons | plus, arrow-up, shield, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left, book-open, lock, minimize-2, maximize-2, minimize, maximize, text, rows-2, columns-2, heading-1, pilcrow, check |
 | Tokens | space, radius, type, controls, icons, art, status, side bar, window, agent, chat, motion, color (light theme) |
 
-See everything: `bun run docs`.
+See everything: https://isabellaherman.github.io/Bend-UI/ (or `bun run docs`). After changing the docs, `bun run site` rebuilds `site/`; pushing it publishes the page.
 
 ## Rules (laws)
 
