@@ -114,7 +114,7 @@ const lawBlock = (l) =>
 document.querySelectorAll("[data-laws]").forEach((el) => {
   const names = LAWS_OF[el.dataset.laws] || [];
   if (!names.length) return;
-  el.innerHTML = `<p class="meta mono doc__sub">LAWS · proved in PROOF.bend</p>` + names.map((n) => lawBlock(byName[n])).join("");
+  el.innerHTML = `<article class="prose"><h2>Laws</h2><p class="meta">Each one is proved in PROOF.bend: if it stopped holding, the lib wouldn't compile.</p></article>` + names.map((n) => lawBlock(byName[n])).join("");
 });
 
 // Overview: what is checked, each with how many laws.
@@ -136,7 +136,7 @@ document.querySelector("[data-keys]").innerHTML = [
   ["Typing", "In a field, only keys with ⌘/Ctrl or Alt run. A plain key types its letter (WCAG 2.1.4)."],
   ["Reserved", "⌘/Ctrl + W, T, N, Q, L, R stay the browser's."],
 ].map(([a, b]) => line("dot dot--ok", `<b>${a}</b>. ${esc(b)}`)).join("") +
-  `<p class="meta mono doc__sub">THE LIB'S OWN KEYS</p>` +
+  `<article class="prose"><h2>The lib's own keys</h2></article>` +
   [["Open menu", "escape", "Close it"], ["Open menu", "arrowdown", "Next item"], ["Open menu", "arrowup", "Previous item"], ["Open agent", "escape", "Close it"]]
     .map(([scope, k, what]) => line("", `<span class="kbd">${esc(keyLabel(0, k))}</span> ${what}`, scope)).join("");
 
