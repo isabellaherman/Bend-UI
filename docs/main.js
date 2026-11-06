@@ -114,7 +114,8 @@ const lawBlock = (l) =>
 document.querySelectorAll("[data-laws]").forEach((el) => {
   const names = LAWS_OF[el.dataset.laws] || [];
   if (!names.length) return;
-  el.innerHTML = `<article class="prose"><h2>Laws</h2></article>` + names.map((n) => lawBlock(byName[n])).join("");
+  el.innerHTML = `<details class="disclosure"><summary><svg class="icon icon--sm disclosure__chevron"><use href="#i-chevron-down"/></svg><span class="disclosure__title">Laws</span><span class="meta">${names.length}</span></summary>` +
+    names.map((n) => lawBlock(byName[n])).join("") + `</details>`;
 });
 
 // Overview: what is checked, each with how many laws.

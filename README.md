@@ -186,6 +186,17 @@ keyLabel(1, "k");   // "⌘K" on a Mac, "Ctrl+K" elsewhere: show it in a .kbd
 
 The meaning is `SPEC.bend`, the lib's keys and `find` are `KEYS.bend`; `keys.js` only reads the keyboard.
 
+## Disclosure
+
+A section that opens and closes, on the native `<details>` (keyboard and screen readers work as anywhere). Closed unless it has `open`.
+
+```html
+<details class="disclosure">
+  <summary><svg class="icon icon--sm disclosure__chevron"><use href="#i-chevron-down"/></svg><span class="disclosure__title">Laws</span><span class="meta">5</span></summary>
+  …
+</details>
+```
+
 ## Syntax
 
 Bend code in color, on a white ground (Snow). `SYNTAX.bend` cuts the code into pieces; `syntax.js` only draws them. Only color changes, so a box keeps its size.
@@ -230,7 +241,7 @@ Brand marks for AI options are in `brand/` (`claude.webp`, `openai.svg`); see `b
 
 | | |
 |---|---|
-| Components | `page`, `doc`, `pair`, `thread` + `node`, `follow`, `chat` + `msg` + `composer`, `form`, `link`, `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent` |
+| Components | `page`, `doc`, `pair`, `thread` + `node`, `follow`, `chat` + `msg` + `composer`, `disclosure`, `form`, `link`, `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent` |
 | Text | `display`, `heading`, `lead`, `text`, `list`, `meta`, `mono` |
 | Icons | plus, arrow-up, shield, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left, book-open, lock, minimize-2, maximize-2, minimize, maximize, text, rows-2, columns-2, heading-1, pilcrow, check |
 | Tokens | space, radius, type, controls, icons, art, status, side bar, window, agent, chat, motion, color (light theme) |

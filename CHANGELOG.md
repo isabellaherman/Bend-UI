@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.8 (2026-11-06)
+
+Adds only.
+
+- **disclosure**: a section that opens and closes, on the native `<details>`: `.disclosure`, `.disclosure__title`, `.disclosure__chevron`. Closed unless `[open]`.
+- Docs: each page's laws fold into a closed disclosure; examples are labeled with plain names, their class on hover.
+
 ## 0.3.7 (2026-11-06)
 
 Adds only.
