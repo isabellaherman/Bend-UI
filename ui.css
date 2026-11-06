@@ -628,12 +628,13 @@ html[data-narrow] .side .side__text { opacity: 1; }
        <div class="side__items"><button class="btn btn--ghost">Button</button>…</div>
      </div>
    </div>
-   A child lines up with its parent's text. A closed side bar shows only the parents' icons. ui.js opens and closes. */
+   A group is closed unless its toggle has aria-expanded="true". A child lines up with its parent's text.
+   A closed side bar shows only the parents' icons. ui.js opens and closes. */
 .side__body { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-hairline); }
 .side__group, .side__items { display: flex; flex-direction: column; gap: var(--space-hairline); }
 .side__chevron { margin-left: auto; color: var(--text-3); transition: transform var(--duration) var(--ease); }
-.side__toggle[aria-expanded="false"] .side__chevron { transform: rotate(-90deg); }
-.side__toggle[aria-expanded="false"] + .side__items,
+.side__toggle:not([aria-expanded="true"]) .side__chevron { transform: rotate(-90deg); }
+.side__toggle:not([aria-expanded="true"]) + .side__items,
 .side:not(.is-open) .side__items { display: none; }
 .side .side__items .btn { padding-left: calc(var(--space-2) + var(--icon-md) + var(--space-1)); }
 @media (prefers-reduced-motion: reduce) { .side__chevron { transition: none; } }

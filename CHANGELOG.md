@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.9 (2026-11-06)
+
+- **side bar groups** are closed unless the toggle has `aria-expanded="true"` (before, a toggle without it showed its items).
+- Docs: Foundations open, Components closed; animated components first, Agent last.
+
 ## 0.3.8 (2026-11-06)
 
 Adds only.
