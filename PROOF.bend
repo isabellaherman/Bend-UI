@@ -56,3 +56,27 @@ def Laws.agent_sm_in_scale():
 
 def Laws.agent_lg_on_grid():
   {==}
+
+def Laws.lib_keys_never_clash():
+  {==}
+
+def Laws.lib_keys_not_reserved():
+  {==}
+
+def Laws.shift_is_not_plain(k):
+  {==}
+
+def Laws.mod_is_not_plain(k):
+  {==}
+
+def Laws.plain_key_waits_while_typing():
+  {==}
+
+def Laws.shift_key_waits_while_typing():
+  {==}
+
+def Laws.mod_key_runs_while_typing():
+  {==}
+
+def Laws.app_scope_overlaps_all(s):
+  {==}

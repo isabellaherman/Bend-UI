@@ -3,6 +3,7 @@
 import Base
 import ./TOKENS.bend as T
 import ./SPEC.bend as Spec
+import ./KEYS.bend as K
 
 # LAW: the button's horizontal padding is on the space scale.
 law btn_padding_in_scale:
@@ -72,3 +73,40 @@ law agent_sm_in_scale:
 # LAW: the agent on its own is on the 4 grid.
 law agent_lg_on_grid:
   {Spec.on_grid(T.agent_lg()) == True{} : Bool}
+
+# ---------- Shortcuts: SPEC.bend says what they mean; KEYS.bend has the lib's keys ----------
+
+# LAW: no two of the lib's keys clash (the same key and modifiers where both can be on).
+law lib_keys_never_clash:
+  {Spec.key_clashes(K.lib_keys()) == 0 : U32}
+
+# LAW: the lib takes no key the browser or the system keeps (⌘/Ctrl + W, T, N, Q, L, R).
+law lib_keys_not_reserved:
+  {Spec.reserved_keys(K.lib_keys()) == 0 : U32}
+
+# LAW: modifiers are exact. Shift+K is never K, whatever the key.
+law shift_is_not_plain:
+  for k: String
+  {Spec.same_combo(Spec.shift(), k, 0, k) == False{} : Bool}
+
+# LAW: modifiers are exact. ⌘K is never K, whatever the key.
+law mod_is_not_plain:
+  for k: String
+  {Spec.same_combo(Spec.mod(), k, 0, k) == False{} : Bool}
+
+# LAW: while the person types, a plain key types its letter: it runs nothing.
+law plain_key_waits_while_typing:
+  {Spec.fires(True{}, 0) == False{} : Bool}
+
+# LAW: Shift alone doesn't make a key a shortcut while typing.
+law shift_key_waits_while_typing:
+  {Spec.fires(True{}, Spec.shift()) == False{} : Bool}
+
+# LAW: a shortcut with ⌘/Ctrl runs even while typing.
+law mod_key_runs_while_typing:
+  {Spec.fires(True{}, Spec.mod()) == True{} : Bool}
+
+# LAW: an app shortcut is on everywhere, so it clashes with any scope's key.
+law app_scope_overlaps_all:
+  for s: U32
+  {Spec.scopes_overlap(0, s) == True{} : Bool}

@@ -25,7 +25,7 @@ const VARS = {
   "--dot-size": () => px(T.dot_size()), "--block-min-lines": () => String(T.block_min_lines()), "--ring-offset": () => px(T.ring_offset()), "--ring-width": () => px(T.ring_width()),
   "--side-padding": () => px(T.side_padding()), "--side-rail": () => px(T.side_rail()), "--side-width": () => px(T.side_width()),
   "--window-margin": () => px(T.window_margin()), "--window-max": () => px(T.window_max()),
-  "--agent-sm": () => px(T.agent_sm()), "--agent-lg": () => px(T.agent_lg()),
+  "--agent-sm": () => px(T.agent_sm()), "--agent-lg": () => px(T.agent_lg()), "--agent-xl": () => px(T.agent_xl()),
   "--msg-max": () => px(T.msg_max()), "--msg-gap": () => px(T.msg_gap()), "--composer-max": () => px(T.composer_max()),
   "--segmented-item": () => px(T.segmented_item()),
   "--layer-thread": () => String(T.layer_thread()), "--layer-foot": () => String(T.layer_foot()), "--layer-dock": () => String(T.layer_dock()), "--layer-menu": () => String(T.layer_menu()),
@@ -58,6 +58,11 @@ const VARS = {
   "--law": () => T.color_law(), "--law-soft": () => T.color_law_soft(),
   "--draft": () => T.color_draft(), "--draft-soft": () => T.color_draft_soft(),
   "--conflict": () => T.color_conflict(), "--conflict-soft": () => T.color_conflict_soft(),
+  "--syntax-bg": () => T.syntax_bg(), "--syntax-border": () => T.syntax_border(), "--syntax-fg": () => T.syntax_fg(),
+  "--syntax-keyword": () => T.syntax_keyword(), "--syntax-type": () => T.syntax_type(),
+  "--syntax-string": () => T.syntax_string(), "--syntax-number": () => T.syntax_number(),
+  "--syntax-comment": () => T.syntax_comment(), "--syntax-punct": () => T.syntax_punct(),
+  "--syntax-name": () => T.syntax_name(),
 };
 
 for (const [name, get] of Object.entries(VARS)) {
@@ -84,6 +89,13 @@ document.addEventListener("click", (e) => {
   if (group.hasAttribute("data-manual")) return;
   group.querySelectorAll(":scope > button").forEach((b) => b.setAttribute("aria-pressed", b === btn));
   group.dispatchEvent(new CustomEvent("change", { detail: btn, bubbles: true }));
+});
+
+// ---------- Side bar groups: a parent opens and closes its children ----------
+// <button class="side__toggle" aria-expanded="true"> before its <div class="side__items">.
+document.addEventListener("click", (e) => {
+  const t = e.target.closest(".side__toggle");
+  if (t) t.setAttribute("aria-expanded", t.getAttribute("aria-expanded") !== "true");
 });
 
 // ---------- Dropdown: a button that opens a menu ----------

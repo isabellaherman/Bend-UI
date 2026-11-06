@@ -152,6 +152,49 @@ Or one field with the send button inside, and quiet controls under it:
 
 The agent's reply with its face: `<div class="msg msg--face"><div class="msg__face"><div></div></div><div>…</div></div>` (mount an `sm` agent in the inner div). Your new message gets `is-arriving`; a streamed answer puts each word in a `.msg__word`.
 
+## Keys
+
+Shortcuts you can check. Your keymap is Bend, so a key that clashes, a key the browser keeps, or a plain key that would fire while someone types **does not compile**.
+
+```python
+# KEYS.bend in your app
+import Base
+import bend-ui/SPEC.bend as Spec   # (path to the lib)
+import bend-ui/KEYS.bend as K
+
+def keymap() -> List<&2, Spec.Shortcut>:
+  [Spec.Shortcut{0, 1, "k", "chat.focus"}]          # scope 0 (the app), mods 1 (⌘/Ctrl), "k"
+
+# in your LAWS.bend
+law my_keys_never_clash:
+  {Spec.key_clashes(K.with_lib(App.keymap())) == 0 : U32}
+law my_keys_not_reserved:
+  {Spec.reserved_keys(App.keymap()) == 0 : U32}
+```
+
+```js
+import { createKeys, keyLabel } from "bend-ui/keys";
+import App from "./KEYS.bend";
+createKeys(App.keymap(), { "chat.focus": () => input.focus() });
+keyLabel(1, "k");   // "⌘K" on a Mac, "Ctrl+K" elsewhere: show it in a .kbd
+```
+
+- **Exact**: Shift+K is not K, ⌘K is not K.
+- **Scopes**: 0 the app (always on), 1 an open menu, 2 an open agent. A key the app takes clashes with every scope.
+- **Typing**: in a field, only keys with ⌘/Ctrl or Alt run; a plain key types its letter (WCAG 2.1.4).
+- **Reserved**: ⌘/Ctrl + W, T, N, Q, L, R stay the browser's.
+
+The meaning is `SPEC.bend`, the lib's keys and `find` are `KEYS.bend`; `keys.js` only reads the keyboard.
+
+## Syntax
+
+Bend code in color, on a white ground (Snow). `SYNTAX.bend` cuts the code into pieces; `syntax.js` only draws them. Only color changes, so a box keeps its size.
+
+```js
+import { highlight, toHtml } from "bend-ui/syntax";
+highlight(document.querySelector(".prose pre"));   // or a .block--code
+```
+
 ## Responsive
 
 Below `breakpoint()` in `TOKENS.bend` (720px), `ui.js` sets `<html data-narrow>`, and the components adapt: the window fills the screen, the side bar becomes a drawer. CSS can't read variables in media queries, so the breakpoint lives in Bend and nowhere else.
@@ -208,6 +251,10 @@ See everything: `bun run docs`.
 | `side_width_on_grid`, `window_max_on_grid`, `agent_lg_on_grid` | On the 4 grid |
 | `window_margin_in_scale` | Window margin on the space scale |
 | `agent_sm_in_scale` | The toolbar agent is a control height |
+| `lib_keys_never_clash`, `lib_keys_not_reserved` | The lib's keys never clash and take no key the browser keeps |
+| `shift_is_not_plain`, `mod_is_not_plain` | Modifiers are exact, for every key |
+| `plain_key_waits_while_typing`, `shift_key_waits_while_typing`, `mod_key_runs_while_typing` | While typing, only ⌘/Ctrl or Alt keys run |
+| `app_scope_overlaps_all` | An app key clashes with any scope's key |
 
 Try it: change `btn_padding_x` to `10` in `TOKENS.bend` and run `bun run check`.
 

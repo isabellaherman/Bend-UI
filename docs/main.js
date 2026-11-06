@@ -77,3 +77,80 @@ document.getElementById("thread-play").addEventListener("click", async () => {
   await thread.end();
   await thread.release();
 });
+
+// =========================================================
+// The docs: one page per foundation and component; each shows the laws that guard it.
+// =========================================================
+import { keyLabel } from "../keys.js";
+import { highlight } from "../syntax.js";
+import { LAWS } from "./laws.data.js";
+import pkg from "../package.json";
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+const line = (dot, html, out = "") =>
+  `<div class="block"><div class="block__slot">${dot ? `<span class="dot ${dot}"></span>` : ""}</div><div class="block__text">${html}</div>${out ? `<pre class="block__out">${out}</pre>` : ""}</div>`;
+
+// Which page each law guards.
+const LAWS_OF = {
+  space: ["inside_less_than_between"],
+  size: ["side_rail_fits", "side_width_on_grid", "window_max_on_grid", "agent_lg_on_grid"],
+  radius: ["segmented_radius_nested"],
+  keyboard: ["lib_keys_never_clash", "lib_keys_not_reserved", "shift_is_not_plain", "mod_is_not_plain",
+    "plain_key_waits_while_typing", "shift_key_waits_while_typing", "mod_key_runs_while_typing", "app_scope_overlaps_all"],
+  button: ["btn_padding_in_scale", "btn_height_in_scale", "icon_button_sm_fits", "icon_button_md_fits", "icon_button_lg_fits"],
+  segmented: ["segmented_padding_in_scale", "segmented_radius_nested"],
+  panel: ["panel_padding_in_scale"],
+  dot: ["dot_size_in_scale"],
+  ring: ["ring_offset_in_scale", "ring_width_in_scale"],
+  side: ["side_rail_fits", "side_width_on_grid"],
+  window: ["window_max_on_grid", "window_margin_in_scale"],
+  agent: ["agent_sm_in_scale", "agent_lg_on_grid"],
+};
+const byName = Object.fromEntries(LAWS.map((l) => [l.name, l]));
+const lawBlock = (l) =>
+  line("dot dot--ok", esc(l.what.charAt(0).toUpperCase() + l.what.slice(1))) +
+  `<div class="block block--code" data-code><div class="block__slot"></div><div class="block__text">${esc(l.code)}</div></div>`;
+document.querySelectorAll("[data-laws]").forEach((el) => {
+  const names = LAWS_OF[el.dataset.laws] || [];
+  if (!names.length) return;
+  el.innerHTML = `<p class="meta mono doc__sub">LAWS · proved in PROOF.bend</p>` + names.map((n) => lawBlock(byName[n])).join("");
+});
+
+// Overview: what is checked, each with how many laws.
+const count = (pages) => pages.reduce((n, p) => n + (LAWS_OF[p] || []).length, 0);
+$("docs-version").textContent = "v" + pkg.version;
+$("docs-status").lastChild.textContent = `${LAWS.length} laws · all proofs check`;
+document.querySelector("[data-checked]").innerHTML = [
+  ["Space", "Every padding and gap is on the scale: 2, 4, 8, 12, 16, 24, 32, 48, 64.", ["space", "button", "segmented", "panel", "dot", "ring", "window"]],
+  ["Controls", "A control is 24, 32 or 36 tall; an icon-only button is icon + 2 × padding.", ["button"]],
+  ["Radius", "An outer radius is the inner radius plus the padding between them.", ["radius"]],
+  ["Grid", "The side bar, the window and the agent sit on the 4 grid.", ["size", "agent"]],
+  ["Keyboard", "Shortcuts never clash, keep the browser's keys, and never fire while you type.", ["keyboard"]],
+].map(([a, b]) => line("dot dot--ok", `<b>${a}</b>. ${b}`)).join("");
+
+// Keyboard: the rules, and the lib's own keys.
+document.querySelector("[data-keys]").innerHTML = [
+  ["Exact", "Shift+K is not K; " + keyLabel(1, "k") + " is not K."],
+  ["Scopes", "0 the app, always on; 1 an open menu; 2 an open agent. An app key clashes with every scope."],
+  ["Typing", "In a field, only keys with ⌘/Ctrl or Alt run. A plain key types its letter (WCAG 2.1.4)."],
+  ["Reserved", "⌘/Ctrl + W, T, N, Q, L, R stay the browser's."],
+].map(([a, b]) => line("dot dot--ok", `<b>${a}</b>. ${esc(b)}`)).join("") +
+  `<p class="meta mono doc__sub">THE LIB'S OWN KEYS</p>` +
+  [["Open menu", "escape", "Close it"], ["Open menu", "arrowdown", "Next item"], ["Open menu", "arrowup", "Previous item"], ["Open agent", "escape", "Close it"]]
+    .map(([scope, k, what]) => line("", `<span class="kbd">${esc(keyLabel(0, k))}</span> ${what}`, scope)).join("");
+
+// Code in the lib's own syntax (Snow).
+document.querySelectorAll("[data-code], [data-syntax-demo]").forEach(highlight);
+const chatFace = $("chat-face"); if (chatFace) mountAgent(chatFace, { size: "sm", items: [] });
+
+// Navigation: one page at a time; the side bar marks it.
+const main = $("docs-main");
+function go(id) {
+  main.querySelectorAll("[data-page]").forEach((s) => (s.hidden = s.dataset.page !== id));
+  document.querySelectorAll("#docs-nav [data-go]").forEach((b) => (b.dataset.go === id ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
+  main.scrollTop = 0;
+}
+$("docs-nav").addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); });
+$("docs-side-toggle").addEventListener("click", () => $("docs-side").classList.toggle("is-open"));
+go("overview");

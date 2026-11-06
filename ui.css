@@ -252,6 +252,20 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
 .prose pre { margin: 0 0 var(--space-3); padding: var(--space-3); background: var(--surface-2); border: var(--border-width) solid var(--border); border-radius: var(--radius-md); overflow: auto; }
 .prose pre code { background: none; padding: 0; }
 
+/* ---------- Syntax: code in color (Snow) ----------
+   Add .syntax to a code box (.prose pre, or a .block--code); syntax.js cuts its text into pieces (SYNTAX.bend)
+   and wraps each in a .syntax__* span. Only color changes: font, weight, padding and radius stay, so the box
+   keeps its size. */
+.prose pre.syntax, .block--code.syntax { background: var(--syntax-bg); border-color: var(--syntax-border); color: var(--syntax-fg); }
+.block--code.syntax:hover, .block--code.syntax[aria-selected="true"] { background: var(--syntax-bg); }
+.syntax__kw { color: var(--syntax-keyword); }
+.syntax__type { color: var(--syntax-type); }
+.syntax__str { color: var(--syntax-string); }
+.syntax__num { color: var(--syntax-number); }
+.syntax__com { color: var(--syntax-comment); }
+.syntax__punct { color: var(--syntax-punct); }
+.syntax__name { color: var(--syntax-name); }
+
 /* ---------- Rows: a list of clickable items ---------- */
 .rows { list-style: none; margin: 0; padding: 0; border-top: var(--border-width) solid var(--border); }
 .row {
@@ -474,6 +488,18 @@ html[data-narrow] .composer { padding: var(--space-2) var(--space-3) var(--space
   field-sizing: content;
 }
 
+/* The chat's start: an empty chat shows the agent's face (agent_xl) and the composer, centered.
+   <main class="page"><div class="chat__start"><div>(agent)</div><form class="composer">…</form></div></main>
+   The first message moves the composer back under the page and the face to the first reply. */
+.chat__start {
+  min-height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--space-5);
+  padding: var(--space-7) var(--space-5);
+}
+.chat__start .composer { width: 100%; max-width: var(--measure); padding: 0; background: transparent; }
+.chat__start .agent { --agent-face: var(--agent-xl); }
+
 /* Messages arrive, subtly: yours fades in, barely rising; the agent's words (.msg__word, one per word
    as the answer streams) fade in from a soft blur. No travel, nothing that moves the page. */
 .msg--me.is-arriving { animation: msg-in var(--duration-enter) var(--ease) both; }
@@ -581,6 +607,23 @@ html[data-narrow] .side {
 }
 html[data-narrow] .side.is-open { transform: none; }
 html[data-narrow] .side .side__text { opacity: 1; }
+
+/* Side bar groups: a parent that opens and closes its children; .side__body scrolls when there is more than fits.
+   <div class="side__body">
+     <div class="side__group">
+       <button class="btn btn--ghost side__toggle" aria-expanded="true"><svg class="icon">…</svg><span class="side__text">Components</span><svg class="icon icon--sm side__chevron"><use href="#i-chevron-down"/></svg></button>
+       <div class="side__items"><button class="btn btn--ghost">Button</button>…</div>
+     </div>
+   </div>
+   A child lines up with its parent's text. A closed side bar shows only the parents' icons. ui.js opens and closes. */
+.side__body { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-hairline); }
+.side__group, .side__items { display: flex; flex-direction: column; gap: var(--space-hairline); }
+.side__chevron { margin-left: auto; color: var(--text-3); transition: transform var(--duration) var(--ease); }
+.side__toggle[aria-expanded="false"] .side__chevron { transform: rotate(-90deg); }
+.side__toggle[aria-expanded="false"] + .side__items,
+.side:not(.is-open) .side__items { display: none; }
+.side .side__items .btn { padding-left: calc(var(--space-2) + var(--icon-md) + var(--space-1)); }
+@media (prefers-reduced-motion: reduce) { .side__chevron { transition: none; } }
 
 /* ---------- Agent: a face that opens into round options ----------
    Drawn by agent.js (motion in MOTION.bend). The face is the only part that is not a lib component:

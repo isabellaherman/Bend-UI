@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.7 (2026-11-06)
+
+Adds only.
+
+- **chat__start**: an empty chat, the agent's face and the composer centered.
+- **side bar groups**: `side__body` (scrolls), `side__group`, `side__toggle` (opens and closes, `aria-expanded`), `side__chevron`, `side__items` (children line up with the parent's text).
+- Token: `agent_xl` (160), the face alone in an empty chat.
+- **keys** (`bend-ui/keys`, `KEYS.bend`): shortcuts you can check. `SPEC.bend` says what they mean (exact modifiers, scopes, reserved keys, no plain key while typing); `KEYS.bend` has the lib's keys, `find` and `label`; `keys.js` only reads the keyboard.
+- **syntax** (`bend-ui/syntax`, `SYNTAX.bend`): Bend code in color. `SYNTAX.bend` cuts code into pieces (keyword, type, string, number, comment, punctuation, a defined name); `.syntax` on a `.prose pre` or a `.block--code` gives it the Snow ground. Only color changes; the box keeps its size.
+- Tokens: `syntax_bg`, `syntax_border`, `syntax_fg`, `syntax_keyword`, `syntax_type`, `syntax_string`, `syntax_number`, `syntax_comment`, `syntax_punct`, `syntax_name` (all 5.7:1 or more on the ground).
+- Laws: `lib_keys_never_clash`, `lib_keys_not_reserved`, `shift_is_not_plain`, `mod_is_not_plain`, `plain_key_waits_while_typing`, `shift_key_waits_while_typing`, `mod_key_runs_while_typing`, `app_scope_overlaps_all`.
+
 ## 0.3.6 (2026-11-06)
 
 Adds only; nothing that exists changes.

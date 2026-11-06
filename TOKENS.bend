@@ -84,6 +84,8 @@ def layer_menu() -> U32: 30
 # Agent: the face, in the toolbar (sm) or on its own (lg)
 def agent_sm() -> U32: control_md()
 def agent_lg() -> U32: 96
+# The face alone in an empty chat, before the first message
+def agent_xl() -> U32: 160
 
 # Chat: a conversation that flows, with the composer fixed under it
 def msg_max() -> U32: 480            # the person's message, at most this wide
@@ -143,3 +145,16 @@ def color_draft() -> String: "#b7791f"
 def color_draft_soft() -> String: "#fbf3e4"
 def color_conflict() -> String: "#c92a2a"
 def color_conflict_soft() -> String: "#fdecec"
+
+# Code (Snow): a white ground for code boxes, and a color for each kind of piece (SYNTAX.bend).
+# Each color stays at 5.7:1 or more on the ground (WCAG AA).
+def syntax_bg() -> String: "#ffffff"
+def syntax_border() -> String: "#d0d7de"
+def syntax_fg() -> String: "#1f2328"
+def syntax_keyword() -> String: "#c4202b"
+def syntax_type() -> String: "#7444cf"
+def syntax_string() -> String: "#0a3069"
+def syntax_number() -> String: "#0550ae"
+def syntax_comment() -> String: "#5f6870"
+def syntax_punct() -> String: "#424a53"
+def syntax_name() -> String: "#5a32a3"
