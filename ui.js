@@ -79,6 +79,45 @@ document.addEventListener("click", (e) => {
   group.dispatchEvent(new CustomEvent("change", { detail: btn, bubbles: true }));
 });
 
+// ---------- Dropdown: a button that opens a menu ----------
+// <div class="dropdown"><button class="btn" aria-haspopup="menu">…</button>
+//   <div class="menu" role="menu" hidden><button class="menu__item" role="menuitemradio" aria-checked="true">…</button></div></div>
+// The button opens and closes the menu. Picking an item checks it (menuitemradio), closes the menu
+// and fires "pick" on the dropdown with the item in event.detail. Arrows move, Escape and a click
+// outside close. Opening or picking doesn't take focus from where the person is typing.
+const ddMenu = (dd) => dd.querySelector(":scope > .menu");
+const ddButton = (dd) => dd.querySelector(':scope > [aria-haspopup="menu"]');
+function ddSet(dd, open) {
+  ddMenu(dd).hidden = !open;
+  ddButton(dd).setAttribute("aria-expanded", open);
+}
+const ddCloseAll = (except) => document.querySelectorAll(".dropdown").forEach((dd) => { if (dd !== except && ddMenu(dd) && !ddMenu(dd).hidden) ddSet(dd, false); });
+document.addEventListener("mousedown", (e) => {
+  if (e.target.closest(".dropdown > [aria-haspopup='menu'], .dropdown > .menu")) e.preventDefault();   // keep the caret
+});
+document.addEventListener("pointerdown", (e) => ddCloseAll(e.target.closest(".dropdown")));
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".dropdown > [aria-haspopup='menu']");
+  if (btn) { const dd = btn.parentElement; ddSet(dd, ddMenu(dd).hidden); return; }
+  const item = e.target.closest(".dropdown > .menu > .menu__item");
+  if (!item || item.disabled) return;
+  const dd = item.closest(".dropdown");
+  if (item.getAttribute("role") === "menuitemradio") ddMenu(dd).querySelectorAll(":scope > .menu__item").forEach((i) => i.setAttribute("aria-checked", i === item));
+  ddSet(dd, false);
+  dd.dispatchEvent(new CustomEvent("pick", { detail: item, bubbles: true }));
+});
+document.addEventListener("keydown", (e) => {
+  const dd = e.target.closest?.(".dropdown");
+  if (e.key === "Escape") { const open = [...document.querySelectorAll(".dropdown")].find((d) => ddMenu(d) && !ddMenu(d).hidden); if (open) { ddSet(open, false); ddButton(open).focus(); } return; }
+  if (!dd || !["ArrowDown", "ArrowUp"].includes(e.key)) return;
+  e.preventDefault();
+  if (ddMenu(dd).hidden) ddSet(dd, true);
+  const items = [...ddMenu(dd).querySelectorAll(":scope > .menu__item:not(:disabled)")];
+  const i = items.indexOf(document.activeElement);
+  const next = i < 0 ? items.findIndex((x) => x.getAttribute("aria-checked") === "true") : (i + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+  items[Math.max(0, next)].focus();
+});
+
 // ---------- Theme per project ----------
 // A theme changes only COLOR and FONT. Space, radius and sizes stay bound by the laws.
 //   import { theme } from "bend-ui";
@@ -122,5 +161,6 @@ if (document.body) mountIcons(); else document.addEventListener("DOMContentLoade
 export const icons = [
   "plus", "file-text", "scale", "triangle-alert", "circle-check", "x", "chevron-down", "list", "code",
   "wand-sparkles", "search", "panel-left", "book-open", "lock", "minimize-2", "maximize-2", "minimize", "maximize",
+  "text", "rows-2", "columns-2", "heading-1", "pilcrow", "check",
 ];
 export const tokens = T;

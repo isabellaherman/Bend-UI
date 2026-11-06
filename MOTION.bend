@@ -64,3 +64,7 @@ def fan_y(+i: F32, +r: F32, +t: F32) -> F32:
 # Row: the item's center, left of the face. r = face radius, w = item width, gap in pixels.
 def row_x(+i: F32, +r: F32, +w: F32, +gap: F32, +t: F32) -> F32:
   ((0.0 - (r + gap + w / 2.0 + i * (w + gap))) * t : F32)
+
+# Hover (open: "hover"): how long the options stay after the pointer leaves, in seconds.
+# Long enough to cross the gap between the face and an option.
+def hover_close() -> F32: 0.28

@@ -6,6 +6,7 @@
 //
 //   const agent = mountAgent(el, {
 //     size: "lg",                      // "lg" (fan) or "sm" (row, for a toolbar)
+//     open: "hover",                   // "click" (default) or "hover": a mouse opens it by hovering; touch still taps
 //     items: [
 //       { id: "min", icon: "minimize-2", label: "Minimize" },
 //       { id: "claude", mark: "Cl", label: "Claude", ring: true },
@@ -87,9 +88,21 @@ export function mountAgent(root, opts = {}) {
     clearTimeout(s._flash); s._flash = setTimeout(() => items.forEach((b) => b.classList.remove("is-flash")), 2600);
   };
 
-  face.addEventListener("click", () => s.toggle());
-  root.addEventListener("pointerenter", () => { s.hover = true; });
-  root.addEventListener("pointerleave", () => { s.hover = false; });
+  // open: "hover" opens on a mouse hover and closes a moment after it leaves (MOTION.bend).
+  // Touch has no hover, so a tap still toggles; with a mouse the click just keeps it open.
+  const byHover = opts.open === "hover";
+  let lastPointer = "", closeT;
+  root.addEventListener("pointerdown", (e) => { lastPointer = e.pointerType; }, true);
+  root.addEventListener("keydown", () => { lastPointer = ""; }, true);
+  face.addEventListener("click", () => { if (byHover && lastPointer === "mouse") setOpen(true); else s.toggle(); });
+  root.addEventListener("pointerenter", (e) => {
+    s.hover = true;
+    if (byHover && e.pointerType === "mouse") { clearTimeout(closeT); setOpen(true); }
+  });
+  root.addEventListener("pointerleave", (e) => {
+    s.hover = false;
+    if (byHover && e.pointerType === "mouse") closeT = setTimeout(() => setOpen(false), M.hover_close() * 1000);
+  });
   items.forEach((b) => b.addEventListener("click", () => opts.onPick && opts.onPick(b.dataset.id)));
   const outside = (e) => { if (s.isOpen && !root.contains(e.target)) setOpen(false); };
   const escape = (e) => { if (e.key === "Escape" && s.isOpen) { setOpen(false); face.focus(); } };
@@ -138,7 +151,7 @@ export function mountAgent(root, opts = {}) {
   };
 
   s.destroy = () => {
-    agents.delete(s); clearInterval(blink);
+    agents.delete(s); clearInterval(blink); clearTimeout(closeT);
     document.removeEventListener("pointerdown", outside);
     document.removeEventListener("keydown", escape);
     root.innerHTML = "";

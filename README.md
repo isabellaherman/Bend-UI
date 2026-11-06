@@ -58,6 +58,27 @@ theme({
 
 A `.segmented` group switches on click by itself and fires `change` (the button is in `event.detail`). Add `data-manual` to the group to handle `aria-pressed` yourself.
 
+## Dropdown
+
+A button that opens a menu. `ui.js` handles it and fires `pick` on the `.dropdown` (the item is in `event.detail`). Opening or picking doesn't move the caret, so it works on the text being edited.
+
+```html
+<div class="dropdown">
+  <button class="btn btn--ghost" aria-haspopup="menu" aria-expanded="false">
+    <svg class="icon"><use href="#i-pilcrow"/></svg><span>Text</span>
+    <svg class="icon icon--sm"><use href="#i-chevron-down"/></svg>
+  </button>
+  <div class="menu" role="menu" hidden>
+    <button class="menu__item" role="menuitemradio" aria-checked="false">
+      <svg class="icon"><use href="#i-heading-1"/></svg><span>Title</span>
+      <svg class="icon icon--sm menu__check"><use href="#i-check"/></svg>
+    </button>
+  </div>
+</div>
+```
+
+`menu--end` aligns the menu to the right edge of the button.
+
 ## Responsive
 
 Below `breakpoint()` in `TOKENS.bend` (720px), `ui.js` sets `<html data-narrow>`, and the components adapt: the window fills the screen, the side bar becomes a drawer. CSS can't read variables in media queries, so the breakpoint lives in Bend and nowhere else.
@@ -76,6 +97,7 @@ import { mountAgent } from "bend-ui/agent";
 
 const agent = mountAgent(document.getElementById("agent"), {
   size: "lg",   // "lg" opens as a fan; "sm" opens as a row, for a toolbar
+  open: "hover", // optional: a mouse opens it by hovering (default "click"); touch still taps
   items: [
     { id: "min", icon: "minimize-2", label: "Minimize" },
     { id: "a", mark: "Ab", label: "Option A", ring: true },
@@ -92,9 +114,9 @@ Brand marks for AI options are in `brand/` (`claude.webp`, `openai.svg`); see `b
 
 | | |
 |---|---|
-| Components | `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented`, `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent` |
+| Components | `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent` |
 | Text | `display`, `heading`, `lead`, `text`, `list`, `meta`, `mono` |
-| Icons | plus, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left, book-open, lock, minimize-2, maximize-2, minimize, maximize |
+| Icons | plus, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left, book-open, lock, minimize-2, maximize-2, minimize, maximize, text, rows-2, columns-2, heading-1, pilcrow, check |
 | Tokens | space, radius, type, controls, icons, art, status, side bar, window, agent, motion, color (light theme) |
 
 See everything: `bun run docs`.

@@ -40,3 +40,10 @@ demo(document.getElementById("agent-sm"), "sm", { id: "max", icon: "maximize-2",
 // brand marks
 document.getElementById("brand-claude").src = claude;
 document.getElementById("brand-openai").src = openai;
+
+// dropdown: the button shows the picked item
+document.addEventListener("pick", (e) => {
+  const btn = e.target.querySelector(':scope > [aria-haspopup="menu"]');
+  btn.querySelector("span").textContent = e.detail.querySelector("span").textContent;
+  btn.querySelector("use").setAttribute("href", e.detail.querySelector("use").getAttribute("href"));
+});

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.2 (2026-11-06)
+
+- **dropdown**: a button that opens a `.menu` of `.menu__item`s (`role="menuitemradio"` shows a check). Same nesting as segmented: 6 = 4 + 2. `ui.js` opens, closes (Escape, click outside), moves with the arrows and fires `pick`; it keeps the caret where the person is typing.
+- **segmented--icons**: icon-only segmented buttons.
+- **agent**: `open: "hover"` opens on a mouse hover and closes `hover_close()` (MOTION.bend) after the pointer leaves; touch still taps.
+- Icons: `text`, `rows-2`, `columns-2`, `heading-1`, `pilcrow`, `check` (Lucide 1.70).
+
 ## 0.3.1 (2026-11-06)
 
 - `textarea.input`: a multi-line field with the input's border and focus.
