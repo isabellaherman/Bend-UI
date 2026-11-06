@@ -140,7 +140,7 @@ document.querySelector("[data-keys]").innerHTML = [
   [["Open menu", "escape", "Close it"], ["Open menu", "arrowdown", "Next item"], ["Open menu", "arrowup", "Previous item"], ["Open agent", "escape", "Close it"]]
     .map(([scope, k, what]) => line("", `<span class="kbd">${esc(keyLabel(0, k))}</span> ${what}`, scope)).join("");
 
-// Each example's label: a plain name; the class it shows is on hover (title).
+// Each example's label: a plain name; on hover, the class it shows, in the same place.
 const LABEL = {
   ".btn + .icon": "with icon", "textarea.input": "textarea", ".kbd": "key",
   ".dropdown .menu .menu__item": "dropdown", ".rows .row": "rows", ".desk .window / .window.is-full": "window",
@@ -173,7 +173,7 @@ function labelOf(raw, siblings) {
 }
 document.querySelectorAll("[data-page]").forEach((page) => {
   const codes = [...page.querySelectorAll(".v-item > code")], raws = codes.map((c) => c.textContent);
-  codes.forEach((c, i) => { c.textContent = labelOf(raws[i], raws); c.closest(".v-item").title = raws[i]; });
+  codes.forEach((c, i) => { c.innerHTML = `<span class="v-name">${esc(labelOf(raws[i], raws))}</span><span class="v-class">${esc(raws[i])}</span>`; });
 });
 
 // Code in the lib's own syntax (Snow).

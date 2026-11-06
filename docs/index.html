@@ -17,6 +17,11 @@
   .v-col .v-item { flex-direction: row; align-items: center; gap: var(--space-3); }
   .v-col .v-item code { order: -1; width: 128px; flex: none; }
   .v-item code { font-family: var(--font-sans); font-size: var(--text-xs); color: var(--text-3); }
+  /* A label: its plain name, and on hover its class, in the same place (so nothing moves). */
+  .v-item > code { display: grid; }
+  .v-item > code > span { grid-area: 1 / 1; }
+  .v-item > code > .v-class, .v-item:hover > code > .v-name, .v-item:focus-within > code > .v-name { visibility: hidden; }
+  .v-item:hover > code > .v-class, .v-item:focus-within > code > .v-class { visibility: visible; }
   .v-swatch { width: 100%; height: 40px; border-radius: var(--radius-md); border: var(--border-width) solid var(--border); }
   .v-bar { height: var(--space-3); background: var(--accent); border-radius: var(--radius-xs); }
   .v-frame { height: 220px; display: flex; border: var(--border-width) solid var(--border); border-radius: var(--radius-md); overflow: hidden; position: relative; }
