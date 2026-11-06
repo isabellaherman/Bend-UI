@@ -1,5 +1,6 @@
 import "../ui.js";
 import { mountAgent } from "../agent.js";
+import { createThread, openBlock, formBlock } from "../thread.js";
 import claude from "../brand/claude.webp";
 import openai from "../brand/openai.svg";
 
@@ -53,4 +54,26 @@ document.getElementById("pair-mode").addEventListener("change", (e) => {
   const d = document.getElementById("pair-demo");
   d.classList.remove("doc--stack", "doc--split");
   if (e.detail.dataset.mode) d.classList.add(e.detail.dataset.mode);
+});
+
+// thread: two pairs, the second one fails
+const threadDoc = document.getElementById("thread-demo");
+const thread = createThread(threadDoc);
+document.getElementById("thread-play").addEventListener("click", async () => {
+  const pairs = [...threadDoc.querySelectorAll(".pair")];
+  pairs.forEach((p) => { const a = p.querySelector(".pair__aside"); a.className = "block pair__aside"; a.innerHTML = ""; });
+  await thread.begin(pairs);
+  for (const [i, p] of pairs.entries()) {
+    const a = p.querySelector(".pair__aside"), text = p.querySelector(".block__text").textContent;
+    await Promise.all([openBlock(a, `<div class="block__slot"></div><div class="block__text thread__reading">${text}</div>`), thread.start(i)]);
+    await new Promise((r) => setTimeout(r, 1400));
+    const ok = i === 0;
+    await Promise.all([
+      formBlock(a, ok ? '<div class="block__slot"></div><div class="block__text"><span class="block__line">law mana_at_most_10:</span><span class="block__line">  {(T.mana(s) <= 10 : U32) == True{} : Bool}</span></div>'
+                      : '<div class="block__slot"></div><div class="block__text">ERROR: ambiguous.</div>', ok ? "block--code" : null),
+      thread.done(i, ok),
+    ]);
+  }
+  await thread.end();
+  await thread.release();
 });

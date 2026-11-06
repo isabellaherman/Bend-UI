@@ -58,6 +58,8 @@ def segmented_item() -> U32: 26
 
 # Status: the dot beside a line, and the ring around a round element
 def dot_size() -> U32: space_2()
+# A thread node: the dot of a block while work runs through it, big enough to show progress.
+def node_size() -> U32: space_4()
 # A block is at least this many lines of its text tall. Every block in a document shares it.
 def block_min_lines() -> U32: 1
 def ring_offset() -> U32: space_1()
@@ -74,6 +76,7 @@ def window_max() -> U32: 1152
 def breakpoint() -> U32: 720
 
 # Layers: what sits above what (z-index). Higher is on top.
+def layer_thread() -> U32: 1
 def layer_foot() -> U32: 4
 def layer_dock() -> U32: 5
 def layer_menu() -> U32: 30
@@ -107,6 +110,15 @@ def shadow_float() -> String: "0 4px 16px rgb(0 0 0 / 0.12), 0 0 0 1px rgb(0 0 0
 def duration_ms() -> U32: 120
 def duration_slow_ms() -> U32: 960
 def ease() -> String: "cubic-bezier(.2, .8, .2, 1)"
+# Overshoots a little, then settles: for things that arrive or fill (a node, a pop).
+def ease_spring() -> String: "cubic-bezier(.34, 1.56, .64, 1)"
+def duration_enter_ms() -> U32: 360      # an item arriving, a block opening
+def duration_connect_ms() -> U32: 560    # a line connecting, a block taking its new size
+def duration_read_ms() -> U32: 2400      # one slow pass of light over text being read
+def duration_glint_ms() -> U32: 1100     # one glint along a finished thread
+def stagger_ms() -> U32: 70              # between the items of a group, one after another
+def creep_ms() -> U32: 1800              # pace of work in progress (see creep in MOTION.bend)
+def blur_form() -> U32: space_1()        # how soft text starts when it forms
 
 # Color (light theme)
 def color_bg() -> String: "#fafaf9"

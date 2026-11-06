@@ -68,3 +68,28 @@ def row_x(+i: F32, +r: F32, +w: F32, +gap: F32, +t: F32) -> F32:
 # Hover (open: "hover"): how long the options stay after the pointer leaves, in seconds.
 # Long enough to cross the gap between the face and an option.
 def hover_close() -> F32: 0.28
+
+# Ease in and out (smootherstep): slow, fast, slow. t goes 0 → 1.
+def ease_in_out(+t: F32) -> F32:
+  (t * t * t * (t * (t * 6.0 - 15.0) + 10.0) : F32)
+
+# Work in progress: how far it has crept after `elapsed` ms, 0 → 1, ever slower, never
+# arriving. `tau` (ms, creep_ms in TOKENS.bend) sets the pace: after tau it is about 63% there.
+def creep(+elapsed: F32, +tau: F32) -> F32:
+  (1.0 - F32.exp(((0.0 - elapsed) / tau : F32)) : F32)
+
+# Thread (pairs): how far the line runs past the aside's node while its work creeps,
+# in steps of the path sentence → aside → bottom of the aside.
+def thread_reach(+crept: F32) -> F32:
+  (1.0 + crept * 0.8 : F32)
+
+# A node fills like a clock while its work creeps; it never looks full until the work is done.
+def node_fill(+crept: F32) -> F32:
+  (F32.clamp((crept / 0.75 : F32), 0.0, 1.0) * 0.92 : F32)
+
+# Follow (smart auto-scroll): the band of the scroller where the followed item may sit,
+# as fractions of its height from the top and from the bottom; outside it, the page scrolls
+# to put the item at follow_anchor from the top.
+def follow_top() -> F32: 0.15
+def follow_bottom() -> F32: 0.3
+def follow_anchor() -> F32: 0.3
