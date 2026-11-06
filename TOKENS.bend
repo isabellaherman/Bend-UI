@@ -1,8 +1,8 @@
-# Bend-UI — os valores do design system. Tema claro. Única fonte de verdade.
+# Bend-UI: the design system's values. Light theme. Single source of truth.
 
 import Base
 
-# Espaçamento
+# Space
 def space_0() -> U32: 0
 def space_hairline() -> U32: 2
 def space_1() -> U32: 4
@@ -14,30 +14,30 @@ def space_6() -> U32: 32
 def space_7() -> U32: 48
 def space_8() -> U32: 64
 
-# Raio
+# Radius
 def radius_xs() -> U32: 2
 def radius_sm() -> U32: 4
 def radius_md() -> U32: 6
 def radius_lg() -> U32: 10
 def radius_full() -> U32: 999
 
-# Controles
+# Controls
 def control_sm() -> U32: 24
 def control_md() -> U32: 32
 def control_lg() -> U32: 36
 
-# Ícones
+# Icons
 def icon_sm() -> U32: 14
 def icon_md() -> U32: 16
 def icon_lg() -> U32: 20
 def icon_stroke() -> String: "1.75"
 
-# Arte (imagens do jogo/produto): altura
+# Art (game/product images): height
 def art_sm() -> U32: space_6()
 def art_md() -> U32: space_8()
 def art_lg() -> U32: 240
 
-# Componentes: as escolhas que as laws vigiam
+# Components: the choices the laws watch
 def btn_padding_x() -> U32: space_3()
 def btn_height() -> U32: control_md()
 def btn_radius() -> U32: radius_md()
@@ -54,7 +54,26 @@ def segmented_padding() -> U32: space_hairline()
 def segmented_outer_radius() -> U32: radius_md()
 def segmented_inner_radius() -> U32: radius_sm()
 
-# Tipografia
+# Status: the dot beside a line, and the ring around a round element
+def dot_size() -> U32: space_2()
+def ring_offset() -> U32: space_1()
+def ring_width() -> U32: space_hairline()
+
+# Side bar: closed it is a rail of icon buttons; open it shows labels
+def side_padding() -> U32: space_2()
+def side_rail() -> U32: 48
+def side_width() -> U32: 256
+
+# Window: on wide screens the app sits in a framed window; below the breakpoint it fills the screen
+def window_margin() -> U32: space_5()
+def window_max() -> U32: 1152
+def breakpoint() -> U32: 720
+
+# Agent: the face, in the toolbar (sm) or on its own (lg)
+def agent_sm() -> U32: control_md()
+def agent_lg() -> U32: 96
+
+# Type
 def font_sans() -> String: "\"Inter\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
 def font_display() -> String: font_sans()
 def font_mono() -> String: "\"JetBrains Mono\", ui-monospace, \"SF Mono\", Menlo, Consolas, monospace"
@@ -74,9 +93,13 @@ def leading_ui() -> String: "1.4"
 def leading_body() -> String: "1.65"
 def measure_ch() -> U32: 68
 def shadow_float() -> String: "0 4px 16px rgb(0 0 0 / 0.12), 0 0 0 1px rgb(0 0 0 / 0.04)"
-def duration_ms() -> U32: 120
 
-# Cor (tema claro)
+# Motion
+def duration_ms() -> U32: 120
+def duration_slow_ms() -> U32: 960
+def ease() -> String: "cubic-bezier(.2, .8, .2, 1)"
+
+# Color (light theme)
 def color_bg() -> String: "#fafaf9"
 def color_surface() -> String: "#ffffff"
 def color_surface_2() -> String: "#f4f4f2"

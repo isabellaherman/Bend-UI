@@ -1,15 +1,31 @@
 {
   "name": "bend-ui",
-  "version": "0.2.0",
-  "description": "Design system em Bend: tokens em TOKENS.bend, regras em LAWS.bend.",
+  "version": "0.3.0",
+  "description": "Design system in Bend: tokens in TOKENS.bend, rules in LAWS.bend.",
   "type": "module",
   "main": "ui.js",
   "exports": {
     ".": "./ui.js",
+    "./agent": "./agent.js",
     "./ui.css": "./ui.css",
-    "./TOKENS.bend": "./TOKENS.bend"
+    "./TOKENS.bend": "./TOKENS.bend",
+    "./MOTION.bend": "./MOTION.bend",
+    "./brand/*": "./brand/*"
   },
-  "files": ["ui.js", "ui.css", "icons.js", "TOKENS.bend", "SPEC.bend", "LAWS.bend", "PROOF.bend", "ICONS-LICENSE", "docs"],
+  "files": [
+    "ui.js",
+    "ui.css",
+    "icons.js",
+    "agent.js",
+    "TOKENS.bend",
+    "MOTION.bend",
+    "SPEC.bend",
+    "LAWS.bend",
+    "PROOF.bend",
+    "brand",
+    "ICONS-LICENSE",
+    "docs"
+  ],
   "scripts": {
     "check": "bend PROOF.bend",
     "docs": "cd docs && bun index.html"

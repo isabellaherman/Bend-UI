@@ -1,7 +1,7 @@
-// Bend-UI: um import liga tudo.
+// Bend-UI: one import turns everything on.
 //   import "bend-ui";
-// Lê os tokens de TOKENS.bend, escreve as variáveis CSS no :root,
-// carrega os componentes (ui.css) e o sprite de ícones.
+// Reads the tokens from TOKENS.bend, writes the CSS variables on :root,
+// loads the components (ui.css) and the icon sprite, and marks narrow screens.
 
 import T from "./TOKENS.bend";
 import { ICONS } from "./icons.js";
@@ -22,6 +22,10 @@ const VARS = {
   "--control-lg": () => px(T.control_lg()),
   "--icon-sm": () => px(T.icon_sm()), "--icon-md": () => px(T.icon_md()),
   "--icon-lg": () => px(T.icon_lg()), "--icon-stroke": () => T.icon_stroke(),
+  "--dot-size": () => px(T.dot_size()), "--ring-offset": () => px(T.ring_offset()), "--ring-width": () => px(T.ring_width()),
+  "--side-padding": () => px(T.side_padding()), "--side-rail": () => px(T.side_rail()), "--side-width": () => px(T.side_width()),
+  "--window-margin": () => px(T.window_margin()), "--window-max": () => px(T.window_max()),
+  "--agent-sm": () => px(T.agent_sm()), "--agent-lg": () => px(T.agent_lg()),
   "--font-sans": () => T.font_sans(), "--font-mono": () => T.font_mono(),
   "--font-display": () => T.font_display(),
   "--text-xs": () => px(T.text_xs()), "--text-sm": () => px(T.text_sm()),
@@ -36,7 +40,8 @@ const VARS = {
   "--leading-tight": () => T.leading_tight(), "--leading-ui": () => T.leading_ui(),
   "--leading-body": () => T.leading_body(), "--measure": () => T.measure_ch() + "ch",
   "--shadow-float": () => T.shadow_float(),
-  "--duration": () => T.duration_ms() + "ms",
+  "--duration": () => T.duration_ms() + "ms", "--duration-slow": () => T.duration_slow_ms() + "ms",
+  "--ease": () => T.ease(),
   "--bg": () => T.color_bg(), "--surface": () => T.color_surface(),
   "--surface-2": () => T.color_surface_2(), "--border": () => T.color_border(),
   "--border-strong": () => T.color_border_strong(), "--text": () => T.color_text(),
@@ -52,8 +57,30 @@ for (const [name, get] of Object.entries(VARS)) {
   document.documentElement.style.setProperty(name, get());
 }
 
-// ---------- Tema por projeto ----------
-// Tema troca só COR e FONTE. Espaço, raio e tamanhos ficam presos às laws.
+// ---------- Narrow screens ----------
+// CSS media queries can't read variables, so the breakpoint lives in TOKENS.bend
+// and this marks <html data-narrow> below it. ui.css styles narrow screens from that.
+const narrow = matchMedia(`(max-width: ${T.breakpoint() - 1}px)`);
+const markNarrow = () => document.documentElement.toggleAttribute("data-narrow", narrow.matches);
+markNarrow();
+narrow.addEventListener("change", markNarrow);
+export const isNarrow = () => narrow.matches;
+
+// ---------- Segmented: one choice per group ----------
+// Clicking a button marks it pressed and unmarks the others, then fires "change"
+// on the group with the button in event.detail. Add data-manual to the group to
+// handle aria-pressed yourself.
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".segmented button");
+  if (!btn || btn.disabled) return;
+  const group = btn.closest(".segmented");
+  if (group.hasAttribute("data-manual")) return;
+  group.querySelectorAll(":scope > button").forEach((b) => b.setAttribute("aria-pressed", b === btn));
+  group.dispatchEvent(new CustomEvent("change", { detail: btn, bubbles: true }));
+});
+
+// ---------- Theme per project ----------
+// A theme changes only COLOR and FONT. Space, radius and sizes stay bound by the laws.
 //   import { theme } from "bend-ui";
 //   theme({ accent: "#ffd21f", accentFg: "#02090a", fontDisplay: { family: "Jaro", src: jaroUrl } });
 const THEME_KEYS = {
@@ -79,7 +106,7 @@ export function theme(t = {}) {
       root.setProperty(FONT_KEYS[k], `"${font.family}", ${T.font_sans()}`);
       continue;
     }
-    console.warn(`bend-ui: "${k}" não é uma chave de tema (só cor e fonte).`);
+    console.warn(`bend-ui: "${k}" is not a theme key (only color and font).`);
   }
 }
 
@@ -92,5 +119,8 @@ function mountIcons() {
 }
 if (document.body) mountIcons(); else document.addEventListener("DOMContentLoaded", mountIcons);
 
-export const icons = ["plus", "file-text", "scale", "triangle-alert", "circle-check", "x", "chevron-down", "list", "code", "wand-sparkles", "search", "panel-left"];
+export const icons = [
+  "plus", "file-text", "scale", "triangle-alert", "circle-check", "x", "chevron-down", "list", "code",
+  "wand-sparkles", "search", "panel-left", "book-open", "lock", "minimize-2", "maximize-2", "minimize", "maximize",
+];
 export const tokens = T;

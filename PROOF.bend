@@ -1,4 +1,4 @@
-# As provas. Todas as laws atuais são valores fixos: o Bend calcula e confere.
+# The proofs. Every law today is about fixed values: Bend computes and checks them.
 
 import Base
 import ./LAWS.bend as Laws
@@ -28,4 +28,31 @@ def Laws.segmented_radius_nested():
   {==}
 
 def Laws.inside_less_than_between():
+  {==}
+
+def Laws.dot_size_in_scale():
+  {==}
+
+def Laws.ring_offset_in_scale():
+  {==}
+
+def Laws.ring_width_in_scale():
+  {==}
+
+def Laws.side_rail_fits():
+  {==}
+
+def Laws.side_width_on_grid():
+  {==}
+
+def Laws.window_max_on_grid():
+  {==}
+
+def Laws.window_margin_in_scale():
+  {==}
+
+def Laws.agent_sm_in_scale():
+  {==}
+
+def Laws.agent_lg_on_grid():
   {==}

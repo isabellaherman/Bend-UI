@@ -1,9 +1,12 @@
 # AGENTS
 
-- Aprenda Bend com `bend guide`. Não invente sintaxe.
-- Rode `bun run check` (`bend PROOF.bend`) antes de cada commit. Commit com law quebrada não entra.
-- **Não edite** `LAWS.bend` nem `SPEC.bend`. Se uma tarefa exigir isso, pare e pergunte.
-- Todo valor visual novo entra em `TOKENS.bend` e é exposto em `ui.js`. Nenhum número solto em `ui.css`: só `var(--...)`.
-- Componente novo só entra aqui quando **dois projetos** precisarem dele. Até lá, mora no projeto que o criou.
-- Ao mudar algo visível: suba a versão em `package.json`, registre no `CHANGELOG.md` e crie a tag (`v0.x.y`).
-- Sem atribuição de IA em commits ou PRs.
+- Learn Bend with `bend guide`. Don't invent syntax.
+- Run `bun run check` (`bend PROOF.bend`) before every commit. A commit with a broken law doesn't go in.
+- **Don't edit** `LAWS.bend` or `SPEC.bend`. If a task needs that, stop and ask.
+- Every new visual value goes in `TOKENS.bend` and is exposed in `ui.js`. No loose numbers in `ui.css`: only `var(--...)`.
+- Logic and motion go in `.bend` files (like `MOTION.bend`). JS only reads input and draws what Bend returns.
+- Flow: a design is approved as an artifact first. Whatever it needs that the lib lacks goes into the lib first, then the project pulls it.
+- Before committing, show the build to the repo owner for validation.
+- When something visible changes: bump the version in `package.json`, log it in `CHANGELOG.md` and create the tag (`v0.x.y`).
+- Everything in English: code, comments, docs, UI.
+- No AI attribution in commits or PRs.
