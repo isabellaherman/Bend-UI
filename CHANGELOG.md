@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1 (2026-11-06)
+
+- `textarea.input`: a multi-line field with the input's border and focus.
+- `.window` is the reference for the side bar drawer on narrow screens.
+
 ## 0.3.0 (2026-11-06)
 
 Built for the LawEditor MVP. Everything is in English now.

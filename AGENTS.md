@@ -7,6 +7,6 @@
 - Logic and motion go in `.bend` files (like `MOTION.bend`). JS only reads input and draws what Bend returns.
 - Flow: a design is approved as an artifact first. Whatever it needs that the lib lacks goes into the lib first, then the project pulls it.
 - Before committing, show the build to the repo owner for validation.
-- When something visible changes: bump the version in `package.json`, log it in `CHANGELOG.md` and create the tag (`v0.x.y`).
+- When something visible changes: bump only the last number of the version in `package.json` (0.3.0 → 0.3.1), log it in `CHANGELOG.md` and create the tag (`v0.x.y`).
 - Everything in English: code, comments, docs, UI.
 - No AI attribution in commits or PRs.

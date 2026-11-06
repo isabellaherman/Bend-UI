@@ -87,6 +87,8 @@ html:not([data-narrow]) .only-narrow { display: none !important; }
 }
 .input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .input--mono { font-family: var(--font-mono); font-size: var(--text-sm); }
+/* A textarea.input grows with its text: no fixed height, same border and focus. */
+textarea.input { display: block; width: 100%; height: auto; min-height: calc(var(--control-md) * 3); padding: var(--space-2); line-height: var(--leading-body); resize: vertical; }
 
 .field { display: flex; flex-direction: column; gap: var(--space-1); }
 .field__label { font-size: var(--text-sm); color: var(--text-2); font-weight: var(--weight-medium); }
@@ -307,6 +309,7 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 html:has(.desk), .desk { height: 100%; }
 .desk { background: var(--surface-2); }
 .window {
+  position: relative;
   height: 100%;
   display: flex;
   background: var(--bg);
