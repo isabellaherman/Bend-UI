@@ -114,7 +114,7 @@ const lawBlock = (l) =>
 document.querySelectorAll("[data-laws]").forEach((el) => {
   const names = LAWS_OF[el.dataset.laws] || [];
   if (!names.length) return;
-  el.innerHTML = `<article class="prose"><h2>Laws</h2><p class="meta">Each one is proved in PROOF.bend: if it stopped holding, the lib wouldn't compile.</p></article>` + names.map((n) => lawBlock(byName[n])).join("");
+  el.innerHTML = `<article class="prose"><h2>Laws</h2></article>` + names.map((n) => lawBlock(byName[n])).join("");
 });
 
 // Overview: what is checked, each with how many laws.
@@ -139,6 +139,42 @@ document.querySelector("[data-keys]").innerHTML = [
   `<article class="prose"><h2>The lib's own keys</h2></article>` +
   [["Open menu", "escape", "Close it"], ["Open menu", "arrowdown", "Next item"], ["Open menu", "arrowup", "Previous item"], ["Open agent", "escape", "Close it"]]
     .map(([scope, k, what]) => line("", `<span class="kbd">${esc(keyLabel(0, k))}</span> ${what}`, scope)).join("");
+
+// Each example's label: a plain name; the class it shows is on hover (title).
+const LABEL = {
+  ".btn + .icon": "with icon", "textarea.input": "textarea", ".kbd": "key",
+  ".dropdown .menu .menu__item": "dropdown", ".rows .row": "rows", ".desk .window / .window.is-full": "window",
+  ".pair .pair__aside · .block--code": "pair", ".form · .field · .actions": "form", ".side.is-open": "open",
+  ".page · .doc · .doc__head · .doc__note · .doc__sub · .doc--wide": "page and doc",
+  ".chat · .msg · .msg--me · .msg--face": "messages", ".composer · .composer__field · .composer__text · .composer__send": "composer",
+  ".prose pre.syntax": "code box", ".block--code.syntax": "law block",
+  ".window__follow · createFollow(page, { button })": "follow button", "createThread · openBlock · formBlock": "thread",
+  "brand/claude.webp": "Claude mark", "brand/openai.svg": "OpenAI mark",
+  ".syntax__kw · __type · __str · __num · __com · __punct · __name": "colors",
+};
+const words = (s) => s.replace(/[-_]+/g, " ").trim();
+function labelOf(raw, siblings) {
+  if (LABEL[raw]) return LABEL[raw];
+  if (raw.startsWith("--")) return words(raw.slice(2));                    // a token
+  if (raw.startsWith("#i-")) return words(raw.slice(3));                   // an icon
+  const status = raw.match(/^\[data-status="(\w+)"\]$/); if (status) return status[1];
+  if (!raw.startsWith(".")) return words(raw);
+  const out = [];
+  for (const part of raw.split(/(?=\.)/)) {
+    const c = part.replace(/^\./, "").trim(); if (!c) continue;
+    const states = [...c.matchAll(/:([a-z-]+)|\[aria-([a-z]+)[^\]]*\]/g)].map((m) => m[1] || m[2]);
+    const base = c.replace(/[:[].*$/, "");
+    if (base.includes("--")) out.push(words(base.split("--").pop()));
+    else if (base.includes("__")) out.push(words(base.split("__").pop()));
+    else if (!states.length) out.push(siblings.some((x) => x.startsWith("." + base + "--")) ? "default" : words(base));
+    out.push(...states);
+  }
+  return out.join(" ");
+}
+document.querySelectorAll("[data-page]").forEach((page) => {
+  const codes = [...page.querySelectorAll(".v-item > code")], raws = codes.map((c) => c.textContent);
+  codes.forEach((c, i) => { c.textContent = labelOf(raws[i], raws); c.closest(".v-item").title = raws[i]; });
+});
 
 // Code in the lib's own syntax (Snow).
 document.querySelectorAll("[data-code], [data-syntax-demo]").forEach(highlight);
