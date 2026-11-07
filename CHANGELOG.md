@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.2 (2026-11-07)
+
+- **Diagram** (`DIAGRAM.bend`, `diagram.js`): nodes and arrows read top to bottom; Bend places the nodes, JS only draws. Two looks: a colored border, or `.diagram--soft`.
+- **Type: one ladder**: `display` > `heading` > `section-title` > `group-title` > `text` > `item-title` > `detail` (`role_*` tokens). `.prose` takes the same ladder: its body is `text`'s size (13 to 15), its `h1`, `h2`, `h3` are section, group, item. `.meta` is `.detail` under an older name.
+- **Page head and sections**: `.page-head`, `.section`, `.section__body`, `.separator`, `.divided`.
+- **Syntax in many languages**: Bend, JS (TS, JSON), CSS, HTML, shell, TOML. `highlight(pre, "html")` or `data-lang`; Bend stays the default.
+- README: the markup of every piece (Components).
+- Docs: every page has the same shape (Examples, Code, Implementation, Laws); Code is the README's own snippets. Type and Hierarchy are one page. A Chat pattern page.
+
 ## 1.0.1 (2026-11-06)
 
 - Icon: `github`.

@@ -58,6 +58,13 @@ theme({
 
 A `.segmented` group switches on click by itself and fires `change` (the button is in `event.detail`). Add `data-manual` to the group to handle `aria-pressed` yourself.
 
+```html
+<div class="segmented">
+  <button aria-pressed="true">One</button>
+  <button aria-pressed="false">Two</button>
+</div>
+```
+
 ## Page, doc and pair
 
 ```html
@@ -186,6 +193,61 @@ keyLabel(1, "k");   // "⌘K" on a Mac, "Ctrl+K" elsewhere: show it in a .kbd
 
 The meaning is `SPEC.bend`, the lib's keys and `find` are `KEYS.bend`; `keys.js` only reads the keyboard.
 
+## Type: one ladder
+
+One ladder, biggest to smallest: `display` > `heading` > `section-title` > `group-title` > `text` > `item-title` > `detail` (muted). Pick the step, not the size: each sets size, weight and color from the type scale (`role_*` in `TOKENS.bend`).
+
+Prose takes the same ladder: its body is `text`'s size, and its `h1`, `h2`, `h3` are `section-title`, `group-title`, `item-title`. `.meta` is `.detail` under an older name.
+
+```html
+<div class="outline">
+  <h2 class="section-title">What the chat may do</h2>
+  <div class="outline__group">
+    <h3 class="group-title">Tools</h3>
+    <div class="outline__kids">
+      <div class="outline__item">
+        <div class="outline__row"><i class="dot dot--ok"></i><span class="item-title">Read</span></div>
+        <p class="detail">Looks at a file. Changes nothing.</p>
+      </div>
+      <div class="outline__item is-off">
+        <div class="outline__row"><i class="dot"></i><span class="item-title">Write</span></div>
+        <p class="detail">Not given to the chat.</p>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+A group's children sit inside it (`outline__kids`), on a hairline. An item with `is-off` is muted, so the ones that are on stand out.
+
+## Page head and sections
+
+How a page is laid out: its head (the title and what it is), then sections, each a title over its content, with a hairline between one section and the next.
+
+```html
+<header class="page-head"><h1 class="heading">Spells</h1><p class="lead">Every spell the player can cast.</p></header>
+<section class="section">
+  <h2 class="section-title">Fire</h2>
+  <div class="section__body">…</div>
+</section>
+```
+
+`.separator` is the hairline alone (`<hr class="separator">`, like shadcn's Separator). `.divided` puts it between the items of a list (like Tailwind's `divide-y`).
+
+## Diagram
+
+Nodes and the arrows between them, read top to bottom. `DIAGRAM.bend` places the nodes (a node's row is the longest path to it, so every arrow goes down); `diagram.js` only draws.
+
+```js
+import { mountDiagram } from "bend-ui/diagram";
+mountDiagram(el, {
+  nodes: [{ label: "Title" }, { label: "Play", tone: "accent", tag: "loop" }],
+  edges: [{ from: 0, to: 1, label: "Start" }],
+});
+```
+
+A node's `tone` is `accent`, `law`, `draft`, `conflict`, or none; `tag` is a short word on it. Two looks: a colored border (default), or add `diagram--soft` to `el` for a soft fill with the tone in the text. Arrows with the same ends become one line, their labels joined.
+
 ## Disclosure
 
 A section that opens and closes, on the native `<details>` (keyboard and screen readers work as anywhere). Closed unless it has `open`.
@@ -199,11 +261,16 @@ A section that opens and closes, on the native `<details>` (keyboard and screen 
 
 ## Syntax
 
-Bend code in color, on a white ground (Snow). `SYNTAX.bend` cuts the code into pieces; `syntax.js` only draws them. Only color changes, so a box keeps its size.
+Code in color, on a white ground (Snow): Bend, JS (and TS, JSON), CSS, HTML, shell and TOML. `SYNTAX.bend` cuts the code into pieces; `syntax.js` only draws them. Only color changes, so a box keeps its size.
 
 ```js
 import { highlight, toHtml } from "bend-ui/syntax";
-highlight(document.querySelector(".prose pre"));   // or a .block--code
+highlight(document.querySelector(".prose pre"));           // Bend, the default (or a .block--code)
+highlight(document.querySelector(".prose pre"), "html");   // another language
+```
+
+```html
+<pre data-lang="css"><code>.card { padding: var(--space-4); }</code></pre>
 ```
 
 ## Responsive
@@ -214,6 +281,11 @@ Below `breakpoint()` in `TOKENS.bend` (720px), `ui.js` sets `<html data-narrow>`
 |---|---|
 | `hide-narrow` | hidden on narrow screens |
 | `only-narrow` | shown only on narrow screens |
+
+```html
+<span class="tag hide-narrow">wide</span>
+<span class="tag only-narrow">narrow</span>
+```
 
 ## Agent
 
@@ -236,6 +308,161 @@ const agent = mountAgent(document.getElementById("agent"), {
 Brand marks for AI options are in `brand/` (`claude.webp`, `openai.svg`); see `brand/README.md`.
 
 `setItem(id, { status, label, pressed, disabled })`, `open()`, `close()`, `spin()`, `shake()`, `lookAtEl(el)`, `ask(true)`, `flash(id)`. `flyBetween(rect, toAgent)` moves the face from one agent to another.
+
+## Components
+
+The markup of each piece. The docs show these same snippets on each piece's page.
+
+### Tokens
+
+Every value is a token: use `var(--…)`, never a loose number.
+
+```css
+.card {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+}
+```
+
+### Icons
+
+```html
+<svg class="icon"><use href="#i-plus"/></svg>
+```
+
+### Button
+
+```html
+<button class="btn">Cancel</button>
+<button class="btn btn--primary">Save</button>
+<button class="btn btn--ghost btn--sm btn--icon"><svg class="icon"><use href="#i-plus"/></svg></button>
+```
+
+### Input and field
+
+```html
+<label class="field">
+  <span class="field__label">Max</span>
+  <input class="input input--mono" value="10">
+</label>
+```
+
+### Form
+
+```html
+<form class="form">
+  <label class="field"><span class="field__label">Name</span><input class="input"></label>
+  <div class="actions">
+    <button class="btn btn--ghost" type="button">Cancel</button>
+    <button class="btn btn--primary">Save</button>
+  </div>
+</form>
+```
+
+### Tag and kbd
+
+```html
+<span class="tag tag--law">Law</span>
+<span class="tag tag--mono">L-012</span>
+<span class="kbd">⌘K</span>
+```
+
+### Dot
+
+```html
+<span class="dot dot--ok"></span>
+```
+
+### Status ring
+
+```html
+<button class="btn btn--lg btn--icon btn--round" data-status="busy">
+  <svg class="status-ring" viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" pathLength="100"/></svg>
+  <span class="agent__mark">Ab</span>
+</button>
+```
+
+### Link
+
+```html
+<a class="link" href="…">Bend-UI</a>
+```
+
+### Prose
+
+```html
+<article class="prose">
+  <h1>Spells</h1>
+  <p>Every spell costs at least 1 <code>mana</code>.</p>
+</article>
+```
+
+### Rows
+
+```html
+<ol class="rows">
+  <li><a class="row" href="…"><span class="row__lead">#0.2.0</span><span class="row__title">Title</span><span class="row__meta">12 nov 2026</span></a></li>
+</ol>
+```
+
+### Art
+
+```html
+<img class="art art--sm" src="…" alt="">
+```
+
+### Panel
+
+```html
+<div class="panel">
+  <div class="panel__header">Header</div>
+  <div class="panel__body">Body</div>
+</div>
+```
+
+### Toolbar
+
+```html
+<div class="toolbar">
+  <button class="btn btn--ghost btn--sm">Item</button>
+  <div class="toolbar__spacer"></div>
+  <button class="btn btn--primary btn--sm">Button</button>
+</div>
+```
+
+### Side bar
+
+```html
+<aside class="side is-open">
+  <div class="side__head"><button class="btn btn--ghost btn--icon" data-side-toggle><svg class="icon"><use href="#i-panel-left"/></svg></button></div>
+  <button class="btn btn--ghost" aria-current="page"><svg class="icon"><use href="#i-file-text"/></svg><span class="side__text">Item</span></button>
+</aside>
+```
+
+### Window
+
+```html
+<body class="desk">
+  <div class="window">
+    <aside class="side">…</aside>
+    <div class="window__main">
+      <div class="toolbar">…</div>
+      <main class="page">…</main>
+    </div>
+  </div>
+</body>
+```
+
+### Block
+
+```html
+<div class="block">
+  <div class="block__slot"><span class="dot dot--ok"></span></div>
+  <div class="block__text">Mana never goes above 10</div>
+</div>
+```
 
 ## What's included
 

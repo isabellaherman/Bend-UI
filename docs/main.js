@@ -83,8 +83,10 @@ document.getElementById("thread-play").addEventListener("click", async () => {
 // =========================================================
 import { keyLabel } from "../keys.js";
 import { highlight } from "../syntax.js";
+import { mountDiagram } from "../diagram.js";
 import { LAWS } from "./laws.data.js";
 import pkg from "../package.json";
+import { mountChatPattern } from "./patterns/chat.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
@@ -111,12 +113,81 @@ const byName = Object.fromEntries(LAWS.map((l) => [l.name, l]));
 const lawBlock = (l) => `<div class="docs-law">` +
   line("dot dot--ok", esc(l.what.charAt(0).toUpperCase() + l.what.slice(1))) +
   `<div class="block block--code" data-code><div class="block__slot"></div><div class="block__text">${esc(l.code)}</div></div></div>`;
-document.querySelectorAll("[data-laws]").forEach((el) => {
-  const names = LAWS_OF[el.dataset.laws] || [];
-  if (!names.length) return;
-  el.innerHTML = `<details class="disclosure"><summary><svg class="icon icon--sm disclosure__chevron"><use href="#i-chevron-down"/></svg><span class="disclosure__title">Laws</span><span class="meta">${names.length}</span></summary>` +
-    names.map((n) => lawBlock(byName[n])).join("") + `</details>`;
+// Every page has the same shape, in this order (a section shows only when the page has it):
+//   title, and what it is
+//   Examples        the piece, live
+//   Code            what to write to use it
+//   Implementation  the classes and the files that make it
+//   Laws            what is proved about it
+// The content comes from the page's examples, from CODE and FILES below, and from LAWS.bend.
+const FILES = {
+  color: ["TOKENS.bend", "ui.js", "ui.css"], space: ["TOKENS.bend", "ui.js", "ui.css"], size: ["TOKENS.bend", "ui.js", "ui.css"],
+  radius: ["TOKENS.bend", "ui.js", "ui.css"], type: ["TOKENS.bend", "ui.js", "ui.css"],
+  icons: ["icons.js", "ui.js"], keyboard: ["KEYS.bend", "keys.js"],
+  diagram: ["DIAGRAM.bend", "diagram.js", "ui.css"], thread: ["MOTION.bend", "thread.js", "ui.css"],
+  follow: ["MOTION.bend", "follow.js", "ui.css"], agent: ["MOTION.bend", "agent.js", "ui.css"],
+  syntax: ["SYNTAX.bend", "syntax.js", "ui.css"],
+};
+// Code: the README's own snippets, so the docs and the README never disagree.
+// Each page shows the code blocks under its README heading (## or ###), colored in their own language (SYNTAX.bend).
+import readme from "../README.md" with { type: "text" };
+const SNIPPETS = (() => {
+  const out = {};
+  let head = "", lang = null, buf = [];
+  for (const l of readme.split("\n")) {
+    const h = l.match(/^#{2,3} (.+)$/);
+    if (lang === null && h) { head = h[1].trim(); continue; }
+    const fence = l.match(/^```(\w*)\s*$/);
+    if (fence && lang === null) { lang = fence[1]; buf = []; continue; }
+    if (fence && lang !== null) { (out[head] ||= []).push({ lang, code: buf.join("\n") }); lang = null; continue; }
+    if (lang !== null) buf.push(l);
+  }
+  return out;
+})();
+// The README heading of each page, when it isn't the page's own title.
+const README_OF = {
+  color: "Tokens", space: "Tokens", size: "Tokens", radius: "Tokens", type: "Type: one ladder", keyboard: "Keys",
+  page: "Page, doc and pair", pair: "Page, doc and pair", thread: "Thread and follow", follow: "Thread and follow",
+  section: "Page head and sections",
+};
+const section = (title, ...kids) => {
+  const s = document.createElement("section"); s.className = "section";
+  const h = document.createElement("h2"); h.className = "section-title"; h.textContent = title;
+  s.append(h, ...kids); return s;
+};
+const box = (html) => { const d = document.createElement("div"); d.innerHTML = html; return d.firstElementChild; };
+document.querySelectorAll("[data-page]").forEach((page) => {
+  const id = page.dataset.page;
+  if (id === "overview" || id.startsWith("pattern-")) return;
+  const doc = page.querySelector(".doc");
+  const kids = [...doc.children];
+  const heading = kids.find((k) => k.classList.contains("heading"));
+  const laws = kids.find((k) => k.hasAttribute("data-laws"));
+  const about = kids.filter((k) => k.matches("article.prose") && !k.querySelector("h2"));
+  const ex = kids.filter((k) => k !== heading && k !== laws && !about.includes(k) && !(k.matches("article.prose") && k.querySelector("h2")));
+  const head = document.createElement("header"); head.className = "page-head";
+  head.append(heading, ...about.map((a) => { const p = document.createElement("p"); p.className = "lead"; p.innerHTML = a.querySelector("p")?.innerHTML || ""; return p; }));
+  const exBox = document.createElement("div"); exBox.className = "section__body"; exBox.append(...ex);
+  const parts = [head, section("Examples", exBox)];
+  const raws = [...exBox.querySelectorAll(".v-item > code")].map((c) => c.textContent);
+  const snippets = SNIPPETS[README_OF[id] || heading.textContent.trim()] || [];
+  if (snippets.length) parts.push(section("Code", ...snippets.map(({ lang, code }) => {
+    const pre = box(`<article class="prose"><pre><code></code></pre></article>`);
+    pre.querySelector("code").textContent = code;
+    pre.querySelector("pre").dataset.lang = lang;
+    return pre;
+  })));
+  const files = FILES[id] || ["ui.css"];
+  const classes = [...new Set(raws.flatMap((r) => r.match(/\.[a-z][\w-]*(?:__[\w-]+)?(?:--[\w-]+)?/g) || []))];
+  const tokens = [...new Set(raws.filter((r) => r.startsWith("--")).map((r) => r.split(" ")[0]))];
+  const named = classes.length ? classes : tokens;
+  parts.push(section("Implementation", box(`<div class="outline"><div class="outline__item"><span class="item-title">Files</span><p class="detail mono">${files.map(esc).join(" · ")}</p></div>${named.length ? `<div class="outline__item"><span class="item-title">${classes.length ? "Classes" : "Tokens"}</span><p class="detail mono">${named.map(esc).join(" · ")}</p></div>` : ""}</div>`)));
+  const names = LAWS_OF[laws?.dataset.laws] || [];
+  if (names.length) parts.push(section(`Laws · ${names.length}`, box(`<div>${names.map((n) => lawBlock(byName[n])).join("")}</div>`)));
+  laws?.remove();
+  doc.replaceChildren(...parts);
 });
+document.querySelectorAll(".section .prose pre[data-lang]").forEach((pre) => highlight(pre));
 
 // Overview: the version and how many laws hold.
 $("docs-version").textContent = "v" + pkg.version;
@@ -143,6 +214,11 @@ const LABEL = {
   ".prose pre.syntax": "code box", ".block--code.syntax": "law block",
   ".window__follow · createFollow(page, { button })": "follow button", "createThread · openBlock · formBlock": "thread",
   "brand/claude.webp": "Claude mark", "brand/openai.svg": "OpenAI mark",
+  ".page-head · .section · .section__body": "page", ".separator": "separator", ".divided": "divided",
+  ".diagram--soft .diagram__node": "soft", ".diagram--soft .diagram__node--accent": "soft accent", ".diagram--soft .diagram__node--law": "soft law",
+  ".diagram--soft .diagram__node--draft": "soft draft", ".diagram--soft .diagram__node--conflict": "soft conflict",
+  ".section-title · --role-section · .prose h1": "section", ".group-title · --role-group · .prose h2": "group",
+  ".text · .prose p": "text", ".item-title · --role-item · .prose h3": "item", ".detail · .meta": "detail",
   ".syntax__kw · __type · __str · __num · __com · __punct · __name": "colors",
 };
 const words = (s) => s.replace(/[-_]+/g, " ").trim();
@@ -170,7 +246,7 @@ document.querySelectorAll("[data-page]").forEach((page) => {
 });
 
 // Code in the lib's own syntax (Snow).
-document.querySelectorAll('[data-code], [data-syntax-demo], [data-page="overview"] .prose pre').forEach(highlight);
+document.querySelectorAll('[data-code], [data-syntax-demo], [data-page="overview"] .prose pre').forEach((el) => highlight(el));
 const chatFace = $("chat-face"); if (chatFace) mountAgent(chatFace, { size: "sm", items: [] });
 
 // Navigation: one page at a time; the side bar marks it.
@@ -181,5 +257,48 @@ function go(id) {
   main.scrollTop = 0;
 }
 $("docs-nav").addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); });
+main.addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); });   // "Made of" links
+
+// Patterns: components put together.
+mountChatPattern(document.querySelector('[data-pattern="chat"]'));
+// Diagram: its parts, then a small game's flow, in both looks.
+mountDiagram($("diagram-arrow"), { nodes: [{ label: "Node" }, { label: "Node" }], edges: [{ from: 0, to: 1 }] });
+mountDiagram($("diagram-label"), { nodes: [{ label: "Node" }, { label: "Node" }], edges: [{ from: 0, to: 1, label: "Label" }] });
+mountDiagram($("diagram-branch"), { nodes: [{ label: "Node" }, { label: "Node" }, { label: "Node" }], edges: [{ from: 0, to: 1, label: "A" }, { from: 0, to: 2, label: "B" }] });
+mountDiagram($("diagram-join"), { nodes: [{ label: "Node" }, { label: "Node" }], edges: [{ from: 0, to: 1, label: "A" }, { from: 0, to: 1, label: "B" }] });
+mountDiagram($("diagram-demo"), {
+  nodes: [
+    { label: "Title screen" },
+    { label: "Play", tone: "accent" },
+    { label: "Lose a life", tone: "draft" },
+    { label: "Clear the level", tone: "law" },
+    { label: "Game over", tone: "conflict" },
+    { label: "Next level", tone: "law" },
+  ],
+  edges: [
+    { from: 0, to: 1, label: "Start" },
+    { from: 1, to: 2, label: "hit" },
+    { from: 1, to: 3, label: "all keys" },
+    { from: 2, to: 4, label: "0 lives" },
+    { from: 3, to: 5 },
+  ],
+});
+mountDiagram($("diagram-demo-soft"), {
+  nodes: [
+    { label: "Title screen" },
+    { label: "Play", tone: "accent" },
+    { label: "Lose a life", tone: "draft" },
+    { label: "Clear the level", tone: "law" },
+    { label: "Game over", tone: "conflict" },
+    { label: "Next level", tone: "law" },
+  ],
+  edges: [
+    { from: 0, to: 1, label: "Start" },
+    { from: 1, to: 2, label: "hit" },
+    { from: 1, to: 3, label: "all keys" },
+    { from: 2, to: 4, label: "0 lives" },
+    { from: 3, to: 5 },
+  ],
+});
 $("docs-side-toggle").addEventListener("click", () => $("docs-side").classList.toggle("is-open"));
 go("overview");

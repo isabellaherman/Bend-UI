@@ -113,6 +113,14 @@ def leading_body() -> String: "1.65"
 def measure_ch() -> U32: 68
 def shadow_float() -> String: "0 4px 16px rgb(0 0 0 / 0.12), 0 0 0 1px rgb(0 0 0 / 0.04)"
 
+# Text roles: a screen's hierarchy, section > group > item > detail. Each is a step of the type scale.
+def role_section() -> U32: text_xl()
+def role_group() -> U32: text_lg()
+def role_item() -> U32: text_md()
+def role_detail() -> U32: text_sm()
+# Outline: a group's children sit this far inside it.
+def outline_indent() -> U32: space_4()
+
 # Motion
 def duration_ms() -> U32: 120
 def duration_slow_ms() -> U32: 960

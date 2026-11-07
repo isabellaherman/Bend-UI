@@ -234,16 +234,42 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
 .lead { font-size: var(--text-lg); line-height: var(--leading-body); color: var(--text-2); margin: 0; }
 .text { font-size: var(--text-lg); line-height: var(--leading-body); margin: 0 0 var(--space-4); }
 .list { margin: 0; padding-left: var(--space-4); font-size: var(--text-lg); line-height: var(--leading-body); }
-.meta { font-size: var(--text-sm); color: var(--text-3); margin: 0; }
+/* .meta is .detail under an older name: the same step of the ladder. */
+.meta { font-size: var(--role-detail); line-height: var(--leading-ui); color: var(--text-3); margin: 0; }
 .link { color: var(--text-2); text-underline-offset: var(--space-hairline); }
 .link:hover { color: var(--text); }
 .mono { font-family: var(--font-mono); }
 
+/* ---------- Text roles: the hierarchy of a screen ----------
+   Pick the role, not the size. Each role sets size, weight and color together:
+   section > group > item > detail (TOKENS.bend: role_*). A detail is muted.
+   <div class="outline"> nests them: a group's children sit inside it, on a hairline. */
+.section-title { margin: 0; font-size: var(--role-section); font-weight: var(--weight-semibold); line-height: var(--leading-tight); color: var(--text); }
+.group-title   { margin: 0; font-size: var(--role-group); font-weight: var(--weight-semibold); line-height: var(--leading-tight); color: var(--text); }
+.item-title    { margin: 0; font-size: var(--role-item); font-weight: var(--weight-medium); line-height: var(--leading-ui); color: var(--text); }
+.detail        { margin: 0; font-size: var(--role-detail); font-weight: var(--weight-regular); line-height: var(--leading-ui); color: var(--text-3); }
+
+.outline { display: flex; flex-direction: column; gap: var(--space-4); }
+.outline__group { display: flex; flex-direction: column; gap: var(--space-2); }
+.outline__kids {
+  display: flex; flex-direction: column; gap: var(--space-2);
+  margin-left: var(--space-1);
+  padding-left: var(--outline-indent);
+  border-left: var(--border-width) solid var(--border);
+}
+.outline__item { display: flex; flex-direction: column; gap: var(--space-hairline); min-width: 0; }
+.outline__row { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+/* A detail under a row with a dot lines up with the row's text. */
+.outline__row:has(> .dot) + .detail { padding-left: calc(var(--dot-size) + var(--space-2)); }
+/* An item that is off (not given, not on): muted, so the ones that are on stand out. */
+.outline__item.is-off .item-title { color: var(--text-3); font-weight: var(--weight-regular); }
+
 /* ---------- Prose: rendered Markdown ---------- */
-.prose { color: var(--text); font-size: var(--text-md); line-height: var(--leading-body); max-width: var(--measure); }
-.prose h1 { font-size: var(--text-2xl); font-weight: var(--weight-semibold); line-height: var(--leading-tight); margin: 0 0 var(--space-3); }
-.prose h2 { font-size: var(--text-lg); font-weight: var(--weight-semibold); line-height: var(--leading-tight); margin: var(--space-6) 0 var(--space-2); }
-.prose h3 { font-size: var(--text-md); font-weight: var(--weight-semibold); margin: var(--space-4) 0 var(--space-2); }
+/* Prose takes the same ladder as the rest: body is .text's size; h1, h2, h3 are section, group, item. */
+.prose { color: var(--text); font-size: var(--text-lg); line-height: var(--leading-body); max-width: var(--measure); }
+.prose h1 { font-size: var(--role-section); font-weight: var(--weight-semibold); line-height: var(--leading-tight); margin: 0 0 var(--space-3); }
+.prose h2 { font-size: var(--role-group); font-weight: var(--weight-semibold); line-height: var(--leading-tight); margin: var(--space-6) 0 var(--space-2); }
+.prose h3 { font-size: var(--role-item); font-weight: var(--weight-medium); margin: var(--space-4) 0 var(--space-2); }
 .prose p { margin: 0 0 var(--space-3); }
 .prose ul, .prose ol { margin: 0 0 var(--space-3); padding-left: var(--space-4); }
 .prose li { margin: 0 0 var(--space-1); }
@@ -391,8 +417,65 @@ html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); 
 .doc__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: 0 var(--space-2) var(--space-2); }
 .doc__note { padding: 0 var(--space-2) var(--space-4); }
 .doc__sub { padding: var(--space-6) var(--space-2) var(--space-2); }
-.doc :is(.prose, .form) { padding: 0 var(--space-2); }
+.doc :is(.prose, .form, .outline) { padding: 0 var(--space-2); }
 .actions { display: flex; justify-content: flex-end; gap: var(--space-2); }
+
+/* ---------- Page head, section, separator, divided ----------
+   How a page is laid out, top to bottom: its head (the title and what it is), then sections,
+   each a title over its content, a hairline between one section and the next.
+     <header class="page-head"><h1 class="heading">Type</h1><p class="lead">…</p></header>
+     <section class="section"><h2 class="section-title">Examples</h2><div class="section__body">…</div></section>
+   .separator is the hairline alone (<hr class="separator">), like shadcn's Separator.
+   .divided puts it between the items of a list, like Tailwind's divide-y. */
+.page-head { display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-7); }
+.page-head :is(.heading, .display) { margin: 0; }
+.section { display: flex; flex-direction: column; gap: var(--space-4); }
+.section + .section { margin-top: var(--space-7); padding-top: var(--space-6); border-top: var(--border-width) solid var(--border); }
+.section__body { display: flex; flex-direction: column; gap: var(--space-5); }
+/* The gap spaces them: a child's own margins (like .text's) would add to it. */
+.section__body > * { margin-block: 0; }
+.section__body > .group-title:not(:first-child) { margin-top: var(--space-3); }
+.section :is(.prose, .form, .outline) { padding: 0; }
+.separator { margin: 0; border: 0; border-top: var(--border-width) solid var(--border); }
+.divided { margin: 0; padding: 0; list-style: none; }
+.divided > * { margin-block: 0; padding-block: var(--space-3); }
+.divided > * + * { border-top: var(--border-width) solid var(--border); }
+
+/* ---------- Diagram: nodes and arrows, read top to bottom ----------
+   mountDiagram (diagram.js) fills <div class="diagram">: a .diagram__row per row, a .diagram__node per node,
+   the arrows in .diagram__wires, their words in .diagram__label. Rows and places come from DIAGRAM.bend.
+   A node takes a tone: .diagram__node--accent, --law, --draft, --conflict (neutral without one).
+   Two looks: a colored border (the default), or .diagram--soft on the diagram.
+   Like Mermaid's flowchart TD and Unity's Animator, but the layout is Bend's and the look is the tokens. */
+.diagram { position: relative; display: flex; flex-direction: column; gap: var(--space-7); padding: var(--space-4) var(--space-2); }
+.diagram__row { position: relative; z-index: 1; display: flex; justify-content: center; align-items: flex-start; gap: var(--space-5); }
+.diagram__node {
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-1);
+  max-width: calc(var(--measure) / 2);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--border-strong); border-radius: var(--radius-md);
+  background: var(--surface); color: var(--text);
+  font-size: var(--text-md); line-height: var(--leading-ui); text-align: center;
+}
+.diagram__node--accent { background: var(--accent-soft); border-color: var(--accent); }
+.diagram__node--law { background: var(--law-soft); border-color: var(--law); }
+.diagram__node--draft { background: var(--draft-soft); border-color: var(--draft); }
+.diagram__node--conflict { background: var(--conflict-soft); border-color: var(--conflict); }
+/* .diagram--soft: the same nodes as a tag draws them, a soft fill and the tone in the text, no visible border
+   (the border stays, clear, so a node is the same size in both looks). */
+.diagram--soft .diagram__node { border-color: transparent; background: var(--surface-2); }
+.diagram--soft .diagram__node--accent { background: var(--accent-soft); color: var(--accent); }
+.diagram--soft .diagram__node--law { background: var(--law-soft); color: var(--law); }
+.diagram--soft .diagram__node--draft { background: var(--draft-soft); color: var(--draft); }
+.diagram--soft .diagram__node--conflict { background: var(--conflict-soft); color: var(--conflict); }
+.diagram__wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; color: var(--border-strong); }
+.diagram__wires path { fill: none; stroke: currentColor; stroke-width: var(--border-width); }
+.diagram__wires marker path { fill: currentColor; stroke: none; }
+.diagram__label {
+  position: absolute; z-index: 2; transform: translate(-50%, -50%);
+  padding: 0 var(--space-1); background: var(--bg); color: var(--text-2);
+  font-size: var(--text-xs); line-height: var(--leading-ui); white-space: nowrap;
+}
 
 /* ---------- Pair: a block and the block that goes with it ----------
    <div class="pair"><div class="block">…</div><div class="block pair__aside">…</div></div>

@@ -20,8 +20,11 @@
   /* A label: its plain name, and on hover its class, in the same place (so nothing moves). */
   /* Two paragraphs in a row get room between them. */
   .lead + .lead { margin-top: var(--space-3); }
-  /* Laws: room above the section, and between one law and the next. */
-  [data-laws] { margin-top: var(--space-6); }
+  /* Every page is laid out by the lib: .page-head, then .section (Examples, Code, Implementation, Laws). */
+  /* Type: each step of the ladder on its own row (.divided), its name on the left. */
+  .v-ladder { gap: 0; }
+  .v-ladder .v-item { align-items: baseline; }
+  .v-ladder .v-item > :not(code) { margin: 0; }
   .docs-law { display: flex; flex-direction: column; gap: var(--space-hairline); }
   .docs-law + .docs-law { margin-top: var(--space-4); }
   .disclosure > .docs-law:first-of-type { margin-top: var(--space-3); }
@@ -34,6 +37,8 @@
   .v-frame { height: 220px; display: flex; border: var(--border-width) solid var(--border); border-radius: var(--radius-md); overflow: hidden; position: relative; }
   .v-desk.desk { height: 240px; width: 100%; max-width: 560px; border-radius: var(--radius-md); overflow: hidden; display: flex; }
   .v-desk .window { flex: 1; }
+  .v-pattern.desk { height: 560px; width: 100%; border-radius: var(--radius-lg); overflow: hidden; display: flex; }
+  .v-pattern .window { flex: 1; }
   .v-agent-lg { width: 280px; height: 280px; display: flex; align-items: flex-end; justify-content: flex-end; padding: var(--space-5); }
   .v-radius { width: 48px; height: 48px; background: var(--accent-soft); border: var(--border-width) solid var(--accent); }
 </style>
@@ -42,7 +47,7 @@
 <div class="window" id="docs" data-agent="lg">
   <aside class="side is-open" id="docs-side">
     <div class="side__head"><button class="btn btn--ghost btn--icon" id="docs-side-toggle" aria-label="Close side bar" title="Close side bar"><svg class="icon"><use href="#i-panel-left"/></svg></button></div>
-    <div class="side__body" id="docs-nav"><button class="btn btn--ghost" data-go="overview" title="Overview"><svg class="icon"><use href="#i-book-open"/></svg><span class="side__text">Overview</span></button><div class="side__group"><button class="btn btn--ghost side__toggle" aria-expanded="true" title="Foundations"><svg class="icon"><use href="#i-text"/></svg><span class="side__text">Foundations</span><svg class="icon icon--sm side__chevron"><use href="#i-chevron-down"/></svg></button><div class="side__items"><button class="btn btn--ghost" data-go="color" title="Color"><span class="side__text">Color</span></button><button class="btn btn--ghost" data-go="space" title="Space"><span class="side__text">Space</span></button><button class="btn btn--ghost" data-go="size" title="Size"><span class="side__text">Size</span></button><button class="btn btn--ghost" data-go="radius" title="Radius"><span class="side__text">Radius</span></button><button class="btn btn--ghost" data-go="type" title="Type"><span class="side__text">Type</span></button><button class="btn btn--ghost" data-go="icons" title="Icons"><span class="side__text">Icons</span></button><button class="btn btn--ghost" data-go="keyboard" title="Keyboard"><span class="side__text">Keyboard</span></button></div></div><div class="side__group"><button class="btn btn--ghost side__toggle" aria-expanded="false" title="Components"><svg class="icon"><use href="#i-list"/></svg><span class="side__text">Components</span><svg class="icon icon--sm side__chevron"><use href="#i-chevron-down"/></svg></button><div class="side__items"><button class="btn btn--ghost" data-go="thread" title="Thread"><span class="side__text">Thread</span></button><button class="btn btn--ghost" data-go="chat" title="Chat"><span class="side__text">Chat</span></button><button class="btn btn--ghost" data-go="follow" title="Follow"><span class="side__text">Follow</span></button><button class="btn btn--ghost" data-go="ring" title="Status ring"><span class="side__text">Status ring</span></button><button class="btn btn--ghost" data-go="dot" title="Dot"><span class="side__text">Dot</span></button><button class="btn btn--ghost" data-go="button" title="Button"><span class="side__text">Button</span></button><button class="btn btn--ghost" data-go="segmented" title="Segmented"><span class="side__text">Segmented</span></button><button class="btn btn--ghost" data-go="dropdown" title="Dropdown"><span class="side__text">Dropdown</span></button><button class="btn btn--ghost" data-go="input" title="Input and field"><span class="side__text">Input and field</span></button><button class="btn btn--ghost" data-go="form" title="Form"><span class="side__text">Form</span></button><button class="btn btn--ghost" data-go="tag" title="Tag and kbd"><span class="side__text">Tag and kbd</span></button><button class="btn btn--ghost" data-go="link" title="Link"><span class="side__text">Link</span></button><button class="btn btn--ghost" data-go="prose" title="Prose"><span class="side__text">Prose</span></button><button class="btn btn--ghost" data-go="rows" title="Rows"><span class="side__text">Rows</span></button><button class="btn btn--ghost" data-go="art" title="Art"><span class="side__text">Art</span></button><button class="btn btn--ghost" data-go="panel" title="Panel"><span class="side__text">Panel</span></button><button class="btn btn--ghost" data-go="toolbar" title="Toolbar"><span class="side__text">Toolbar</span></button><button class="btn btn--ghost" data-go="side" title="Side bar"><span class="side__text">Side bar</span></button><button class="btn btn--ghost" data-go="window" title="Window"><span class="side__text">Window</span></button><button class="btn btn--ghost" data-go="page" title="Page and doc"><span class="side__text">Page and doc</span></button><button class="btn btn--ghost" data-go="block" title="Block"><span class="side__text">Block</span></button><button class="btn btn--ghost" data-go="pair" title="Pair"><span class="side__text">Pair</span></button><button class="btn btn--ghost" data-go="syntax" title="Syntax"><span class="side__text">Syntax</span></button><button class="btn btn--ghost" data-go="responsive" title="Responsive"><span class="side__text">Responsive</span></button><button class="btn btn--ghost" data-go="agent" title="Agent"><span class="side__text">Agent</span></button></div></div></div>
+    <div class="side__body" id="docs-nav"><button class="btn btn--ghost" data-go="overview" title="Overview"><svg class="icon"><use href="#i-book-open"/></svg><span class="side__text">Overview</span></button><div class="side__group"><button class="btn btn--ghost side__toggle" aria-expanded="true" title="Foundations"><svg class="icon"><use href="#i-text"/></svg><span class="side__text">Foundations</span><svg class="icon icon--sm side__chevron"><use href="#i-chevron-down"/></svg></button><div class="side__items"><button class="btn btn--ghost" data-go="color" title="Color"><span class="side__text">Color</span></button><button class="btn btn--ghost" data-go="space" title="Space"><span class="side__text">Space</span></button><button class="btn btn--ghost" data-go="size" title="Size"><span class="side__text">Size</span></button><button class="btn btn--ghost" data-go="radius" title="Radius"><span class="side__text">Radius</span></button><button class="btn btn--ghost" data-go="type" title="Type"><span class="side__text">Type</span></button><button class="btn btn--ghost" data-go="icons" title="Icons"><span class="side__text">Icons</span></button><button class="btn btn--ghost" data-go="keyboard" title="Keyboard"><span class="side__text">Keyboard</span></button></div></div><div class="side__group"><button class="btn btn--ghost side__toggle" aria-expanded="false" title="Components"><svg class="icon"><use href="#i-list"/></svg><span class="side__text">Components</span><svg class="icon icon--sm side__chevron"><use href="#i-chevron-down"/></svg></button><div class="side__items"><button class="btn btn--ghost" data-go="thread" title="Thread"><span class="side__text">Thread</span></button><button class="btn btn--ghost" data-go="diagram" title="Diagram"><span class="side__text">Diagram</span></button><button class="btn btn--ghost" data-go="chat" title="Chat"><span class="side__text">Chat</span></button><button class="btn btn--ghost" data-go="follow" title="Follow"><span class="side__text">Follow</span></button><button class="btn btn--ghost" data-go="ring" title="Status ring"><span class="side__text">Status ring</span></button><button class="btn btn--ghost" data-go="dot" title="Dot"><span class="side__text">Dot</span></button><button class="btn btn--ghost" data-go="button" title="Button"><span class="side__text">Button</span></button><button class="btn btn--ghost" data-go="segmented" title="Segmented"><span class="side__text">Segmented</span></button><button class="btn btn--ghost" data-go="dropdown" title="Dropdown"><span class="side__text">Dropdown</span></button><button class="btn btn--ghost" data-go="input" title="Input and field"><span class="side__text">Input and field</span></button><button class="btn btn--ghost" data-go="form" title="Form"><span class="side__text">Form</span></button><button class="btn btn--ghost" data-go="tag" title="Tag and kbd"><span class="side__text">Tag and kbd</span></button><button class="btn btn--ghost" data-go="link" title="Link"><span class="side__text">Link</span></button><button class="btn btn--ghost" data-go="prose" title="Prose"><span class="side__text">Prose</span></button><button class="btn btn--ghost" data-go="rows" title="Rows"><span class="side__text">Rows</span></button><button class="btn btn--ghost" data-go="art" title="Art"><span class="side__text">Art</span></button><button class="btn btn--ghost" data-go="panel" title="Panel"><span class="side__text">Panel</span></button><button class="btn btn--ghost" data-go="toolbar" title="Toolbar"><span class="side__text">Toolbar</span></button><button class="btn btn--ghost" data-go="side" title="Side bar"><span class="side__text">Side bar</span></button><button class="btn btn--ghost" data-go="window" title="Window"><span class="side__text">Window</span></button><button class="btn btn--ghost" data-go="page" title="Page and doc"><span class="side__text">Page and doc</span></button><button class="btn btn--ghost" data-go="section" title="Section"><span class="side__text">Section</span></button><button class="btn btn--ghost" data-go="block" title="Block"><span class="side__text">Block</span></button><button class="btn btn--ghost" data-go="pair" title="Pair"><span class="side__text">Pair</span></button><button class="btn btn--ghost" data-go="syntax" title="Syntax"><span class="side__text">Syntax</span></button><button class="btn btn--ghost" data-go="responsive" title="Responsive"><span class="side__text">Responsive</span></button><button class="btn btn--ghost" data-go="agent" title="Agent"><span class="side__text">Agent</span></button></div></div><div class="side__group"><button class="btn btn--ghost side__toggle" aria-expanded="true" title="Patterns"><svg class="icon"><use href="#i-columns-2"/></svg><span class="side__text">Patterns</span><svg class="icon icon--sm side__chevron"><use href="#i-chevron-down"/></svg></button><div class="side__items"><button class="btn btn--ghost" data-go="pattern-chat" title="Chat"><span class="side__text">Chat</span></button></div></div></div>
   </aside>
   <div class="window__main">
     <div class="toolbar">
@@ -57,9 +62,9 @@
 <p class="lead">Bend-UI takes advantage of Bend's Laws to make design rules enforceable at compile time. Agents can generate screens, create components, and expand the library without compromising consistency.</p>
 <p class="lead">Move fast without design drift. Let agents build freely while Laws enforce the same spacing, sizing, radii, and interaction rules across every component.</p>
 <article class="prose"><h2>Use it</h2></article>
-<article class="prose"><p class="meta">Install</p><pre><code>bun add github:isabellaherman/Bend-UI</code></pre></article>
-<article class="prose"><p class="meta">Import</p><pre><code>import "bend-ui";</code></pre></article>
-<article class="prose"><p class="meta">Use</p><pre><code>&lt;button class="btn btn--primary"&gt;Create LAW&lt;/button&gt;</code></pre></article>
+<article class="prose"><p class="meta">Install</p><pre data-lang="sh"><code>bun add github:isabellaherman/Bend-UI</code></pre></article>
+<article class="prose"><p class="meta">Import</p><pre data-lang="js"><code>import "bend-ui";</code></pre></article>
+<article class="prose"><p class="meta">Use</p><pre data-lang="html"><code>&lt;button class="btn btn--primary"&gt;Create LAW&lt;/button&gt;</code></pre></article>
       </div></section>
       <section class="view" data-page="color" hidden><div class="doc doc--wide">
 <p class="heading">Color</p>
@@ -87,17 +92,32 @@
       </div></section>
       <section class="view" data-page="type" hidden><div class="doc doc--wide">
 <p class="heading">Type</p>
-<article class="prose"><h2>Examples</h2></article>
-<div><div class="v-row"><div class="v-item"><span style="font-size:var(--text-xs)">Aa</span><code>--text-xs</code></div><div class="v-item"><span style="font-size:var(--text-sm)">Aa</span><code>--text-sm</code></div><div class="v-item"><span style="font-size:var(--text-md)">Aa</span><code>--text-md</code></div><div class="v-item"><span style="font-size:var(--text-lg)">Aa</span><code>--text-lg</code></div><div class="v-item"><span style="font-size:var(--text-xl)">Aa</span><code>--text-xl</code></div><div class="v-item"><span style="font-size:var(--text-2xl)">Aa</span><code>--text-2xl</code></div><div class="v-item"><span style="font-size:var(--text-display);line-height:1">Aa</span><code>--text-display</code></div></div><div class="v-col" style="gap:var(--space-4)">
-  <div class="v-item"><p class="display" style="margin:0">Display</p><code>.display</code></div>
-  <div class="v-item"><p class="heading" style="margin:0">Heading</p><code>.heading</code></div>
-  <div class="v-item"><p class="lead">Lead paragraph.</p><code>.lead</code></div>
-  <div class="v-item"><p class="text" style="margin:0">Body text.</p><code>.text</code></div>
-  <div class="v-item"><ul class="list"><li>Item</li><li>Item</li></ul><code>.list</code></div>
-  <div class="v-item"><p class="meta">Meta · 12 nov 2026</p><code>.meta</code></div>
-  <div class="v-item"><span class="mono">#0.4.0</span><code>.mono</code></div>
-</div></div>
+<article class="prose"><p>One ladder, from the biggest to the smallest. Pick the step, not the size: each sets size, weight and color together, from the type scale in <code>TOKENS.bend</code>.</p></article>
+<p class="group-title">Ladder</p>
+<div class="v-col v-ladder divided">
+  <div class="v-item"><p class="display">Mana</p><code>.display</code></div>
+  <div class="v-item"><p class="heading">The Mana Rules</p><code>.heading</code></div>
+  <div class="v-item"><p class="section-title">Spells</p><code>.section-title · --role-section · .prose h1</code></div>
+  <div class="v-item"><p class="group-title">Cost</p><code>.group-title · --role-group · .prose h2</code></div>
+  <div class="v-item"><p class="text">Every spell costs at least 1 mana, and mana never goes above 10.</p><code>.text · .prose p</code></div>
+  <div class="v-item"><p class="lead">The rules every level must keep.</p><code>.lead</code></div>
+  <div class="v-item"><span class="item-title">Fireball</span><code>.item-title · --role-item · .prose h3</code></div>
+  <div class="v-item"><p class="detail">Costs 3 mana. Checked 2 min ago.</p><code>.detail · .meta</code></div>
+  <div class="v-item"><span class="mono">mana_at_most_10</span><code>.mono</code></div>
+</div>
+<p class="group-title">Scale</p>
+<div><div class="v-row"><div class="v-item"><span style="font-size:var(--text-xs)">Aa</span><code>--text-xs</code></div><div class="v-item"><span style="font-size:var(--text-sm)">Aa</span><code>--text-sm</code></div><div class="v-item"><span style="font-size:var(--text-md)">Aa</span><code>--text-md</code></div><div class="v-item"><span style="font-size:var(--text-lg)">Aa</span><code>--text-lg</code></div><div class="v-item"><span style="font-size:var(--text-xl)">Aa</span><code>--text-xl</code></div><div class="v-item"><span style="font-size:var(--text-2xl)">Aa</span><code>--text-2xl</code></div><div class="v-item"><span style="font-size:var(--text-display);line-height:1">Aa</span><code>--text-display</code></div></div></div>
 <div data-laws="type"></div>
+      </div></section>
+      <section class="view" data-page="diagram" hidden><div class="doc doc--wide">
+<p class="heading">Diagram</p>
+<article class="prose"><h2>Examples</h2></article>
+<div><div class="v-row"><div class="v-item"><div class="diagram__node">Node</div><code>.diagram__node</code></div><div class="v-item"><div class="diagram__node diagram__node--accent">Node</div><code>.diagram__node--accent</code></div><div class="v-item"><div class="diagram__node diagram__node--law">Node</div><code>.diagram__node--law</code></div><div class="v-item"><div class="diagram__node diagram__node--draft">Node</div><code>.diagram__node--draft</code></div><div class="v-item"><div class="diagram__node diagram__node--conflict">Node</div><code>.diagram__node--conflict</code></div><div class="v-item"><div class="diagram__node"><span class="diagram__text">Node</span><span class="tag tag--mono">tag</span></div><code>.diagram__node + .tag--mono</code></div></div></div>
+<div><div class="v-row" style="align-items:flex-start"><div class="v-item"><div id="diagram-arrow"></div><code>edge</code></div><div class="v-item"><div id="diagram-label"></div><code>edge + label · .diagram__label</code></div><div class="v-item"><div id="diagram-branch"></div><code>two edges out · .diagram__row</code></div><div class="v-item"><div id="diagram-join"></div><code>same ends · labels join</code></div></div></div>
+<div><div class="v-row diagram--soft"><div class="v-item"><div class="diagram__node">Node</div><code>.diagram--soft .diagram__node</code></div><div class="v-item"><div class="diagram__node diagram__node--accent">Node</div><code>.diagram--soft .diagram__node--accent</code></div><div class="v-item"><div class="diagram__node diagram__node--law">Node</div><code>.diagram--soft .diagram__node--law</code></div><div class="v-item"><div class="diagram__node diagram__node--draft">Node</div><code>.diagram--soft .diagram__node--draft</code></div><div class="v-item"><div class="diagram__node diagram__node--conflict">Node</div><code>.diagram--soft .diagram__node--conflict</code></div></div></div>
+<div><div class="v-col"><div class="v-item"><div id="diagram-demo" style="width:100%"></div><code>mountDiagram(el, { nodes, edges })</code></div><div class="v-item"><div id="diagram-demo-soft" class="diagram--soft" style="width:100%"></div><code>.diagram--soft</code></div></div></div>
+<article class="prose"><p><code>DIAGRAM.bend</code> decides where each node goes: its row is the longest path to it, so every arrow goes down, and nodes on a row keep their order. <code>diagram.js</code> only draws: the boxes, then the arrows from where the boxes landed.</p></article>
+<div data-laws="diagram"></div>
       </div></section>
       <section class="view" data-page="icons" hidden><div class="doc doc--wide">
 <p class="heading">Icons</p>
@@ -215,6 +235,14 @@
 <div><div class="v-item"><div class="v-frame" style="height:180px;width:100%;max-width:560px"><main class="page"><div class="doc" style="padding:var(--space-4)"><div class="doc__head"><span class="meta mono">GDD.md</span></div><div class="block"><div class="block__slot"><span class="dot dot--ok"></span></div><div class="block__text">Mana never goes above 10</div></div><div class="block"><div class="block__slot"><span class="dot"></span></div><div class="block__text">A spell costs at least 1 mana</div></div></div></main></div><code>.page · .doc · .doc__head · .doc__note · .doc__sub · .doc--wide</code></div></div>
 <div data-laws="page"></div>
       </div></section>
+      <section class="view" data-page="section" hidden><div class="doc doc--wide">
+<p class="heading">Section</p>
+<article class="prose"><p>How a page is laid out: its head, then sections, each a title over its content, with a hairline between them.</p></article>
+<div><div class="v-col"><div class="v-item"><div style="width:100%;max-width:560px"><header class="page-head"><h1 class="heading">Spells</h1><p class="lead">Every spell the player can cast.</p></header><section class="section"><h2 class="section-title">Fire</h2><div class="section__body"><p class="text">Fireball costs 3 mana.</p></div></section><section class="section"><h2 class="section-title">Water</h2><div class="section__body"><p class="text">Heal costs 2 mana.</p></div></section></div><code>.page-head · .section · .section__body</code></div>
+<div class="v-item"><div style="width:100%;max-width:560px"><hr class="separator"></div><code>.separator</code></div>
+<div class="v-item"><ul class="divided" style="width:100%;max-width:560px"><li class="text">Fireball</li><li class="text">Heal</li><li class="text">Meteor</li></ul><code>.divided</code></div></div></div>
+<div data-laws="section"></div>
+      </div></section>
       <section class="view" data-page="block" hidden><div class="doc doc--wide">
 <p class="heading">Block</p>
 <article class="prose"><h2>Examples</h2></article>
@@ -277,6 +305,12 @@ law mana_at_most_10:
 <article class="prose"><h2>Examples</h2></article>
 <div><div class="v-row"><div class="v-item"><span class="tag hide-narrow">wide</span><code>.hide-narrow</code></div><div class="v-item"><span class="tag only-narrow">narrow</span><code>.only-narrow</code></div></div></div>
 <div data-laws="responsive"></div>
+      </div></section>
+      <section class="view" data-page="pattern-chat" hidden><div class="doc doc--wide">
+<p class="heading">Chat</p>
+<div data-pattern="chat"></div>
+<article class="prose"><h2>Made of</h2></article>
+<div class="v-row"><button class="btn btn--ghost btn--sm" data-go="window">Window</button><button class="btn btn--ghost btn--sm" data-go="side">Side bar</button><button class="btn btn--ghost btn--sm" data-go="toolbar">Toolbar</button><button class="btn btn--ghost btn--sm" data-go="chat">Chat</button><button class="btn btn--ghost btn--sm" data-go="dropdown">Dropdown</button><button class="btn btn--ghost btn--sm" data-go="agent">Agent</button><button class="btn btn--ghost btn--sm" data-go="thread">Thread</button></div>
       </div></section>
     </main>
   </div>
