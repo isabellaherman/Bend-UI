@@ -93,3 +93,44 @@ def node_fill(+crept: F32) -> F32:
 def follow_top() -> F32: 0.15
 def follow_bottom() -> F32: 0.3
 def follow_anchor() -> F32: 0.3
+
+# ---------- The agent's timing and feel (agent.js reads these) ----------
+
+# Blink: about every blink_every seconds (plus up to blink_jitter), with chance blink_chance;
+# the eyes close to blink_closed of their height for blink_hold seconds.
+def blink_every() -> F32: 2.7
+def blink_jitter() -> F32: 0.8
+def blink_chance() -> F32: 0.6
+def blink_closed() -> F32: 0.12
+def blink_hold() -> F32: 0.12
+
+# Shake (a small "no"): lasts shake_time seconds, wobbles at shake_speed, at most shake_size radians.
+def shake_time() -> F32: 0.6
+def shake_speed() -> F32: 38.0
+def shake_size() -> F32: 0.32
+
+# Look: the face turns fully toward a point look_reach face widths away (at least look_reach_min px).
+# At an element it looks at look_el_x of its width, look_el_amount of the way.
+def look_reach() -> F32: 2.2
+def look_reach_min() -> F32: 140.0
+def look_el_x() -> F32: 0.3
+def look_el_amount() -> F32: 0.6
+
+# An eye fades out as it turns away: fully gone at depth 0, fully seen at 1 / eye_fade.
+def eye_fade() -> F32: 6.0
+
+# The items opening: each waits item_stagger seconds after the one before, takes item_time
+# seconds, and grows from item_scale_from of its size. Fan (lg): gap fan_gap face radii.
+def item_stagger() -> F32: 0.06
+def item_time() -> F32: 0.28
+def item_scale_from() -> F32: 0.5
+def fan_gap() -> F32: 0.35
+
+# Label flash: one item's label shows for flash_time seconds.
+def flash_time() -> F32: 2.6
+
+# Fly (flyBetween): the face moves between two places in fly_time seconds.
+def fly_time() -> F32: 0.46
+
+# A frame never moves things more than max_step seconds, so a slow tab doesn't jump.
+def max_step() -> F32: 0.05

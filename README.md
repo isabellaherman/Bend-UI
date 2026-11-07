@@ -450,6 +450,8 @@ Every value is a token: use `var(--…)`, never a loose number.
     <div class="window__main">
       <div class="toolbar">…</div>
       <main class="page">…</main>
+      <p class="meta window__foot">Made with <a class="link" href="…">Bend-UI</a></p>
+      <p class="meta window__foot window__foot--end"><span class="tag tag--mono">v1.0.3</span></p>
     </div>
   </div>
 </body>

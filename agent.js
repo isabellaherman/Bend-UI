@@ -17,6 +17,7 @@
 //   agent.spin(); agent.shake(); agent.lookAtEl(someLine); agent.ask(true);
 
 import M from "./MOTION.bend";
+import T from "./TOKENS.bend";
 
 const RING = '<svg class="status-ring" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" pathLength="100"/></svg>';
 const lessMotion = matchMedia("(prefers-reduced-motion: reduce)");
@@ -64,14 +65,14 @@ export function mountAgent(root, opts = {}) {
   // Look: at a point on screen, at an element, or straight ahead (null).
   s.lookAt = (x, y, amount = 1) => {
     const r = face.getBoundingClientRect();
-    const reach = Math.max(r.width * 2.2, 140);
+    const reach = Math.max(r.width * M.look_reach(), M.look_reach_min());
     const dx = x - (r.left + r.width / 2), dy = y - (r.top + r.height / 2);
     s.ty = M.look_yaw(dx, dy, reach) * amount;
     s.tp = M.look_pitch(dx, dy, reach) * amount;
   };
   s.lookAtEl = (el) => { s.target = el; };
   s.spin = () => { s.turns += 2 * Math.PI; };      // one full turn: "done"
-  s.shake = () => { s.shakeT = 0.6; };              // a small "no"
+  s.shake = () => { s.shakeT = M.shake_time(); };              // a small "no"
   s.ask = (on) => { root.classList.toggle("is-asking", on); if (on) setOpen(true); };
 
   // An item: status (busy | ok | hold | warn | error | ""), label, pressed, disabled.
@@ -85,7 +86,7 @@ export function mountAgent(root, opts = {}) {
   // Show one item's label for a moment (where there is room for only one).
   s.flash = (id) => {
     items.forEach((b) => b.classList.toggle("is-flash", b.dataset.id === id));
-    clearTimeout(s._flash); s._flash = setTimeout(() => items.forEach((b) => b.classList.remove("is-flash")), 2600);
+    clearTimeout(s._flash); s._flash = setTimeout(() => items.forEach((b) => b.classList.remove("is-flash")), M.flash_time() * 1000);
   };
 
   // open: "hover" opens on a mouse hover and closes a moment after it leaves (MOTION.bend).
@@ -108,17 +109,17 @@ export function mountAgent(root, opts = {}) {
   const escape = (e) => { if (e.key === "Escape" && s.isOpen) { setOpen(false); face.focus(); } };
   document.addEventListener("pointerdown", outside);
   document.addEventListener("keydown", escape);
-  const blink = setInterval(() => { if (Math.random() < 0.6) { s.blink = 0.12; setTimeout(() => s.blink = 1, 120); } }, 2700 + Math.random() * 800);
+  const blink = setInterval(() => { if (Math.random() < M.blink_chance()) { s.blink = M.blink_closed(); setTimeout(() => s.blink = 1, M.blink_hold() * 1000); } }, (M.blink_every() + Math.random() * M.blink_jitter()) * 1000);
 
   s.update = (dt) => {
     if (!root.offsetParent) return;   // hidden: nothing to draw
     // where to look: the pointer while hovered or open, else the target, else ahead
     if ((s.hover || s.isOpen) && pointer) s.lookAt(pointer.x, pointer.y);
-    else if (s.target && s.target.isConnected) { const r = s.target.getBoundingClientRect(); s.lookAt(r.left + r.width * 0.3, r.top + r.height / 2, 0.6); }
+    else if (s.target && s.target.isConnected) { const r = s.target.getBoundingClientRect(); s.lookAt(r.left + r.width * M.look_el_x(), r.top + r.height / 2, M.look_el_amount()); }
     else { s.ty = 0; s.tp = 0; }
 
     let wobble = 0;
-    if (s.shakeT > 0) { s.shakeT = Math.max(0, s.shakeT - dt); wobble = Math.sin(s.shakeT * 38) * 0.32 * (s.shakeT / 0.6); }
+    if (s.shakeT > 0) { s.shakeT = Math.max(0, s.shakeT - dt); wobble = Math.sin(s.shakeT * M.shake_speed()) * M.shake_size() * (s.shakeT / M.shake_time()); }
     if (lessMotion.matches) { s.yaw = s.ty; s.pitch = s.tp; s.vy = s.vp = 0; s.turns = 0; }
     else {
       s.vy = M.spring(s.vy, s.yaw, s.ty + s.turns + wobble, dt);
@@ -134,18 +135,18 @@ export function mountAgent(root, opts = {}) {
       e.left = (R + x * R) + "px";
       e.top = (R - y * R) + "px";
       e.transform = `translate(-50%, -50%) scale(${M.squash(x).toFixed(3)}, ${(M.squash(y) * s.blink).toFixed(3)})`;
-      e.opacity = Math.max(0, Math.min(1, z * 6)).toFixed(3);
+      e.opacity = Math.max(0, Math.min(1, z * M.eye_fade())).toFixed(3);
     });
 
-    const w = items.length ? items[0].offsetWidth : 0, gap = size === "lg" ? R * 0.35 : 8;
+    const w = items.length ? items[0].offsetWidth : 0, gap = size === "lg" ? R * M.fan_gap() : T.space_2();
     items.forEach((b, i) => {
       b._t = s.isOpen ? b._t + dt : 0;
       const goal = s.isOpen ? 1 : 0;
-      if (!s.isOpen || b._t > i * 0.06) b._p += Math.sign(goal - b._p) * Math.min(Math.abs(goal - b._p), lessMotion.matches ? 1 : dt / 0.28);
+      if (!s.isOpen || b._t > i * M.item_stagger()) b._p += Math.sign(goal - b._p) * Math.min(Math.abs(goal - b._p), lessMotion.matches ? 1 : dt / M.item_time());
       const t = M.ease_out(b._p);
       const x = layout === "fan" ? M.fan_x(i, R, t) : M.row_x(i, R, w, gap, t);
       const y = layout === "fan" ? M.fan_y(i, R, t) : 0;
-      b.style.transform = `translate(calc(-50% + ${x.toFixed(2)}px), calc(-50% + ${y.toFixed(2)}px)) scale(${(0.5 + 0.5 * t).toFixed(3)})`;
+      b.style.transform = `translate(calc(-50% + ${x.toFixed(2)}px), calc(-50% + ${y.toFixed(2)}px)) scale(${(M.item_scale_from() + (1 - M.item_scale_from()) * t).toFixed(3)})`;
       b.style.opacity = t.toFixed(3);
     });
   };
@@ -169,20 +170,20 @@ export function flyBetween(fromRect, to, done) {
   if (lessMotion.matches) { done && done(); return; }
   const b = to.face.getBoundingClientRect();
   const ghost = to.face.cloneNode(true);
-  Object.assign(ghost.style, { position: "fixed", left: fromRect.left + "px", top: fromRect.top + "px", width: fromRect.width + "px", height: fromRect.height + "px", zIndex: 50, margin: 0, pointerEvents: "none" });
+  Object.assign(ghost.style, { position: "fixed", left: fromRect.left + "px", top: fromRect.top + "px", width: fromRect.width + "px", height: fromRect.height + "px", zIndex: T.layer_fly(), margin: 0, pointerEvents: "none" });
   ghost.querySelectorAll(".agent__eye").forEach((e) => e.style.transform = "translate(-50%, -50%)");
   document.body.append(ghost);
   to.face.style.opacity = 0;
   const dx = (b.left + b.width / 2) - (fromRect.left + fromRect.width / 2), dy = (b.top + b.height / 2) - (fromRect.top + fromRect.height / 2);
   ghost.animate(
     [{ transform: "translate(0, 0) scale(1)" }, { transform: `translate(${dx}px, ${dy}px) scale(${b.width / fromRect.width})` }],
-    { duration: 460, easing: getComputedStyle(document.documentElement).getPropertyValue("--ease").trim() || "ease-out" },
+    { duration: M.fly_time() * 1000, easing: getComputedStyle(document.documentElement).getPropertyValue("--ease").trim() || "ease-out" },
   ).onfinish = () => { ghost.remove(); to.face.style.opacity = ""; done && done(); };
 }
 
 let last = performance.now();
 function frame(now) {
-  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  const dt = Math.min(M.max_step(), (now - last) / 1000); last = now;
   agents.forEach((a) => a.update(dt));
   requestAnimationFrame(frame);
 }

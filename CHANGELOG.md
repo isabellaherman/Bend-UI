@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3 (2026-11-07)
+
+- **Window foot at the end**: `.window__foot--end` puts a foot at the bottom right, for the app's version (`.tag.tag--mono`). It sits under the dock, not on it.
+- No loose values left in `ui.css`: tag, kbd, focus ring and halo, link underline and every layer are tokens (`tag_*`, `kbd_*`, `focus_*`, `underline_*`, `layer_side`, `layer_fly`, `layer_part`, `layer_part_top`). Nothing on screen changes.
+- The agent's timing (blink, shake, look, items opening, flash, fly) lives in `MOTION.bend`; `agent.js` only reads it. Nothing on screen changes.
+
 ## 1.0.2 (2026-11-07)
 
 - **Diagram** (`DIAGRAM.bend`, `diagram.js`): nodes and arrows read top to bottom; Bend places the nodes, JS only draws. Two looks: a colored border, or `.diagram--soft`.

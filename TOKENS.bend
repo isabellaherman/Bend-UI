@@ -56,6 +56,23 @@ def segmented_inner_radius() -> U32: radius_sm()
 # A segmented item: control_md minus padding and border on both sides (32 - 2 × (2 + 1)).
 def segmented_item() -> U32: 26
 
+# Tag: a small label beside a line. Shorter than a control. Its padding (6) is off the space scale.
+def tag_height() -> U32: 20
+def tag_padding_x() -> U32: 6
+# Kbd: a key drawn as a cap; its bottom border is thicker, so it reads as pressed into the page.
+def kbd_padding_y() -> U32: 1
+def kbd_depth() -> U32: space_hairline()
+
+# Focus: the ring a keyboard user sees on the focused element.
+def focus_width() -> U32: space_hairline()       # an outline this wide
+def focus_offset() -> U32: 1                     # this far off a button
+def focus_offset_round() -> U32: space_hairline() # this far off a round element (the agent's face)
+def focus_halo() -> U32: 3                       # a soft halo instead of an outline (fields, disclosure)
+
+# Link underline on a row's title when hovered
+def underline_offset() -> U32: 5
+def underline_width() -> U32: space_hairline()
+
 # Status: the dot beside a line, and the ring around a round element
 def dot_size() -> U32: space_2()
 # A thread node: the dot of a block while work runs through it, big enough to show progress.
@@ -79,7 +96,12 @@ def breakpoint() -> U32: 720
 def layer_thread() -> U32: 1
 def layer_foot() -> U32: 4
 def layer_dock() -> U32: 5
+def layer_side() -> U32: 20     # the side bar over the content, on narrow screens
 def layer_menu() -> U32: 30
+def layer_fly() -> U32: 50      # the agent's face while it flies between two places
+# Inside a component: a part lifted above its siblings, and a part above that.
+def layer_part() -> U32: 1
+def layer_part_top() -> U32: 2
 
 # Agent: the face, in the toolbar (sm) or on its own (lg)
 def agent_sm() -> U32: control_md()

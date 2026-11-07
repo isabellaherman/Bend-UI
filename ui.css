@@ -42,7 +42,7 @@ html:not([data-narrow]) .only-narrow { display: none !important; }
   transition: background var(--duration), border-color var(--duration), color var(--duration);
 }
 .btn:hover { background: var(--surface-2); }
-.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.btn:focus-visible { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-offset); }
 .btn:disabled { opacity: .5; cursor: default; pointer-events: none; }
 
 .btn--primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
@@ -86,7 +86,7 @@ html:not([data-narrow]) .only-narrow { display: none !important; }
   font: inherit;
   min-width: 0;
 }
-.input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 var(--focus-halo) var(--accent-soft); }
 .input--mono { font-family: var(--font-mono); font-size: var(--text-sm); }
 /* A textarea.input grows with its text: no fixed height, same border and focus. */
 textarea.input { display: block; width: 100%; height: auto; min-height: calc(var(--control-md) * 3); padding: var(--space-2); line-height: var(--leading-body); resize: vertical; }
@@ -117,7 +117,7 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
   font: inherit;
   cursor: pointer;
 }
-.segmented button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 0 0 1px var(--border); }
+.segmented button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 0 0 var(--border-width) var(--border); }
 /* Icon-only: give each button aria-label and title. */
 .segmented--icons button { width: calc(var(--segmented-item) + var(--space-1)); padding: 0; display: inline-flex; align-items: center; justify-content: center; }
 
@@ -188,8 +188,8 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  height: 20px;
-  padding: 0 6px;
+  height: var(--tag-height);
+  padding: 0 var(--tag-padding-x);
   border-radius: var(--radius-sm);
   font-size: var(--text-xs);
   font-weight: var(--weight-medium);
@@ -204,9 +204,9 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
 .kbd {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  padding: 1px var(--space-1);
+  padding: var(--kbd-padding-y) var(--space-1);
   border: var(--border-width) solid var(--border-strong);
-  border-bottom-width: 2px;
+  border-bottom-width: var(--kbd-depth);
   border-radius: var(--radius-sm);
   color: var(--text-2);
 }
@@ -299,7 +299,7 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
 .disclosure > summary { list-style: none; display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-2); cursor: pointer; border-radius: var(--radius-md); }
 .disclosure > summary::-webkit-details-marker { display: none; }
 .disclosure > summary:hover { background: var(--surface-2); }
-.disclosure > summary:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+.disclosure > summary:focus-visible { outline: none; box-shadow: 0 0 0 var(--focus-halo) var(--accent-soft); }
 .disclosure__title { font-size: var(--text-lg); font-weight: var(--weight-semibold); line-height: var(--leading-tight); }
 .disclosure__chevron { color: var(--text-3); transform: rotate(-90deg); transition: transform var(--duration) var(--ease); }
 .disclosure[open] > summary .disclosure__chevron { transform: none; }
@@ -327,7 +327,7 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
   transition: color var(--duration);
 }
 .row__meta { font-size: var(--text-sm); color: var(--text-3); white-space: nowrap; }
-a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 2px; }
+a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text-underline-offset: var(--underline-offset); text-decoration-thickness: var(--underline-width); }
 
 /* ---------- Art: a game/product image, never distorted ---------- */
 .art { display: block; width: auto; height: var(--art-md); max-width: 100%; object-fit: contain; flex: none; user-select: none; -webkit-user-drag: none; }
@@ -448,7 +448,7 @@ html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); 
    Two looks: a colored border (the default), or .diagram--soft on the diagram.
    Like Mermaid's flowchart TD and Unity's Animator, but the layout is Bend's and the look is the tokens. */
 .diagram { position: relative; display: flex; flex-direction: column; gap: var(--space-7); padding: var(--space-4) var(--space-2); }
-.diagram__row { position: relative; z-index: 1; display: flex; justify-content: center; align-items: flex-start; gap: var(--space-5); }
+.diagram__row { position: relative; z-index: var(--layer-part); display: flex; justify-content: center; align-items: flex-start; gap: var(--space-5); }
 .diagram__node {
   display: flex; flex-direction: column; align-items: center; gap: var(--space-1);
   max-width: calc(var(--measure) / 2);
@@ -472,7 +472,7 @@ html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); 
 .diagram__wires path { fill: none; stroke: currentColor; stroke-width: var(--border-width); }
 .diagram__wires marker path { fill: currentColor; stroke: none; }
 .diagram__label {
-  position: absolute; z-index: 2; transform: translate(-50%, -50%);
+  position: absolute; z-index: var(--layer-part-top); transform: translate(-50%, -50%);
   padding: 0 var(--space-1); background: var(--bg); color: var(--text-2);
   font-size: var(--text-xs); line-height: var(--leading-ui); white-space: nowrap;
 }
@@ -620,7 +620,7 @@ html[data-narrow] .composer { padding: var(--space-2) var(--space-3) var(--space
   background: var(--surface);
   transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
 }
-.composer__field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.composer__field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 var(--focus-halo) var(--accent-soft); }
 .composer__text {
   flex: 1; min-width: 0;
   min-height: var(--field-inner); max-height: var(--composer-max);
@@ -666,9 +666,11 @@ html:not([data-narrow]) .window:not(.is-full) {
 }
 .window__main { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; }
 /* Corners of the main area: __dock (bottom right, for the lg agent) and __foot (bottom left, for a credit line).
+   __foot--end puts a foot at the bottom right (for the app's version); it sits under the dock, not on it.
    An agent can live in the corner or in the toolbar (.toolbar__dock): data-agent="lg" | "sm" on the window picks one. */
 .window__dock { position: absolute; right: var(--space-7); bottom: var(--space-7); z-index: var(--layer-dock); }
 .window__foot { position: absolute; left: var(--space-5); bottom: var(--space-5); z-index: var(--layer-foot); }
+.window__foot--end { left: auto; right: var(--space-5); }
 .toolbar__dock { display: flex; align-items: center; }
 .window[data-agent="sm"] .window__dock,
 .window[data-agent="lg"] .toolbar__dock { display: none; }
@@ -696,7 +698,7 @@ html:not([data-narrow]) .window:not(.is-full) {
 .side__text { transition: opacity var(--duration); }
 .side:not(.is-open) .side__text { opacity: 0; }
 html[data-narrow] .side {
-  position: absolute; z-index: 20; top: 0; bottom: 0; left: 0;
+  position: absolute; z-index: var(--layer-side); top: 0; bottom: 0; left: 0;
   width: var(--side-width);
   transform: translateX(-100%);
   box-shadow: var(--shadow-float);
@@ -729,7 +731,7 @@ html[data-narrow] .side .side__text { opacity: 1; }
 .agent--sm { --agent-face: var(--agent-sm); }
 .agent--lg { --agent-face: var(--agent-lg); }
 .agent__face {
-  position: relative; z-index: 1;
+  position: relative; z-index: var(--layer-part);
   width: 100%; height: 100%;
   padding: 0; border: 0;
   border-radius: var(--radius-full);
@@ -737,9 +739,9 @@ html[data-narrow] .side .side__text { opacity: 1; }
   background: radial-gradient(circle at 35% 28%, color-mix(in srgb, var(--accent-fg) 45%, var(--accent)), var(--accent) 62%, color-mix(in srgb, black 20%, var(--accent)));
   box-shadow: inset 0 calc(var(--agent-face) * -0.06) calc(var(--agent-face) * 0.14) rgb(0 0 0 / .22), var(--shadow-float);
 }
-.agent__face:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.agent__face:focus-visible { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-offset-round); }
 .agent__eye { position: absolute; width: 13%; height: 26%; border-radius: var(--radius-full); background: var(--accent-fg); will-change: transform; }
-.agent__item { position: absolute; left: 50%; top: 50%; z-index: 2; opacity: 0; pointer-events: none; box-shadow: var(--shadow-float); }
+.agent__item { position: absolute; left: 50%; top: 50%; z-index: var(--layer-part-top); opacity: 0; pointer-events: none; box-shadow: var(--shadow-float); }
 .agent.is-open .agent__item { pointer-events: auto; }
 .agent__item[aria-pressed="true"] { color: var(--text); }
 .agent__mark { font-family: var(--font-mono); font-size: var(--text-xs); font-weight: var(--weight-semibold); }
