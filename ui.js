@@ -47,7 +47,7 @@ const VARS = {
   "--window-margin": () => px(T.window_margin()), "--window-max": () => px(T.window_max()),
   "--agent-sm": () => px(T.agent_sm()), "--agent-lg": () => px(T.agent_lg()), "--agent-xl": () => px(T.agent_xl()),
   "--msg-max": () => px(T.msg_max()), "--msg-gap": () => px(T.msg_gap()), "--composer-max": () => px(T.composer_max()),
-  "--segmented-item": () => px(T.segmented_item()),
+  "--segmented-item": () => px(T.segmented_item()), "--segmented-outer-radius": () => px(T.segmented_outer_radius()), "--segmented-inner-radius": () => px(T.segmented_inner_radius()),
   "--layer-thread": () => String(T.layer_thread()), "--layer-foot": () => String(T.layer_foot()), "--layer-dock": () => String(T.layer_dock()), "--layer-menu": () => String(T.layer_menu()),
   "--layer-side": () => String(T.layer_side()), "--layer-fly": () => String(T.layer_fly()),
   "--layer-part": () => String(T.layer_part()), "--layer-part-top": () => String(T.layer_part_top()),
@@ -79,6 +79,8 @@ const VARS = {
   "--duration-read": () => T.duration_read_ms() + "ms", "--stagger": () => T.stagger_ms() + "ms",
   "--blur-form": () => px(T.blur_form()), "--node-size": () => px(T.node_size()), "--diagram-node-min": () => px(T.diagram_node_min()), "--canvas-gap": () => px(T.canvas_gap()),
   "--ease": () => T.ease(),
+  // MOTION.bend's ease_in_out (slow, fast, slow), sampled into a CSS easing: no slow tail at the end.
+  "--ease-in-out": () => "linear(" + Array.from({ length: 21 }, (_, i) => MOTION.ease_in_out(i / 20).toFixed(4)).join(", ") + ")",
   "--chart-tone-1": () => T.chart_tone_1() + "%", "--chart-tone-2": () => T.chart_tone_2() + "%",
   "--chart-tone-3": () => T.chart_tone_3() + "%", "--chart-tone-4": () => T.chart_tone_4() + "%",
   "--chart-gap": () => px(T.chart_gap()), "--chart-lift": () => px(T.chart_lift()),
@@ -125,6 +127,46 @@ document.addEventListener("click", (e) => {
   group.querySelectorAll(":scope > button").forEach((b) => b.setAttribute("aria-pressed", b === btn));
   group.dispatchEvent(new CustomEvent("change", { detail: btn, bubbles: true }));
 });
+
+// ---------- Segmented motion: the choice moves ----------
+// .segmented--slide gets a thumb behind the chosen item; on "change" it travels to the new one.
+//   data-motion="stretch": the edge on the side you went reaches first, then the rest follows (ease_in_out).
+//   data-motion="spring": it overshoots a little and settles (ease_spring).
+//   .segmented--extend: icon items; the chosen one also shows its name, and the thumb rides it as it opens.
+// The text changes color in the thumb's time and curve. Reduced motion: the thumb just moves.
+const segLess = matchMedia("(prefers-reduced-motion: reduce)");
+function segPlace(group, animate) {
+  const thumb = group.querySelector(":scope > .segmented__thumb"), on = group.querySelector(':scope > button[aria-pressed="true"]');
+  if (!thumb || !on) return;
+  const to = { left: on.offsetLeft, width: on.offsetWidth }, from = { left: thumb.offsetLeft, width: thumb.offsetWidth };
+  thumb.style.left = to.left + "px"; thumb.style.width = to.width + "px";
+  if (!animate || segLess.matches || (from.left === to.left && from.width === to.width)) return;
+  const px = (o) => ({ left: o.left + "px", width: o.width + "px" });
+  const inOut = getComputedStyle(document.documentElement).getPropertyValue("--ease-in-out").trim() || "ease-in-out";
+  if (group.dataset.motion === "stretch") {
+    const right = to.left > from.left;
+    const mid = right ? { left: from.left, width: to.left + to.width - from.left } : { left: to.left, width: from.left + from.width - to.left };
+    thumb.animate([px(from), { ...px(mid), offset: 0.5 }, px(to)], { duration: T.duration_enter_ms(), easing: inOut });
+  } else {
+    thumb.animate([px(from), px(to)], { duration: T.duration_enter_ms(), easing: group.dataset.motion === "spring" ? T.ease_spring() : inOut });
+  }
+}
+export function initSegmented(group) {
+  if (!group.matches(".segmented--slide, .segmented--extend") || group.querySelector(":scope > .segmented__thumb")) return;
+  const thumb = document.createElement("span"); thumb.className = "segmented__thumb"; thumb.setAttribute("aria-hidden", "true");
+  group.prepend(thumb);
+  group.addEventListener("change", () => {
+    if (!group.classList.contains("segmented--extend")) return segPlace(group, true);
+    const end = performance.now() + T.duration_enter_ms() + T.duration_ms();
+    const ride = (now) => { segPlace(group, false); if (now < end) requestAnimationFrame(ride); };
+    requestAnimationFrame(ride);
+  });
+  new ResizeObserver(() => segPlace(group, false)).observe(group);
+  segPlace(group, false);
+}
+const initSegmentedAll = () => document.querySelectorAll(".segmented--slide, .segmented--extend").forEach(initSegmented);
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initSegmentedAll); else initSegmentedAll();
+document.fonts?.ready.then(() => document.querySelectorAll(".segmented--slide, .segmented--extend").forEach((g) => segPlace(g, false)));
 
 // ---------- Side bar: sections, groups, the rail and the drawer ----------
 // A .side__section is a <button class="side__toggle" aria-expanded> before its <div class="side__items">.
@@ -379,7 +421,7 @@ document.addEventListener("click", (e) => {
 // A theme changes COLOR, FONT and the controls' SHAPE. Space and sizes stay bound by the laws.
 //   import { theme } from "bend-ui";
 //   theme({ accent: "#ffd21f", accentFg: "#02090a", fontDisplay: { family: "Jaro", src: jaroUrl }, radius: "pill" });
-// radius: "rounded" (default) | "pill" | "sharp", for every button; data-radius on a container does the same inside it.
+// radius: "rounded" (default) | "pill" | "sharp", for every button and segmented; data-radius on a container does the same inside it.
 const THEME_KEYS = {
   bg: "--bg", surface: "--surface", surface2: "--surface-2", border: "--border", borderStrong: "--border-strong",
   text: "--text", text2: "--text-2", text3: "--text-3",

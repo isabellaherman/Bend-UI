@@ -27,11 +27,12 @@ html:not([data-narrow]) .only-narrow { display: none !important; }
    Style is how much of the color it uses: .btn--filled > --tinted > --bordered > --plain > --link
    (a plain .btn is bordered and neutral). Tone is which color: accent (default), .btn--neutral, .btn--danger.
    Sizes: .btn--sm 24, md 32, .btn--lg 36, .btn--xl 48; .btn--wide adds room on the sides. Shape: rounded by
-   default; theme({ radius }) or data-radius on a container ("rounded" | "pill" | "sharp"), or .btn--pill / .btn--sharp.
+   default; theme({ radius }) or data-radius on a container ("rounded" | "pill" | "sharp") shapes buttons and
+   segmented alike; .btn--pill / .btn--sharp for one button.
    .btn--primary is filled accent and .btn--ghost is plain neutral, under their older names. */
-:root, [data-radius="rounded"] { --btn-radius: var(--radius-md); --btn-radius-sm: var(--radius-sm); }   /* rounded is the default */
-[data-radius="pill"] { --btn-radius: var(--radius-full); --btn-radius-sm: var(--radius-full); }
-[data-radius="sharp"] { --btn-radius: var(--space-0); --btn-radius-sm: var(--space-0); }
+:root, [data-radius="rounded"] { --btn-radius: var(--radius-md); --btn-radius-sm: var(--radius-sm); --seg-radius: var(--segmented-outer-radius); --seg-radius-inner: var(--segmented-inner-radius); }   /* rounded is the default */
+[data-radius="pill"] { --btn-radius: var(--radius-full); --btn-radius-sm: var(--radius-full); --seg-radius: var(--radius-full); --seg-radius-inner: var(--radius-full); }
+[data-radius="sharp"] { --btn-radius: var(--space-0); --btn-radius-sm: var(--space-0); --seg-radius: var(--space-0); --seg-radius-inner: var(--space-0); }
 .btn {
   --tone: var(--accent); --tone-soft: var(--accent-soft); --tone-fg: var(--accent-fg); --tone-text: var(--accent);
   position: relative;
@@ -186,7 +187,7 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
   display: inline-flex;
   padding: var(--space-hairline);
   gap: var(--space-hairline);
-  border-radius: var(--radius-md);
+  border-radius: var(--seg-radius);
   background: var(--surface-2);
   border: var(--border-width) solid var(--border);
 }
@@ -194,7 +195,7 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
   height: var(--segmented-item);
   padding: 0 var(--space-3);
   border: 0;
-  border-radius: var(--radius-sm);
+  border-radius: var(--seg-radius-inner);
   background: transparent;
   color: var(--text-2);
   font: inherit;
@@ -203,6 +204,20 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
 .segmented button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 0 0 var(--border-width) var(--border); }
 /* Icon-only: give each button aria-label and title. */
 .segmented--icons button { width: calc(var(--segmented-item) + var(--space-1)); padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+/* Motion (ui.js): a thumb behind the chosen item travels to the next one; .segmented--slide alone glides,
+   data-motion="stretch" leads with the edge you went toward, data-motion="spring" overshoots and settles.
+   The items stay clear, and their text changes color in the thumb's time and curve. */
+.segmented--slide, .segmented--extend { position: relative; isolation: isolate; }
+.segmented--slide > button, .segmented--extend > button { position: relative; z-index: var(--layer-part); transition: color var(--duration-enter) var(--ease-in-out); }
+.segmented--slide[data-motion="spring"] > button { transition-timing-function: var(--ease-spring); }
+.segmented--slide > button[aria-pressed="true"], .segmented--extend > button[aria-pressed="true"] { background: transparent; box-shadow: none; }
+.segmented__thumb { position: absolute; top: var(--space-hairline); bottom: var(--space-hairline); left: var(--space-0); width: var(--space-0); border-radius: var(--seg-radius-inner); background: var(--surface); box-shadow: 0 0 0 var(--border-width) var(--border); }
+/* Extend: icon items; the chosen one also shows its name (.segmented__more), and the others make room. */
+.segmented--extend > button { display: inline-flex; align-items: center; padding: 0 var(--space-2); }
+.segmented__more { display: grid; grid-template-columns: 0fr; transition: grid-template-columns var(--duration-enter) var(--ease-in-out), margin var(--duration-enter) var(--ease-in-out); }
+.segmented__more > span { overflow: hidden; white-space: nowrap; }
+.segmented--extend > button[aria-pressed="true"] .segmented__more { grid-template-columns: 1fr; margin-left: var(--space-1); }
+@media (prefers-reduced-motion: reduce) { .segmented button, .segmented__more { transition: none; } }
 
 /* ---------- Dropdown + menu ----------
    The same nesting as segmented: menu radius-md (6) = item radius-sm (4) + padding hairline (2).

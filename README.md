@@ -65,6 +65,16 @@ A `.segmented` group switches on click by itself and fires `change` (the button 
 </div>
 ```
 
+Motion: the choice moves. `.segmented--slide` puts a thumb behind the chosen item that travels to the next one (`duration_enter`, `ease_in_out`); `data-motion="stretch"` leads with the edge you went toward, `data-motion="spring"` overshoots a little and settles (`ease_spring`). `.segmented--extend` is for icon items: the chosen one also shows its name, and the thumb rides it as it opens. The text changes color in the thumb's time. Call `initSegmented(group)` for a group added later. Shape follows the buttons: `theme({ radius: "rounded" | "pill" | "sharp" })` or `data-radius` on a container.
+
+```html
+<div class="segmented segmented--slide" data-motion="stretch" role="group" aria-label="Range">…</div>
+<div class="segmented segmented--extend" role="group" aria-label="View">
+  <button aria-pressed="true" aria-label="List"><svg class="icon"><use href="#i-list"/></svg><span class="segmented__more" aria-hidden="true"><span>List</span></span></button>
+  …
+</div>
+```
+
 ## Page, doc and pair
 
 ```html

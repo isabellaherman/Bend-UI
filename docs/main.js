@@ -1,4 +1,4 @@
-import { busy, done } from "../ui.js";
+import { busy, done, initSegmented } from "../ui.js";
 import { mountAgent } from "../agent.js";
 import { createThread, openBlock, formBlock } from "../thread.js";
 import claude from "../brand/claude.webp";
@@ -122,6 +122,7 @@ const lawBlock = (l) => `<div class="docs-law">` +
 //   Laws            what is proved about it
 // The content comes from the page's examples, from CODE and FILES below, and from LAWS.bend.
 const FILES = {
+  segmented: ["TOKENS.bend", "MOTION.bend", "ui.css", "ui.js"],
   button: ["TOKENS.bend", "SPEC.bend", "ui.css", "ui.js"],
   color: ["TOKENS.bend", "ui.js", "ui.css"], space: ["TOKENS.bend", "ui.js", "ui.css"], size: ["TOKENS.bend", "ui.js", "ui.css"],
   radius: ["TOKENS.bend", "ui.js", "ui.css"], type: ["TOKENS.bend", "ui.js", "ui.css"],
@@ -330,6 +331,21 @@ if (nodePreview) {
   };
   document.querySelectorAll('[data-page="diagram"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
   draw();
+}
+// Segmented: the playground. Shape and animation come from the filters; the three rows follow them.
+const segPreview = document.getElementById("seg-preview");
+if (segPreview) {
+  document.querySelector('[data-page="segmented"] [data-filter="shape"]').addEventListener("change", (e) => { segPreview.dataset.radius = e.detail.dataset.value; });
+  document.querySelector('[data-page="segmented"] [data-filter="animation"]').addEventListener("change", (e) => {
+    const motion = e.detail.dataset.value;
+    segPreview.querySelectorAll(".js-seg").forEach((g) => {
+      if (g.classList.contains("segmented--extend")) return;   // extend always moves with its names
+      g.querySelector(":scope > .segmented__thumb")?.remove();
+      g.classList.toggle("segmented--slide", motion !== "none");
+      if (motion === "none") delete g.dataset.motion; else g.dataset.motion = motion;
+      initSegmented(g);
+    });
+  });
 }
 // Button animations: Publish shows busy, then done (a real app would wait for its work here).
 document.addEventListener("click", (e) => {

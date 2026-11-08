@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.17 (2026-11-08)
+
+- **Segmented motion (opt-in)**: the choice moves. `.segmented--slide` puts a thumb behind the chosen item that travels to the next one; `data-motion="stretch"` leads with the edge you went toward, `data-motion="spring"` overshoots and settles. `.segmented--extend` is for icon items: the chosen one also shows its name and the thumb rides it as it opens. Text changes color in the thumb's time and curve. `initSegmented(group)` is exported. A plain `.segmented` looks and works as before.
+- **`--ease-in-out`**: MOTION.bend's `ease_in_out` as a CSS easing (sampled), so CSS and JS motion share the curve with no slow tail.
+- **Segmented shape**: rounded (as before), pill or sharp, from the same choice as buttons: `theme({ radius })` or `data-radius` on a container. Rounded uses `segmented_outer_radius` and `segmented_inner_radius`, the tokens the laws check (same values as before).
+- Docs: the Segmented page in the new format (a Playground with Shape and Animation filters over three rows: Text, Icons, Extend; Accessibility, collapsed, 6 of 8 pass; Code; Laws). No small segmented: its 18px items would fail WCAG 2.5.8 (24px targets).
+
 ## 1.0.16 (2026-11-08)
 
 - **Follow is removed** (owner's call): `follow.js`, the `bend-ui/follow` export, `.window__follow`, and `follow_top`, `follow_bottom`, `follow_anchor` in MOTION.bend. **Breaking** for apps that import `createFollow`. The Thread section of the README no longer uses it, and the docs have no Follow page.
