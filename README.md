@@ -525,3 +525,7 @@ Try it: change `btn_padding_x` to `10` in `TOKENS.bend` and run `bun run check`.
 ## Contributing
 
 Read [`AGENTS.md`](AGENTS.md). `LAWS.bend` and `SPEC.bend` change only with the repo owner's approval.
+
+## Workspace extension (1.0.7)
+
+See [the needs register](docs/BORZOI-NEEDS.md) for every Borzoi requirement and the [component review artifact](docs/workspace.html). Import `bend-ui/workspace` to opt in. Existing components and owner laws are unchanged.

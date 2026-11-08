@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bend UI · Workspace review</title><script type="module" src="./workspace.js"></script></head>
+<body class="desk"><div class="window is-full"><main class="page"><div class="workbench">
+<header class="workbench__header"><div class="workbench__title"><h1 class="section-title">Workspace components</h1><p class="detail">Bend UI 1.0.7 · Opt-in workspace components</p></div><div class="workbench__actions"><button class="btn btn--ghost" id="feedback-info">Show feedback</button><button class="btn btn--ghost" id="feedback-error">Show persistent error</button><button class="btn btn--primary" id="open-dialog">Open dialog</button></div></header>
+<nav class="breadcrumbs" aria-label="Breadcrumb"><span class="detail breadcrumbs__item">Library</span><span class="detail">/</span><span class="item-title breadcrumbs__item">Workspace</span></nav>
+<div id="feedback" hidden></div>
+<section class="workbench__panes"><section class="panel workbench__pane"><header class="panel__header"><h2 class="item-title">Source editor</h2></header><div class="source-editor"><label class="field source-editor__field"><span class="field__label">Diagram source</span><textarea id="source" class="input input--mono" spellcheck="false">flowchart TD
+  A[Question] --&gt; B[Evidence]
+  B --&gt; C[Conclusion]</textarea></label><p class="detail status-text">Existing input border, focus and resizing.</p><div class="workbench__actions"><button class="btn btn--primary btn--sm">Save version</button><span class="detail">Composition only; no data is saved.</span></div></div></section>
+<section class="panel preview workbench__pane"><header class="panel__header"><h2 class="item-title">Preview</h2><span class="tag">Bend</span></header><div class="preview__viewport"><div class="preview__content"><div id="diagram"></div></div></div><footer class="preview__footer"><span class="detail">Original diagram nodes and connectors.</span></footer></section></section>
+<section class="revision-list"><h2 class="group-title">Revision snapshot</h2><article><header class="revision-list__header"><span class="item-title">Saved version</span><button class="btn btn--ghost btn--sm">Restore</button></header><pre class="revision-list__source">flowchart TD
+  A[Question] --&gt; B[Evidence]</pre></article></section>
+<footer class="workbench__footer"><span class="detail">New needs and decisions: docs/BORZOI-NEEDS.md</span><span class="detail">Base stylesheet and owner laws unchanged.</span></footer>
+</div></main></div><dialog id="dialog" class="dialog"><header class="dialog__header"><h2 id="dialog-title" class="section-title"></h2><button class="btn btn--ghost btn--sm" id="close-dialog">Close</button></header><div class="dialog__body" id="dialog-body"></div></dialog></body></html>

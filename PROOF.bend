@@ -1,6 +1,7 @@
 # The proofs. Every law today is about fixed values: Bend computes and checks them.
 
 import Base
+import ./WORKSPACE_PROOF.bend as WorkspaceProof
 import ./LAWS.bend as Laws
 
 def Laws.btn_padding_in_scale():

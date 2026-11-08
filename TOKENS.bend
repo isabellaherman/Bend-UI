@@ -189,6 +189,23 @@ def syntax_comment() -> String: "#5f6870"
 def syntax_punct() -> String: "#424a53"
 def syntax_name() -> String: "#5a32a3"
 
+# Workspace components: every new visual value is owned here.
+def dialog_padding() -> U32: space_5()
+def dialog_screen_gap() -> U32: space_4()
+def dialog_backdrop_percent() -> U32: 40
+def feedback_padding_x() -> U32: space_4()
+def feedback_padding_y() -> U32: space_3()
+def feedback_duration_ms() -> U32: 6000
+def workbench_padding() -> U32: space_6()
+def workbench_padding_narrow() -> U32: space_4()
+def workbench_gap() -> U32: space_5()
+def workbench_pane_padding() -> U32: space_4()
+def source_min_lines() -> U32: 8
+def preview_min_height() -> U32: 256
+def preview_max_height() -> U32: 640
+def snapshot_max_height() -> U32: 192
+def breadcrumb_gap() -> U32: space_2()
+
 # Chart: a series' color is the accent this strong (percent), mixed toward the surface.
 def chart_tone_1() -> U32: 100
 def chart_tone_2() -> U32: 66

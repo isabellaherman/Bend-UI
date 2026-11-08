@@ -1,0 +1,21 @@
+import {createFeedback, createDialog, configureSourceEditor} from "../workspace.js";
+import {mountDiagram} from "../diagram.js";
+const $ = s => document.querySelector(s);
+const feedback = createFeedback($("#feedback"));
+$("#feedback-info").onclick = () => feedback.show("Changes are saved locally.");
+$("#feedback-error").onclick = () => feedback.show("Example: saving failed. This error stays visible until dismissed.", {error: true});
+const dialog = createDialog($("#dialog"), {title: $("#dialog-title"), body: $("#dialog-body"), close: $("#close-dialog")});
+$("#open-dialog").onclick = () => {
+  const body = dialog.open("Name your diagram");
+  const form = document.createElement("form"); form.className = "form";
+  const label = document.createElement("label"); label.className = "field";
+  const caption = document.createElement("span"); caption.className = "field__label"; caption.textContent = "Name";
+  const input = document.createElement("input"); input.className = "input"; input.value = "Untitled diagram";
+  label.append(caption, input);
+  const actions = document.createElement("div"); actions.className = "actions";
+  const save = document.createElement("button"); save.className = "btn btn--primary"; save.textContent = "Save";
+  actions.append(save); form.append(label, actions); body.append(form);
+  form.onsubmit = e => {e.preventDefault(); dialog.close(); feedback.show("Example dialog completed. No data was saved.");}; input.focus();
+};
+configureSourceEditor($("#source"));
+mountDiagram($("#diagram"), {nodes: [{label: "Question"}, {label: "Evidence"}, {label: "Conclusion"}], edges: [{from: 0, to: 1}, {from: 1, to: 2}]});

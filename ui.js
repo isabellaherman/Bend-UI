@@ -10,6 +10,21 @@ import "./ui.css";
 const px = (n) => n + "px";
 
 const VARS = {
+  "--dialog-padding": () => px(T.dialog_padding()),
+  "--dialog-screen-gap": () => px(T.dialog_screen_gap()),
+  "--dialog-backdrop-opacity": () => String(T.dialog_backdrop_percent() / 100),
+  "--feedback-duration": () => T.feedback_duration_ms() + "ms",
+  "--feedback-padding-x": () => px(T.feedback_padding_x()),
+  "--feedback-padding-y": () => px(T.feedback_padding_y()),
+  "--workbench-padding": () => px(T.workbench_padding()),
+  "--workbench-padding-narrow": () => px(T.workbench_padding_narrow()),
+  "--workbench-gap": () => px(T.workbench_gap()),
+  "--workbench-pane-padding": () => px(T.workbench_pane_padding()),
+  "--source-min-lines": () => String(T.source_min_lines()),
+  "--preview-min-height": () => px(T.preview_min_height()),
+  "--preview-max-height": () => px(T.preview_max_height()),
+  "--snapshot-max-height": () => px(T.snapshot_max_height()),
+  "--breadcrumb-gap": () => px(T.breadcrumb_gap()),
   "--space-0": () => px(T.space_0()), "--space-hairline": () => px(T.space_hairline()), "--space-1": () => px(T.space_1()),
   "--space-2": () => px(T.space_2()), "--space-3": () => px(T.space_3()),
   "--space-4": () => px(T.space_4()), "--space-5": () => px(T.space_5()),

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.7 (2026-11-08)
+
+- **Workspace (opt-in)**: `import "bend-ui/workspace"` adds dialog (`createDialog`), feedback (`createFeedback`, `setStatusTone`), breadcrumbs, the source/preview workbench (`configureSourceEditor`), the revision list, and the sidebar footer (`createSidebar`). Existing components keep their definitions and appearance.
+- Every new visual value is a token in `TOKENS.bend`, exposed by `ui.js`. Feedback tone and timing, pane direction and sidebar dismissal are decided in `WORKSPACE.bend`.
+- 15 extension laws in `WORKSPACE_LAWS.bend`, proved through `PROOF.bend`. `LAWS.bend` and `SPEC.bend` are unchanged.
+- Docs: the Borzoi needs register (`docs/BORZOI-NEEDS.md`) and the workspace review page (`docs/workspace.html`). Each component will be reviewed one at a time.
+
 ## 1.0.6 (2026-11-08)
 
 - **Diagram: connect**: `mountDiagram(el, data, { isValidConnection, onConnect })`, React Flow's names. Each node gets a handle (a `.dot`) at the middle of its bottom edge, shown on hover; drag it and a straight arrow (the diagram's own wire) follows the pointer. Let go on another node and, if `isValidConnection({ source, target })` allows it, `onConnect({ source, target })` is called (node indexes). The diagram doesn't change itself: the app adds the edge and redraws.
