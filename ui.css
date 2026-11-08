@@ -450,6 +450,7 @@ html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); 
 .diagram { position: relative; display: flex; flex-direction: column; gap: var(--space-7); padding: var(--space-4) var(--space-2); }
 .diagram__row { position: relative; z-index: var(--layer-part); display: flex; justify-content: center; align-items: flex-start; gap: var(--space-5); }
 .diagram__node {
+  position: relative;
   display: flex; flex-direction: column; align-items: center; gap: var(--space-1);
   max-width: calc(var(--measure) / 2);
   padding: var(--space-2) var(--space-3);
@@ -558,6 +559,22 @@ html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); 
   padding: 0 var(--space-1); background: var(--bg); color: var(--text-2);
   font-size: var(--text-xs); line-height: var(--leading-ui); white-space: nowrap;
 }
+
+/* ---------- Diagram: connect ----------
+   A node's handle is a .dot at the middle of its bottom edge, where its arrows leave. It shows on hover;
+   drag it and a straight arrow (the diagram's own wire) follows the pointer. A node it may connect to takes
+   the accent border (.is-target) while the pointer is over it. */
+.diagram__handle { position: absolute; left: 50%; bottom: 0; transform: translate(-50%, 50%); background: var(--surface); opacity: 0; cursor: crosshair; touch-action: none; }
+.diagram__node:hover .diagram__handle, .diagram__handle.is-active { opacity: 1; }
+.diagram.is-connecting .diagram__node { transition: border-color var(--duration) var(--ease); }
+.diagram__node.is-target { border-color: var(--accent); }
+/* A node with a menu (nodeMenu): its label is the button that opens a .menu under it; the button covers the
+   whole node (like Bootstrap's stretched link), the handle stays above it. The row rises above the rows
+   below while the menu is open. */
+.diagram__open { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.diagram__open::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.diagram__node:has(> .diagram__open:focus-visible) { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-offset); }
+.diagram__row:has(> .diagram__node > .menu:not([hidden])) { z-index: var(--layer-menu); }
 
 /* ---------- Pair: a block and the block that goes with it ----------
    <div class="pair"><div class="block">…</div><div class="block pair__aside">…</div></div>

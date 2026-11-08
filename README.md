@@ -248,6 +248,17 @@ mountDiagram(el, {
 
 A node's `tone` is `accent`, `law`, `draft`, `conflict`, or none; `tag` is a short word on it. Two looks: a colored border (default), or add `diagram--soft` to `el` for a soft fill with the tone in the text. Arrows with the same ends become one line, their labels joined.
 
+Connect (optional): pass `{ isValidConnection, onConnect }` as a third argument. Drag the dot under a node onto another node; both get `{ source, target }` (node indexes). The diagram doesn't change itself: add the edge to your data and draw again in the same element; the nodes glide to their new places and the new arrow runs in.
+
+```js
+mountDiagram(el, data, {
+  isValidConnection: ({ source, target }) => !hasEdge(source, target),
+  onConnect: ({ source, target }) => { data.edges.push({ from: source, to: target }); redraw(); },
+});
+```
+
+Node menu (optional): pass `nodeMenu: (i) => [{ label, disabled, onSelect }]`. Clicking a node opens the lib's `.menu` with those items; picking one calls its `onSelect`. As with connect, the diagram doesn't change itself.
+
 ## Chart
 
 Pie, bars, line and area: one mark each, no card around them. `CHART.bend` places every mark (a slice's turns, the grid's step, where a value sits, the curve); `chart.js` only draws. The motion is `MOTION.bend` and the duration tokens, the same the thread and the agent use.

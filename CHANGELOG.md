@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.6 (2026-11-08)
+
+- **Diagram: connect**: `mountDiagram(el, data, { isValidConnection, onConnect })`, React Flow's names. Each node gets a handle (a `.dot`) at the middle of its bottom edge, shown on hover; drag it and a straight arrow (the diagram's own wire) follows the pointer. Let go on another node and, if `isValidConnection({ source, target })` allows it, `onConnect({ source, target })` is called (node indexes). The diagram doesn't change itself: the app adds the edge and redraws.
+- While dragging, a node `isValidConnection` allows takes the accent border (`.is-target`) and the arrow snaps to where it would enter. Let go anywhere else and the arrow runs back into the handle (`duration_enter`, `MOTION.ease_out`).
+- Drawn again in the same element, the nodes glide from where they were and new arrows run in from their start (`duration_connect`, `MOTION.ease_in_out`, chart.js's `tween`). Nodes are matched by label; reduced motion skips it.
+- **Diagram: node menu**: `mountDiagram(el, data, { nodeMenu: (i) => [{ label, disabled, onSelect }] })`. The node becomes a `.dropdown`: its label is the button (`.diagram__open`, covering the whole node like Bootstrap's stretched link) that opens the lib's `.menu`; picking an item calls its `onSelect`. While a menu is open its row rises above the rows below.
+- `.diagram__node` is now `position: relative` (the handle's and the menu's anchor); nothing on screen changes. New: `.diagram__handle`, `.is-target`, `.diagram__open`. No new token, law or motion curve.
+
 ## 1.0.5 (2026-11-08)
 
 - **Chart** (`CHART.bend`, `chart.js`): pie, bars, line and area, one mark each. Bend places every mark; JS only draws. Colors are four tones of the accent (`chart_tone_1` to `chart_tone_4`), so a theme recolors them. The pie takes `.chart--split` and `.chart--donut`.
