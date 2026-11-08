@@ -196,8 +196,9 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
   background: var(--surface-2);
   color: var(--text-2);
 }
-.tag--success { background: var(--success-soft); color: var(--success); }
-.tag--warning { background: var(--warning-soft); color: var(--warning); }
+.tag--accent { background: var(--accent-soft); color: var(--accent); }
+.tag--success { background: var(--success-soft); color: var(--success-text); }
+.tag--warning { background: var(--warning-soft); color: var(--warning-text); }
 .tag--danger { background: var(--danger-soft); color: var(--danger); }
 .tag--mono { font-family: var(--font-mono); }
 

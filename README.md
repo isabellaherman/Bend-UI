@@ -128,6 +128,21 @@ A button that opens a menu. `ui.js` handles it and fires `pick` on the `.dropdow
 
 `menu--end` aligns the menu to the right edge of the button; `menu--up` opens it upward.
 
+Items can carry an icon, a `.tag`, or the check of a `menuitemradio`; `.separator` splits them into groups. Any button can be the trigger, a node of the Diagram too (`nodeMenu`).
+
+```html
+<div class="menu" role="menu" hidden>
+  <button class="menu__item" role="menuitem"><svg class="icon icon--sm"><use href="#i-plus"/></svg><span>Add node below</span></button>
+  <hr class="separator">
+  <button class="menu__item" role="menuitemradio" aria-checked="true">
+    <svg class="icon icon--sm"></svg><span><span class="tag tag--success">Green</span></span>
+    <svg class="icon icon--sm menu__check"><use href="#i-check"/></svg>
+  </button>
+  <hr class="separator">
+  <button class="menu__item" role="menuitem"><svg class="icon icon--sm"><use href="#i-x"/></svg><span>Delete node</span></button>
+</div>
+```
+
 ## Chat
 
 A conversation that flows, with the composer fixed under the page. The agent's message is `.msg` (put `.prose` inside for Markdown); the person's is `.msg--me`.
@@ -257,7 +272,7 @@ mountDiagram(el, data, {
 });
 ```
 
-Node menu (optional): pass `nodeMenu: (i) => [{ label, disabled, onSelect }]`. Clicking a node opens the lib's `.menu` with those items; picking one calls its `onSelect`. As with connect, the diagram doesn't change itself.
+Node menu (optional): pass `nodeMenu: (i) => [elements]`. The node becomes the trigger of a Dropdown menu: clicking it opens the lib's `.menu` holding those elements, built as in Dropdown menu (icons, tags, the check, separators); each item does what its own click says. As with connect, the diagram doesn't change itself.
 
 Free layout (optional): pass `positions: [{ x, y }]` (px from the diagram's corner) and `onNodeMove: (i, { x, y }) => …`. The nodes sit at those places instead of in rows, and dragging a node calls `onNodeMove` when it's let go. Keep the positions in your data and draw again.
 

@@ -10,8 +10,9 @@
 //   });
 //   d.nodes[1]   // the box of node 1
 //
-// Node menu (optional): { nodeMenu: (i) => [{ label, disabled, onSelect }] }. The node's label opens a .menu
-// with those items; picking one calls its onSelect. The diagram doesn't change itself here either.
+// Node menu (optional): { nodeMenu: (i) => [elements] }. The node is the trigger of a Dropdown menu: its label
+// opens the lib's .menu holding those elements, built as the Dropdown menu builds them (.menu__item, .icon,
+// .tag, .menu__check, .separator); each item does what its own click says. The diagram doesn't change itself.
 //
 // Free layout (optional): { positions: [{ x, y }], onNodeMove: (i, { x, y }) => … }. Nodes sit at those
 // places instead of in rows; drag a node to move it. The app keeps the positions and draws again.
@@ -108,19 +109,14 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
     const b = el("div", "diagram__node" + (node.tone ? " diagram__node--" + node.tone : "") + (items.length ? " dropdown" : ""));
     if (!items.length) b.append(el("span", "diagram__text", node.label));
     else {
-      // With a menu, the node is a .dropdown: its label opens a .menu (ui.js opens, closes and fires "pick").
+      // With a menu, the node is the trigger of a Dropdown menu: its label opens the lib's .menu, which holds
+      // the items the app built (ui.js opens, closes and fires "pick"; each item does what its click says).
       const open = b.appendChild(el("button", "diagram__text diagram__open", node.label));
-      open.type = "button"; open.setAttribute("aria-haspopup", "menu"); open.setAttribute("aria-expanded", "false");
       const menu = b.appendChild(el("div", "menu"));
-      menu.setAttribute("role", "menu"); menu.hidden = true;
-      const picks = new Map();
-      for (const item of items) {
-        const m = menu.appendChild(el("button", "menu__item"));
-        m.type = "button"; m.setAttribute("role", "menuitem"); m.disabled = !!item.disabled;
-        m.append(el("span", "", item.label));
-        picks.set(m, item.onSelect);
-      }
-      b.addEventListener("pick", (e) => picks.get(e.detail)?.());
+      open.type = "button"; open.id = arrow + "-open" + i; open.setAttribute("aria-haspopup", "menu"); open.setAttribute("aria-expanded", "false");
+      menu.id = arrow + "-menu" + i; menu.setAttribute("role", "menu"); menu.setAttribute("aria-labelledby", open.id); menu.hidden = true;
+      open.setAttribute("aria-controls", menu.id);
+      menu.append(...items);
     }
     if (node.tag) b.append(el("span", "tag tag--mono", node.tag));
     b.setAttribute("role", "graphics-object");

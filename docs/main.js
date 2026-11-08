@@ -44,7 +44,7 @@ document.getElementById("brand-openai").src = openai;
 
 // dropdown: the button shows the picked item
 document.addEventListener("pick", (e) => {
-  if (e.target.closest(".diagram__node")) return;   // a diagram's node menu: its items act, the label stays
+  if (!e.target.matches("[data-shows-pick]")) return;   // only a menu that names its choice on its button; others' items act
   const btn = e.target.querySelector(':scope > [aria-haspopup="menu"]');
   btn.querySelector("span").textContent = e.detail.querySelector("span").textContent;
   btn.querySelector("use").setAttribute("href", e.detail.querySelector("use").getAttribute("href"));
@@ -129,6 +129,7 @@ const FILES = {
   diagram: ["DIAGRAM.bend", "diagram.js", "ui.css"], chart: ["CHART.bend", "chart.js", "MOTION.bend", "TOKENS.bend", "ui.css"], thread: ["MOTION.bend", "thread.js", "ui.css"],
   follow: ["MOTION.bend", "follow.js", "ui.css"], agent: ["MOTION.bend", "agent.js", "ui.css"],
   syntax: ["SYNTAX.bend", "syntax.js", "ui.css"],
+  dropdown: ["ui.js", "ui.css"],
 };
 // Code: the README's own snippets, so the docs and the README never disagree.
 // Each page shows the code blocks under its README heading (## or ###), colored in their own language (SYNTAX.bend).
@@ -150,7 +151,7 @@ const SNIPPETS = (() => {
 const README_OF = {
   color: "Tokens", space: "Tokens", size: "Tokens", radius: "Tokens", type: "Type: one ladder", keyboard: "Keys",
   page: "Page, doc and pair", pair: "Page, doc and pair", thread: "Thread and follow", follow: "Thread and follow",
-  section: "Page head and sections",
+  section: "Page head and sections", dropdown: "Dropdown",
 };
 const section = (title, ...kids) => {
   const s = document.createElement("section"); s.className = "section";
@@ -177,7 +178,9 @@ document.querySelectorAll("[data-page]").forEach((page) => {
     named.get(k.dataset.section).append(k);
   }
   const exBox = document.createElement("div"); exBox.className = "section__body"; exBox.append(...ex.filter((k) => !k.dataset.section));
-  const parts = [head, ...[...named].map(([title, b]) => section(title, b)), section("Examples", exBox)];
+  // Accessibility comes after the live examples it describes; the other named sections before them.
+  const after = new Set(["Accessibility"]);
+  const parts = [head, ...[...named].filter(([t]) => !after.has(t)).map(([title, b]) => section(title, b)), section("Examples", exBox), ...[...named].filter(([t]) => after.has(t)).map(([title, b]) => section(title, b))];
   const raws = [exBox, ...named.values()].flatMap((b) => [...b.querySelectorAll(".v-item > code")]).map((c) => c.textContent);
   const snippets = SNIPPETS[README_OF[id] || heading.textContent.trim()] || [];
   const files = FILES[id] || ["ui.css"];
@@ -282,6 +285,11 @@ const flow = {
 };
 let live;
 const linked = (a, b) => flow.edges.some((e) => e.from === a && e.to === b);
+// The node opens a Dropdown menu: each item is the lib's .menu__item.
+const menuItem = ({ label, onSelect, disabled }) => {
+  const b = document.createElement("button"); b.className = "menu__item"; b.type = "button"; b.setAttribute("role", "menuitem"); b.disabled = !!disabled;
+  const t = document.createElement("span"); t.textContent = label; b.append(t); b.addEventListener("click", onSelect); return b;
+};
 function drawLive() {
   live?.destroy();
   live = mountDiagram($("diagram-live"), flow, {
@@ -309,7 +317,7 @@ function drawLive() {
         if (keep) live.focusAfterDraw(keep);
         drawLive();
       } },
-    ],
+    ].map(menuItem),
   });
 }
 drawLive();
@@ -331,3 +339,36 @@ const charts = [
 $("chart-play").addEventListener("click", () => charts.forEach((c) => c.replay()));
 $("docs-side-toggle").addEventListener("click", () => $("docs-side").classList.toggle("is-open"));
 go("overview");
+
+// Dropdown menu: a diagram whose nodes are triggers; the items are built as any Dropdown menu's.
+{
+  const NS = "http://www.w3.org/2000/svg";
+  const make = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text != null) x.textContent = text; return x; };
+  const icon = (name, cls = "icon icon--sm") => { const x = document.createElementNS(NS, "svg"); x.setAttribute("class", cls); x.setAttribute("aria-hidden", "true"); if (name) { const u = document.createElementNS(NS, "use"); u.setAttribute("href", "#i-" + name); x.append(u); } return x; };
+  const item = (label, name, onClick) => { const b = make("button", "menu__item"); b.type = "button"; b.setAttribute("role", "menuitem"); b.append(icon(name), make("span", "", label)); b.addEventListener("click", onClick); return b; };
+  const radio = (tone, label, checked, onClick) => { const b = make("button", "menu__item"); b.type = "button"; b.setAttribute("role", "menuitemradio"); b.setAttribute("aria-checked", String(checked)); const s = make("span", ""); s.append(make("span", "tag" + (tone ? " tag--" + tone : ""), label)); b.append(icon(), s, icon("check", "icon icon--sm menu__check")); b.addEventListener("click", onClick); return b; };
+  const sep = () => make("hr", "separator");
+  const COLORS = [["accent", "Blue"], ["success", "Green"], ["warning", "Yellow"], ["danger", "Red"], ["", "None"]];
+  const el = $("dropdown-diagram");
+  let s = { nodes: [{ label: "Idea", tone: "accent" }, { label: "Draft", tone: "warning" }, { label: "Review", tone: "" }, { label: "Fix", tone: "danger" }, { label: "Publish", tone: "success" }], edges: [{ from: 0, to: 1 }, { from: 1, to: 2 }, { from: 2, to: 3 }, { from: 2, to: 4 }], next: 1 };
+  let d;
+  const has = (a, b) => s.edges.some((e) => e.from === a && e.to === b);
+  const reaches = (a, b) => a === b || s.edges.some((e) => e.from === a && reaches(e.to, b));
+  const after = (focus) => { draw(); d.focusAfterDraw?.(focus); };
+  const menu = (i) => {
+    const n = s.nodes[i], out = s.edges.filter((e) => e.from === i).map((e) => e.to);
+    const targets = s.nodes.map((_, j) => j).filter((j) => j !== i && !has(i, j) && !reaches(j, i));
+    return [
+      item("Add node below", "plus", () => { const label = "New " + s.next++; s.nodes.push({ label, tone: "" }); s.edges.push({ from: i, to: s.nodes.length - 1 }); after(label); }),
+      item("Rename", "text", () => d.editLabel?.(i)),
+      ...(targets.length ? [sep(), ...targets.map((j) => item("Connect to " + s.nodes[j].label, "", () => { s.edges.push({ from: i, to: j }); after(n.label); }))] : []),
+      sep(),
+      ...COLORS.map(([t, name]) => radio(t, name, t === n.tone, () => { n.tone = t; after(n.label); })),
+      sep(),
+      ...out.map((j) => item("Remove arrow to " + s.nodes[j].label, "x", () => { s.edges = s.edges.filter((e) => !(e.from === i && e.to === j)); after(n.label); })),
+      item("Delete node", "x", async () => { await d.leave?.(i); s.edges = s.edges.filter((e) => e.from !== i && e.to !== i).map((e) => ({ from: e.from - (e.from > i), to: e.to - (e.to > i) })); s.nodes.splice(i, 1); after(s.nodes[0]?.label); }),
+    ];
+  };
+  function draw() { d?.destroy(); d = mountDiagram(el, { nodes: s.nodes.map((n) => ({ label: n.label, tone: n.tone })), edges: s.edges }, { label: "Release flow", nodeMenu: menu, onLabelEdit: (i, label) => { s.nodes[i].label = label; after(label); } }); }
+  draw();
+}

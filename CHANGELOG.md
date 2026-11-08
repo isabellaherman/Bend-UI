@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.10 (2026-11-08)
+
+- **Dropdown menu** (the docs page, was "Dropdown"): Variants (each kind of item: plain, with an icon, the radio check, a tag in every tone, disabled, separators; the three placements), Examples on a `.canvas` (the Text menu, a menu in groups, a diagram whose nodes open it) and an Accessibility review (WCAG 2.2, with what still fails).
+- **Diagram: the node opens a Dropdown menu**: `nodeMenu: (i) => [elements]`, the menu's children built as any Dropdown menu's (icons, tags, the check, separators); each item acts on its own click. The node's button and its `.menu` are linked with `aria-controls` / `aria-labelledby`. The diagram no longer builds items of its own (it was `[{ label, disabled, onSelect }]`).
+- **Tag**: `.tag--accent`, the tone that was missing. `.tag--success` and `.tag--warning` write their text in `--success-text` / `--warning-text`, so tags meet AA (4.85 and 4.78; they were 3.94 and 3.30).
+- README: a second Dropdown example (groups, an icon, a tag, the check). No new token, law or motion.
+
 ## 1.0.9 (2026-11-08)
 
 - **Accessibility in the Overview** (and the README): accessibility isn't something anyone turns on, so the library works in three layers: always on (WCAG 2.2 AA), automatic from the person's own settings (reduced motion, more contrast, forced colors, text zoom), and the app's choice of a larger size. Sources linked.
