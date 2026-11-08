@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.15 (2026-11-08)
+
+- **Docs: the Diagram page in the Button page's format**: a Playground with every look (Border, Soft) in every tone, all nodes one width, and a Tag filter; Composition (the arrows); Animations (the editable diagram on a canvas, where nodes grow, connect, rename and leave); Accessibility (collapsed, 11 of 13 pass); Code. Each page's filters only drive its own playground. Nothing in the lib changes.
+
 ## 1.0.14 (2026-11-08)
 
 - **Docs: every page has its own address**: `/components/button`, `/foundations/color`, `/patterns/chat` (the group is the side bar's section); the Overview is the root. The address changes as you move, back and forward work, and a link opens that page. On GitHub Pages a deep link goes through `404.html`, which hands it to the docs (`?p=`); `bun run site` copies it into `site/`. Nothing in the lib changes.

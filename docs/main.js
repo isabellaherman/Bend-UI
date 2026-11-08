@@ -179,7 +179,7 @@ document.querySelectorAll("[data-page]").forEach((page) => {
   }
   const exBox = document.createElement("div"); exBox.className = "section__body"; exBox.append(...ex.filter((k) => !k.dataset.section));
   // Accessibility comes after the live examples it describes; the other named sections before them.
-  const after = new Set(["Animations", "Accessibility"]);
+  const after = new Set(["Animations", "Accessibility"]);   // after Playground and Composition
   const parts = [head, ...[...named].filter(([t]) => !after.has(t)).map(([title, b]) => section(title, b)), ...(exBox.children.length || !named.size ? [section("Examples", exBox)] : []), ...[...named].filter(([t]) => after.has(t)).map(([title, b]) => section(title, b))];
   const raws = [exBox, ...named.values()].flatMap((b) => [...b.querySelectorAll(".v-item > code")]).map((c) => c.textContent);
   const snippets = SNIPPETS[README_OF[id] || heading.textContent.trim()] || [];
@@ -313,7 +313,22 @@ if (btnPreview) {
       styles.map(([st, name]) => `<span class="detail">${name}</span>` + tones.map(([t, , label]) => `<button class="btn btn--${st}${t ? " btn--" + t : ""}${size}">${label}</button>`).join("") +
         (st === "link" ? "<span></span>" : `<button class="btn btn--${st} btn--icon${size}" aria-label="Add"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></button>`)).join("");
   };
-  document.querySelectorAll("[data-filter]").forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
+  document.querySelectorAll('[data-page="button"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
+  draw();
+}
+// Diagram: the playground. Every look (rows) in every tone (columns), all one width; pick a tag or none.
+const nodePreview = document.getElementById("node-preview");
+if (nodePreview) {
+  const pick = { tag: "off" };
+  const looks = [["", "Border"], ["soft", "Soft"]];
+  const tones = [["", "Neutral"], ["accent", "Accent"], ["success", "Success"], ["warning", "Warning"], ["danger", "Danger"]];
+  const draw = () => {
+    const tag = pick.tag === "on" ? '<span class="tag tag--mono">loop</span>' : "";
+    nodePreview.innerHTML = '<span></span>' + tones.map(([, n]) => `<span class="detail">${n}</span>`).join("") +
+      looks.map(([look, name]) => `<span class="detail">${name}</span>` + tones.map(([t, n]) =>
+        `<div class="${look ? "diagram--soft" : ""}" style="display:contents"><div class="diagram__node${t ? " diagram__node--" + t : ""}"><span class="diagram__text">${n}</span>${tag}</div></div>`).join("")).join("");
+  };
+  document.querySelectorAll('[data-page="diagram"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
   draw();
 }
 // Button animations: Publish shows busy, then done (a real app would wait for its work here).
