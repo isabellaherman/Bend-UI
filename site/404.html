@@ -1,0 +1,8 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Bend-UI</title>
+<script>
+  // GitHub Pages serves this for /Bend-UI/components/button: send it to the docs, which open that page.
+  const base = location.hostname.endsWith("github.io") ? "/" + location.pathname.split("/")[1] + "/" : "/";
+  location.replace(base + "?p=/" + location.pathname.slice(base.length) + location.hash);
+</script>
