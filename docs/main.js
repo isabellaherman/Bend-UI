@@ -264,14 +264,36 @@ document.querySelectorAll("[data-page]").forEach((page) => {
 document.querySelectorAll('[data-code], [data-syntax-demo], [data-page="overview"] .prose pre').forEach((el) => highlight(el));
 const chatFace = $("chat-face"); if (chatFace) mountAgent(chatFace, { size: "sm", items: [] });
 
-// Navigation: one page at a time; the side bar marks it.
+// Navigation: one page at a time, each at its own address (/components/button, /foundations/color);
+// the side bar marks it, and back and forward work. The group comes from the side bar's section.
 const main = $("docs-main");
-function go(id) {
+const PATH = {}, ID = {};
+document.querySelectorAll("#docs-nav [data-go]").forEach((b) => {
+  const id = b.dataset.go;
+  const group = b.closest(".side__section")?.querySelector(".side__toggle .side__text")?.textContent.trim().toLowerCase();
+  PATH[id] = id === "overview" || !group ? "" : group + "/" + id.replace(/^pattern-/, "");
+  ID[PATH[id]] = id;
+});
+// Where the docs live (/ locally, /Bend-UI/ on GitHub Pages): the address minus the page's own path.
+// A deep link that reached 404.html comes back as ?p=/components/button.
+const asked = new URLSearchParams(location.search).get("p");
+let BASE = location.pathname, START = asked?.replace(/^\/|\/$/g, "") ?? "";
+if (asked === null) {
+  const here = BASE.replace(/\/$/, ""), found = Object.keys(ID).find((r) => r && here.endsWith("/" + r));
+  if (found) { START = found; BASE = here.slice(0, -found.length); }
+}
+if (!BASE.endsWith("/")) BASE += "/";
+function go(id, push = true) {
+  if (!(id in PATH)) id = "overview";
   main.querySelectorAll("[data-page]").forEach((s) => (s.hidden = s.dataset.page !== id));
   document.querySelectorAll("#docs-nav [data-go]").forEach((b) => (b.dataset.go === id ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
   main.scrollTop = 0;
   if (id === "chart") charts.forEach((c) => c.replay());   // the entrance plays when the page shows
+  const url = BASE + PATH[id] + location.hash;
+  if (push && location.pathname + location.search !== BASE + PATH[id]) history.pushState({ id }, "", url);
+  else history.replaceState({ id }, "", url);
 }
+addEventListener("popstate", (e) => go(e.state?.id ?? ID[location.pathname.slice(BASE.length).replace(/\/$/, "")] ?? "overview", false));
 $("docs-nav").addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); });
 main.addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); });   // "Made of" links
 
@@ -362,7 +384,7 @@ const charts = [
   ...["chart-plain", "chart-split", "chart-donut", "chart-donut-split"].map((id) => mountPie($(id), schools)),
 ];
 $("chart-play").addEventListener("click", () => charts.forEach((c) => c.replay()));
-go("overview");
+go(ID[START] ?? "overview", false);
 
 // Dropdown menu: a diagram whose nodes are triggers; the items are built as any Dropdown menu's.
 {

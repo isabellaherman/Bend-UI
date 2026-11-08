@@ -1,6 +1,6 @@
 {
   "name": "bend-ui",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Design system in Bend: tokens in TOKENS.bend, rules in LAWS.bend.",
   "type": "module",
   "main": "ui.js",
@@ -60,6 +60,6 @@
   "scripts": {
     "check": "bend PROOF.bend",
     "docs": "bun docs/read-laws.js && cd docs && bun index.html",
-    "site": "bun docs/read-laws.js && rm -rf site && bend docs/index.html -o site"
+    "site": "bun docs/read-laws.js && rm -rf site && bend docs/index.html -o site && cp docs/404.html site/404.html"
   }
 }

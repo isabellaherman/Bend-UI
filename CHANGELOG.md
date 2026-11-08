@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.14 (2026-11-08)
+
+- **Docs: every page has its own address**: `/components/button`, `/foundations/color`, `/patterns/chat` (the group is the side bar's section); the Overview is the root. The address changes as you move, back and forward work, and a link opens that page. On GitHub Pages a deep link goes through `404.html`, which hands it to the docs (`?p=`); `bun run site` copies it into `site/`. Nothing in the lib changes.
+
 ## 1.0.13 (2026-11-08)
 
 - **Every button you already have looks and measures exactly as in 1.0.12** (checked against the published site): plain `.btn`, `.btn--primary`, `.btn--ghost`, `.btn--sm`, `.btn--lg`, `.btn--icon`, `.btn--round`, disabled. Everything below is opt-in.
