@@ -13,9 +13,9 @@ def in_space_scale(+n: U32) -> Bool:
 def icon_button_fits(+height: U32, +icon: U32, +pad: U32) -> Bool:
   (U32.is_eq(height, (icon + pad + pad : U32)) && in_space_scale(pad))
 
-# The control heights: 24, 32, 36 (all on the 4 grid).
+# The control heights: 24, 32, 36, 48 (all on the 4 grid; sm, md, lg, xl).
 def in_control_scale(+n: U32) -> Bool:
-  (U32.is_eq(n, 24) || U32.is_eq(n, 32) || U32.is_eq(n, 36))
+  (U32.is_eq(n, 24) || U32.is_eq(n, 32) || U32.is_eq(n, 36) || U32.is_eq(n, 48))
 
 # On the 4 grid: a multiple of 4.
 def on_grid(+n: U32) -> Bool:

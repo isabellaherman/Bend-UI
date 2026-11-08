@@ -1,4 +1,4 @@
-import "../ui.js";
+import { busy, done } from "../ui.js";
 import { mountAgent } from "../agent.js";
 import { createThread, openBlock, formBlock } from "../thread.js";
 import claude from "../brand/claude.webp";
@@ -122,6 +122,7 @@ const lawBlock = (l) => `<div class="docs-law">` +
 //   Laws            what is proved about it
 // The content comes from the page's examples, from CODE and FILES below, and from LAWS.bend.
 const FILES = {
+  button: ["TOKENS.bend", "SPEC.bend", "ui.css", "ui.js"],
   color: ["TOKENS.bend", "ui.js", "ui.css"], space: ["TOKENS.bend", "ui.js", "ui.css"], size: ["TOKENS.bend", "ui.js", "ui.css"],
   radius: ["TOKENS.bend", "ui.js", "ui.css"], type: ["TOKENS.bend", "ui.js", "ui.css"],
   icons: ["icons.js", "ui.js"], keyboard: ["KEYS.bend", "keys.js"],
@@ -178,8 +179,8 @@ document.querySelectorAll("[data-page]").forEach((page) => {
   }
   const exBox = document.createElement("div"); exBox.className = "section__body"; exBox.append(...ex.filter((k) => !k.dataset.section));
   // Accessibility comes after the live examples it describes; the other named sections before them.
-  const after = new Set(["Accessibility"]);
-  const parts = [head, ...[...named].filter(([t]) => !after.has(t)).map(([title, b]) => section(title, b)), section("Examples", exBox), ...[...named].filter(([t]) => after.has(t)).map(([title, b]) => section(title, b))];
+  const after = new Set(["Animations", "Accessibility"]);
+  const parts = [head, ...[...named].filter(([t]) => !after.has(t)).map(([title, b]) => section(title, b)), ...(exBox.children.length || !named.size ? [section("Examples", exBox)] : []), ...[...named].filter(([t]) => after.has(t)).map(([title, b]) => section(title, b))];
   const raws = [exBox, ...named.values()].flatMap((b) => [...b.querySelectorAll(".v-item > code")]).map((c) => c.textContent);
   const snippets = SNIPPETS[README_OF[id] || heading.textContent.trim()] || [];
   const files = FILES[id] || ["ui.css"];
@@ -276,6 +277,31 @@ main.addEventListener("click", (e) => { const b = e.target.closest("[data-go]");
 
 // Patterns: components put together.
 mountChatPattern(document.querySelector('[data-pattern="chat"]'));
+// Button: the playground. Every style (rows) in every tone (columns), all one width; pick the shape and size.
+const btnPreview = document.getElementById("btn-preview");
+if (btnPreview) {
+  const pick = { shape: "rounded", size: "md", width: "normal" };
+  const styles = [["filled", "Filled"], ["tinted", "Tinted"], ["bordered", "Bordered"], ["plain", "Plain"], ["link", "Link"]];
+  const tones = [["", "Accent", "Save"], ["neutral", "Neutral", "Cancel"], ["danger", "Danger", "Delete"]];
+  const draw = () => {
+    const size = (pick.size === "md" ? "" : " btn--" + pick.size) + (pick.width === "wide" ? " btn--wide" : "");
+    btnPreview.dataset.radius = pick.shape;
+    // The last column is the icon-only button: a circle in Pill, a square in Rounded and Sharp.
+    btnPreview.innerHTML = '<span></span>' + tones.map(([, name]) => `<span class="detail">${name}</span>`).join("") + '<span class="detail">Icon</span>' +
+      styles.map(([st, name]) => `<span class="detail">${name}</span>` + tones.map(([t, , label]) => `<button class="btn btn--${st}${t ? " btn--" + t : ""}${size}">${label}</button>`).join("") +
+        (st === "link" ? "<span></span>" : `<button class="btn btn--${st} btn--icon${size}" aria-label="Add"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></button>`)).join("");
+  };
+  document.querySelectorAll("[data-filter]").forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
+  draw();
+}
+// Button animations: Publish shows busy, then done (a real app would wait for its work here).
+document.addEventListener("click", (e) => {
+  const b = e.target.closest(".js-async");
+  if (!b || b.getAttribute("aria-busy") === "true" || b.classList.contains("is-done")) return;
+  busy(b, true);
+  setTimeout(() => done(b, b.dataset.did), 1800);
+});
+
 // Diagram: one live example. Its node menu renames, adds, connects and removes; a double-click or F2
 // renames; dragging the dot under a node connects it. Every change moves the way the lib does it.
 const flow = {

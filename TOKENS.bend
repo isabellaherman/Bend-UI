@@ -25,11 +25,13 @@ def radius_full() -> U32: 999
 def control_sm() -> U32: 24
 def control_md() -> U32: 32
 def control_lg() -> U32: 36
+def control_xl() -> U32: 48
 
 # Icons
 def icon_sm() -> U32: 14
 def icon_md() -> U32: 16
 def icon_lg() -> U32: 20
+def icon_xl() -> U32: space_5()
 def icon_stroke() -> String: "1.75"
 
 # Art (game/product images): height
@@ -38,7 +40,16 @@ def art_md() -> U32: space_8()
 def art_lg() -> U32: 240
 
 # Components: the choices the laws watch
+# A button's padding on each side, per size (md is btn_padding_x, which the law checks).
 def btn_padding_x() -> U32: space_3()
+def btn_padding_x_sm() -> U32: space_2()
+def btn_padding_x_lg() -> U32: space_4()
+def btn_padding_x_xl() -> U32: space_5()
+# .btn--wide: the same height, one more step on each side.
+def btn_wide_padding_x() -> U32: space_4()
+def btn_wide_padding_x_sm() -> U32: space_3()
+def btn_wide_padding_x_lg() -> U32: space_5()
+def btn_wide_padding_x_xl() -> U32: space_6()
 def btn_height() -> U32: control_md()
 def btn_radius() -> U32: radius_md()
 def panel_padding() -> U32: space_4()
@@ -48,6 +59,8 @@ def icon_btn_md_icon() -> U32: icon_md()
 def icon_btn_md_padding() -> U32: space_2()
 def icon_btn_lg_icon() -> U32: icon_lg()
 def icon_btn_lg_padding() -> U32: space_2()
+def icon_btn_xl_icon() -> U32: icon_xl()
+def icon_btn_xl_padding() -> U32: space_3()
 def field_gap() -> U32: space_1()
 def form_gap() -> U32: space_4()
 def segmented_padding() -> U32: space_hairline()
@@ -208,6 +221,11 @@ def preview_min_height() -> U32: 256
 def preview_max_height() -> U32: 640
 def snapshot_max_height() -> U32: 192
 def breadcrumb_gap() -> U32: space_2()
+
+# Button: a filled button lightens this much on hover (as before, now a token), and a disabled one is this
+# see-through (percent).
+def btn_hover_brightness() -> String: "1.08"
+def disabled_opacity() -> U32: 50
 
 # Canvas: the dots of an editable surface are this far apart.
 def canvas_gap() -> U32: space_5()

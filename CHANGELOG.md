@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.13 (2026-11-08)
+
+- **Every button you already have looks and measures exactly as in 1.0.12** (checked against the published site): plain `.btn`, `.btn--primary`, `.btn--ghost`, `.btn--sm`, `.btn--lg`, `.btn--icon`, `.btn--round`, disabled. Everything below is opt-in.
+- **Styles and tones**: `.btn--filled`, `.btn--tinted`, `.btn--bordered`, `.btn--plain`, `.btn--link`, in accent (default), `.btn--neutral` or `.btn--danger`. `.btn--primary` is filled accent and `.btn--ghost` plain neutral, as before.
+- **xl**: `.btn--xl` (48) is new. SPEC.bend's control scale is now 24, 32, 36, 48 (approved by the owner); the xl icon button holds a 24px icon (`icon_xl`) with 12px around it.
+- **Wide**: `.btn--wide` keeps the height and adds one step of room on each side (sm 12, md 16, lg 24, xl 32).
+- **Shape**: rounded stays the default. `theme({ radius: "rounded" | "pill" | "sharp" })`, `data-radius` on any container, or `.btn--pill` / `.btn--sharp`.
+- **States and content**: `aria-disabled` keeps a disabled button findable (ui.js stops its clicks); `.btn--toggle` with `aria-pressed`; `.btn__count`; a `.kbd` inside a button.
+- **Animations**: `.btn--reveal`, `.btn--hold` (fires `confirm` on release, WCAG 2.5.2), `.btn--async` with `busy()` and `done()`, `data-copy`, `.btn--extend`, and `data-reserve` so a changing button never changes width. `announce()` and `initButtons()` are exported from ui.js.
+- **No loose values**: the button's side padding now comes from tokens (`btn_padding_x` and its sm/lg/xl and wide steps; same values as before), `brightness(1.08)` is `btn_hover_brightness`, and `opacity: .5` is `disabled_opacity` (also for disabled menu items). New tokens: `control_xl`, `icon_xl` (alias), `btn_padding_x_sm/lg/xl`, `btn_wide_padding_x*`, `btn_hover_brightness`, `disabled_opacity`.
+- Docs: the Button page has a Playground (every style in every tone, plus an icon-only column, all one width; Shape, Size and Width filters), Animations, Accessibility (collapsed), Code and Laws. The Side bar's examples sit on a canvas.
+
 ## 1.0.12 (2026-11-08)
 
 - **Menus open above everything**: every Dropdown menu opens in the browser's top layer (`popover`), so no scroll area cuts it and no layer covers it. It sits by its button (`.menu--end` aligns it to the end), opens up when it doesn't fit below, and follows while the page or a list scrolls. The direction comes from the new **MENU.bend** (`opens_up`); ui.js only measures. `.menu--up` still forces it up.

@@ -403,10 +403,31 @@ Every value is a token: use `var(--…)`, never a loose number.
 
 ### Button
 
+Style is how much of the color a button uses: `.btn--filled`, `.btn--tinted`, `.btn--bordered`, `.btn--plain`, `.btn--link` (a plain `.btn` is bordered and neutral, as always). Tone is which color: accent (default), `.btn--neutral`, `.btn--danger`. Sizes: `.btn--sm` (24), md (32), `.btn--lg` (36), `.btn--xl` (48); `.btn--wide` adds room on the sides at the same height; `.btn--icon` for icon-only, `.btn--round` for a circle. Shape for the whole app: `theme({ radius: "rounded" | "pill" | "sharp" })` (rounded is the default), or `data-radius` on a container, or `.btn--pill` / `.btn--sharp` on one button. `.btn--primary` and `.btn--ghost` still work (filled accent, plain neutral).
+
 ```html
-<button class="btn">Cancel</button>
-<button class="btn btn--primary">Save</button>
-<button class="btn btn--ghost btn--sm btn--icon"><svg class="icon"><use href="#i-plus"/></svg></button>
+<button class="btn btn--filled">Save</button>
+<button class="btn btn--bordered btn--neutral">Cancel</button>
+<button class="btn btn--tinted btn--danger">Delete</button>
+<button class="btn btn--plain btn--neutral btn--sm btn--icon" aria-label="Add"><svg class="icon"><use href="#i-plus"/></svg></button>
+```
+
+States: `aria-disabled="true"` keeps a disabled button in Tab (ui.js stops its clicks); `.btn--toggle` with `aria-pressed`. Content: a `.kbd` shortcut, a `.btn__count`.
+
+Motion, each for a reason:
+
+- `.btn--reveal`: on hover or focus the trailing icon comes in and the label moves aside; the width stays.
+- `.btn--hold`: hold to confirm. Put a `.btn__fill` copy of the content inside; the tone fills over `duration_slow` while held (pointer, Space or Enter); full, it shows `data-armed`; letting go fires `confirm` and shows `data-done`. Early, it drains back.
+- `.btn--async`: `busy(btn, true)` shows a ring in place of the label (`aria-busy`); `done(btn, "Published")` pops a check and says it.
+- `data-copy="text"`: copies it; the `.btn__swap` icon turns into a check and `data-copied` is said.
+- `.btn--extend`: an icon button that opens to show its label on hover or focus.
+- `data-reserve="Publish|Published"`: the button keeps the width of its widest label, so nothing around it moves.
+
+```html
+<button class="btn btn--tinted btn--danger btn--hold" data-armed="Release to delete" data-done="Deleted" data-reserve="Hold to delete|Release to delete|Deleted">
+  <svg class="icon"><use href="#i-trash-2"/></svg><span class="btn__label">Hold to delete</span>
+  <span class="btn__fill" aria-hidden="true"><svg class="icon"><use href="#i-trash-2"/></svg><span class="btn__label">Hold to delete</span></span>
+</button>
 ```
 
 ### Input and field

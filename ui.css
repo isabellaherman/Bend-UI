@@ -23,16 +23,25 @@ html:not([data-narrow]) .only-narrow { display: none !important; }
 
 /* ---------- Button ----------
    Horizontal padding (12) larger than vertical (set by the height):
-   a button with equal padding on all 4 sides reads as a box, not a button. */
+   a button with equal padding on all 4 sides reads as a box, not a button.
+   Style is how much of the color it uses: .btn--filled > --tinted > --bordered > --plain > --link
+   (a plain .btn is bordered and neutral). Tone is which color: accent (default), .btn--neutral, .btn--danger.
+   Sizes: .btn--sm 24, md 32, .btn--lg 36, .btn--xl 48; .btn--wide adds room on the sides. Shape: rounded by
+   default; theme({ radius }) or data-radius on a container ("rounded" | "pill" | "sharp"), or .btn--pill / .btn--sharp.
+   .btn--primary is filled accent and .btn--ghost is plain neutral, under their older names. */
+:root, [data-radius="rounded"] { --btn-radius: var(--radius-md); --btn-radius-sm: var(--radius-sm); }   /* rounded is the default */
+[data-radius="pill"] { --btn-radius: var(--radius-full); --btn-radius-sm: var(--radius-full); }
+[data-radius="sharp"] { --btn-radius: var(--space-0); --btn-radius-sm: var(--space-0); }
 .btn {
+  --tone: var(--accent); --tone-soft: var(--accent-soft); --tone-fg: var(--accent-fg); --tone-text: var(--accent);
   position: relative;
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
   height: var(--control-md);
-  padding: 0 var(--space-3);
+  padding: 0 var(--btn-padding-x);
   border: var(--border-width) solid var(--border-strong);
-  border-radius: var(--radius-md);
+  border-radius: var(--btn-radius);
   background: var(--surface);
   color: var(--text);
   font: inherit;
@@ -43,23 +52,97 @@ html:not([data-narrow]) .only-narrow { display: none !important; }
 }
 .btn:hover { background: var(--surface-2); }
 .btn:focus-visible { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-offset); }
-.btn:disabled { opacity: .5; cursor: default; pointer-events: none; }
+/* Disabled: aria-disabled keeps it in Tab so people can find it and learn why; :disabled still works. */
+.btn:disabled, .btn[aria-disabled="true"] { opacity: var(--disabled-opacity); cursor: default; }
+.btn:disabled { pointer-events: none; }
 
-.btn--primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
-.btn--primary:hover { background: var(--accent); filter: brightness(1.08); }
+/* Tone */
+.btn--neutral { --tone: var(--text); --tone-soft: var(--surface-2); --tone-fg: var(--surface); --tone-text: var(--text); }
+.btn--danger { --tone: var(--danger); --tone-soft: var(--danger-soft); --tone-fg: var(--accent-fg); --tone-text: var(--danger); }
 
-.btn--ghost { background: transparent; border-color: transparent; color: var(--text-2); }
-.btn--ghost:hover { background: var(--surface-2); color: var(--text); }
+/* Style */
+.btn--filled, .btn--primary { background: var(--tone); border-color: var(--tone); color: var(--tone-fg); }
+.btn--filled:hover, .btn--primary:hover { background: var(--tone); filter: brightness(var(--btn-hover-brightness)); }
+.btn--tinted { background: var(--tone-soft); border-color: transparent; color: var(--tone-text); }
+.btn--tinted:hover { background: var(--tone-soft); filter: brightness(var(--btn-hover-brightness)); }
+.btn--bordered { background: var(--surface); border-color: var(--border-strong); color: var(--tone-text); }
+.btn--bordered:hover { background: var(--surface-2); }
+.btn--plain { background: transparent; border-color: transparent; color: var(--tone-text); }
+.btn--plain:hover { background: var(--tone-soft); }
+.btn--plain.btn--neutral, .btn--ghost { background: transparent; border-color: transparent; color: var(--text-2); }
+.btn--plain.btn--neutral:hover, .btn--ghost:hover { background: var(--surface-2); color: var(--text); }
 .btn--ghost[aria-current="page"] { background: var(--surface-2); color: var(--text); font-weight: var(--weight-medium); }   /* not color alone */
+.btn--link { height: auto; padding: 0; border: 0; background: none; color: var(--tone-text); text-decoration: underline; text-decoration-color: transparent; text-underline-offset: var(--space-1); }
+.btn--link:hover { background: none; text-decoration-color: currentColor; }
+/* Toggle (aria-pressed): on is the tinted tone with its border. */
+.btn--toggle[aria-pressed="true"] { background: var(--tone-soft); border-color: var(--tone); color: var(--tone-text); }
 
-.btn--sm { height: var(--control-sm); padding: 0 var(--space-2); font-size: var(--text-sm); border-radius: var(--radius-sm); }
+/* Size */
+.btn--sm { height: var(--control-sm); padding: 0 var(--btn-padding-x-sm); font-size: var(--text-sm); border-radius: var(--btn-radius-sm); }
 .btn--icon { width: var(--control-md); padding: 0; justify-content: center; }
 .btn--sm.btn--icon { width: var(--control-sm); padding: 0; }
-.btn--lg { height: var(--control-lg); padding: 0 var(--space-4); }
+.btn--lg { height: var(--control-lg); padding: 0 var(--btn-padding-x-lg); }
 .btn--lg.btn--icon { width: var(--control-lg); padding: 0; }
+.btn--xl { height: var(--control-xl); padding: 0 var(--btn-padding-x-xl); gap: var(--space-2); font-size: var(--text-lg); }
+.btn--xl.btn--icon { width: var(--control-xl); padding: 0; }
+.btn--xl.btn--icon .icon { width: var(--icon-xl); height: var(--icon-xl); }
+/* Wide: the same height, one more step of room on each side. */
+.btn--wide { padding-inline: var(--btn-wide-padding-x); }
+.btn--sm.btn--wide { padding-inline: var(--btn-wide-padding-x-sm); }
+.btn--lg.btn--wide { padding-inline: var(--btn-wide-padding-x-lg); }
+.btn--xl.btn--wide { padding-inline: var(--btn-wide-padding-x-xl); }
 
-/* Round: an icon-only button in a circle. Same sizes as btn--icon, so the icon_button_*_fits laws hold. */
-.btn--round { border-radius: var(--radius-full); }
+/* Shape. Round: an icon-only button in a circle, same sizes as btn--icon (the icon_button_*_fits laws). */
+.btn--round, .btn--pill { border-radius: var(--radius-full); }
+.btn--sharp { border-radius: var(--space-0); }
+
+/* Content: a shortcut (.kbd) and a count. */
+.btn .kbd { margin-left: var(--space-1); }
+.btn__count { min-width: var(--icon-md); padding: 0 var(--space-1); border-radius: var(--radius-full); background: var(--surface); color: var(--text); font-size: var(--text-xs); line-height: var(--icon-md); text-align: center; }
+
+/* Reveal: on hover or focus the trailing icon comes in and the label moves aside; the width stays. */
+.btn--reveal { justify-content: center; padding-inline: calc(var(--btn-padding-x) + (var(--icon-md) + var(--space-1)) / 2); transition: padding var(--duration-enter) var(--ease), background var(--duration) var(--ease), color var(--duration) var(--ease), transform var(--duration) var(--ease); }
+.btn--reveal > .icon:last-child { width: var(--space-0); margin-left: calc(var(--space-1) * -1); opacity: 0; transform: translateX(calc(var(--space-2) * -1)); transition: width var(--duration-enter) var(--ease), margin var(--duration-enter) var(--ease), opacity var(--duration-enter) var(--ease), transform var(--duration-enter) var(--ease); }
+.btn--reveal:is(:hover, :focus-visible) { padding-inline: var(--btn-padding-x); }
+.btn--reveal:is(:hover, :focus-visible) > .icon:last-child { width: var(--icon-md); margin-left: var(--space-0); opacity: 1; transform: none; }
+
+/* Hold to confirm (ui.js): the tone fills as it's held (--p, 0 → 1, over hold_ms); the action fires on release. */
+.btn--hold { justify-content: center; overflow: hidden; isolation: isolate; touch-action: none; user-select: none; -webkit-user-select: none; }
+.btn__fill { position: absolute; inset: calc(var(--border-width) * -1); display: flex; align-items: center; justify-content: center; gap: inherit; padding: inherit; border-radius: inherit; background: var(--tone); color: var(--tone-fg); clip-path: inset(0 calc((1 - var(--p, 0)) * 100%) 0 0); pointer-events: none; }
+.btn--hold.is-done .btn__fill { clip-path: none; }
+
+/* Busy → done: a ring turns where the label was (aria-busy), then a check pops (.is-done). The width stays. */
+.btn--async { justify-content: center; }
+.btn--async > :not(.btn__spin) { transition: opacity var(--duration) var(--ease); }
+.btn--async[aria-busy="true"] > :not(.btn__spin) { opacity: 0; }
+.btn__spin { position: absolute; inset: var(--space-0); margin: auto; width: var(--icon-md); height: var(--icon-md); opacity: 0; transform: rotate(-90deg); transition: opacity var(--duration) var(--ease); }
+.btn__spin circle { fill: none; stroke: currentColor; stroke-width: var(--ring-width); stroke-linecap: round; stroke-dasharray: 30 70; animation: bend-ring-spin var(--duration-slow) linear infinite; }
+.btn--async[aria-busy="true"] .btn__spin { opacity: 1; }
+.btn--async.is-done { background: var(--success); border-color: var(--success); color: var(--accent-fg); }
+.btn__done { display: none; }
+.is-done > .btn__done { display: inline-flex; animation: btn-pop var(--duration-enter) var(--ease-spring); }
+.is-done > .btn__idle { display: none; }
+@keyframes btn-pop { from { transform: scale(.6); opacity: 0; } }
+
+/* Copy (ui.js, data-copy): the icon turns into a check, in place. */
+.btn__swap { display: inline-grid; }
+.btn__swap > svg { grid-area: 1 / 1; transition: opacity var(--duration-enter) var(--ease), transform var(--duration-enter) var(--ease-spring), filter var(--duration-enter) var(--ease); }
+.btn__swap > svg:last-child, .btn.is-done .btn__swap > svg:first-child { opacity: 0; transform: scale(.6); filter: blur(var(--blur-form)); }
+.btn.is-done .btn__swap > svg:last-child { opacity: 1; transform: none; filter: none; color: var(--success); }
+
+/* Extend: an icon button opens on hover or focus to show its label (its name is always aria-label). */
+.btn--extend { padding: 0; gap: 0; }
+.btn--extend > .icon { margin-inline: calc((var(--control-md) - var(--icon-md)) / 2 - var(--border-width)); }
+.btn__more { display: grid; grid-template-columns: 0fr; transition: grid-template-columns var(--duration-enter) var(--ease), padding var(--duration-enter) var(--ease); }
+.btn__more > span { overflow: hidden; white-space: nowrap; }
+.btn--extend:is(:hover, :focus-visible) .btn__more { grid-template-columns: 1fr; padding-right: var(--space-3); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn, .btn *, .btn__fill { transition: none !important; animation: none !important; }
+  .btn--reveal { padding-inline: var(--btn-padding-x); }
+  .btn--reveal > .icon:last-child { width: var(--icon-md); margin-left: var(--space-0); opacity: 1; transform: none; }
+  .btn__more { grid-template-columns: 1fr; padding-right: var(--space-3); }
+}
 
 /* ---------- Icon ---------- */
 .icon {
@@ -151,7 +234,7 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
 .menu__item > span { flex: 1; }
 .menu__item:hover, .menu__item:focus-visible { background: var(--surface-2); color: var(--text); outline: none; }
 .menu__item[aria-checked="true"] { color: var(--text); }
-.menu__item:disabled { opacity: .5; cursor: default; }
+.menu__item:disabled { opacity: var(--disabled-opacity); cursor: default; }
 .menu__check { visibility: hidden; color: var(--accent); }
 .menu__item[aria-checked="true"] .menu__check { visibility: visible; }
 
