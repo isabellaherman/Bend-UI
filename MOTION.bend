@@ -87,13 +87,6 @@ def thread_reach(+crept: F32) -> F32:
 def node_fill(+crept: F32) -> F32:
   (F32.clamp((crept / 0.75 : F32), 0.0, 1.0) * 0.92 : F32)
 
-# Follow (smart auto-scroll): the band of the scroller where the followed item may sit,
-# as fractions of its height from the top and from the bottom; outside it, the page scrolls
-# to put the item at follow_anchor from the top.
-def follow_top() -> F32: 0.15
-def follow_bottom() -> F32: 0.3
-def follow_anchor() -> F32: 0.3
-
 # ---------- The agent's timing and feel (agent.js reads these) ----------
 
 # Blink: about every blink_every seconds (plus up to blink_jitter), with chance blink_chance;

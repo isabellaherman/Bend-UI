@@ -1,6 +1,6 @@
 {
   "name": "bend-ui",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Design system in Bend: tokens in TOKENS.bend, rules in LAWS.bend.",
   "type": "module",
   "main": "ui.js",
@@ -8,7 +8,6 @@
     ".": "./ui.js",
     "./agent": "./agent.js",
     "./thread": "./thread.js",
-    "./follow": "./follow.js",
     "./ui.css": "./ui.css",
     "./TOKENS.bend": "./TOKENS.bend",
     "./MOTION.bend": "./MOTION.bend",
@@ -33,7 +32,6 @@
     "icons.js",
     "agent.js",
     "thread.js",
-    "follow.js",
     "keys.js",
     "syntax.js",
     "diagram.js",

@@ -81,31 +81,25 @@ A `.segmented` group switches on click by itself and fires `change` (the button 
 
 A plain `doc` shows only the blocks; `doc--stack` shows each aside under its block; `doc--split` beside it (a stack on narrow screens). Every block starts at `block_min_lines()` lines; set `--block-min-lines` on a block to change it.
 
-## Thread and follow
+## Thread
 
-A line that ties each block of a `.pair` to its aside while work runs (like writing a law for a sentence), and a page that follows the work.
+A line that ties each block of a `.pair` to its aside while work runs (like writing a law for a sentence).
 
 ```js
 import { createThread, openBlock, formBlock } from "bend-ui/thread";
-import { createFollow } from "bend-ui/follow";
 
 const thread = createThread(doc);
-const follow = createFollow(page, { button: followButton });   // <button class="btn btn--sm window__follow" hidden>
 
 await thread.begin(pairs);                       // the queue cascades in
 for (const [i, pair] of pairs.entries()) {
   const aside = pair.querySelector(".pair__aside");
-  follow.to(pair);
   await Promise.all([openBlock(aside, html), thread.start(i)]);   // working: the line creeps, the node fills
   /* … the work … */
   await Promise.all([formBlock(aside, result, "block--code"), thread.done(i, ok)]);
 }
-follow.stop();
 await thread.end();       // one glint
 await thread.release();   // the blocks get their dots back
 ```
-
-Following pauses when the person scrolls by hand; the button brings it back.
 
 ## Dropdown
 
@@ -591,7 +585,7 @@ Row actions: wrap an item (or a section's toggle) in a `.side__row` with a `.dro
 
 | | |
 |---|---|
-| Components | `page`, `doc`, `pair`, `thread` + `node`, `follow`, `chat` + `msg` + `composer`, `disclosure`, `form`, `link`, `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent`, `diagram`, `chart` |
+| Components | `page`, `doc`, `pair`, `thread` + `node`, `chat` + `msg` + `composer`, `disclosure`, `form`, `link`, `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent`, `diagram`, `chart` |
 | Text | `display`, `heading`, `lead`, `text`, `list`, `meta`, `mono` |
 | Icons | plus, arrow-up, shield, github, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left, book-open, lock, minimize-2, maximize-2, minimize, maximize, text, rows-2, columns-2, heading-1, pilcrow, check |
 | Tokens | space, radius, type, controls, icons, art, status, side bar, window, agent, chat, chart, motion, color (light theme) |

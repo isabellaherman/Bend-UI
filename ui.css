@@ -751,8 +751,6 @@ html:not([data-narrow]) .doc--split .doc__columns { display: grid; grid-template
 }
 @keyframes thread-read { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; } to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
 
-/* Follow (follow.js): the button that brings following back, bottom center of the main area. */
-.window__follow { position: absolute; left: 50%; bottom: var(--space-5); transform: translateX(-50%); z-index: var(--layer-dock); box-shadow: var(--shadow-float); }
 
 /* ---------- Chat: a conversation that flows, the composer fixed under it ----------
    <main class="page"><div class="chat">…</div></main> <form class="composer">…</form>

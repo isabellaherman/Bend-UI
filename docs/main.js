@@ -127,7 +127,7 @@ const FILES = {
   radius: ["TOKENS.bend", "ui.js", "ui.css"], type: ["TOKENS.bend", "ui.js", "ui.css"],
   icons: ["icons.js", "ui.js"], keyboard: ["KEYS.bend", "keys.js"],
   diagram: ["DIAGRAM.bend", "diagram.js", "ui.css"], chart: ["CHART.bend", "chart.js", "MOTION.bend", "TOKENS.bend", "ui.css"], thread: ["MOTION.bend", "thread.js", "ui.css"],
-  follow: ["MOTION.bend", "follow.js", "ui.css"], agent: ["MOTION.bend", "agent.js", "ui.css"],
+  agent: ["MOTION.bend", "agent.js", "ui.css"],
   syntax: ["SYNTAX.bend", "syntax.js", "ui.css"],
   dropdown: ["ui.js", "ui.css"],
 };
@@ -150,7 +150,7 @@ const SNIPPETS = (() => {
 // The README heading of each page, when it isn't the page's own title.
 const README_OF = {
   color: "Tokens", space: "Tokens", size: "Tokens", radius: "Tokens", type: "Type: one ladder", keyboard: "Keys",
-  page: "Page, doc and pair", pair: "Page, doc and pair", thread: "Thread and follow", follow: "Thread and follow",
+  page: "Page, doc and pair", pair: "Page, doc and pair", thread: "Thread",
   section: "Page head and sections", dropdown: "Dropdown",
 };
 const section = (title, ...kids) => {
@@ -226,7 +226,7 @@ const LABEL = {
   ".page · .doc · .doc__head · .doc__note · .doc__sub · .doc--wide": "page and doc",
   ".chat · .msg · .msg--me · .msg--face": "messages", ".composer · .composer__field · .composer__text · .composer__send": "composer",
   ".prose pre.syntax": "code box", ".block--code.syntax": "law block",
-  ".window__follow · createFollow(page, { button })": "follow button", "createThread · openBlock · formBlock": "thread",
+  "createThread · openBlock · formBlock": "thread",
   "brand/claude.webp": "Claude mark", "brand/openai.svg": "OpenAI mark",
   ".page-head · .section · .section__body": "page", ".separator": "separator", ".divided": "divided",
   ".diagram--soft": "soft", ".diagram__node + .tag--mono": "with tag",

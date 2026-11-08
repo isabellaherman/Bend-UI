@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.16 (2026-11-08)
+
+- **Follow is removed** (owner's call): `follow.js`, the `bend-ui/follow` export, `.window__follow`, and `follow_top`, `follow_bottom`, `follow_anchor` in MOTION.bend. **Breaking** for apps that import `createFollow`. The Thread section of the README no longer uses it, and the docs have no Follow page.
+
 ## 1.0.15 (2026-11-08)
 
 - **Docs: the Diagram page in the Button page's format**: a Playground with every look (Border, Soft) in every tone, all nodes one width, and a Tag filter; Composition (the arrows); Animations (the editable diagram on a canvas, where nodes grow, connect, rename and leave); Accessibility (collapsed, 11 of 13 pass); Code. Each page's filters only drive its own playground. Nothing in the lib changes.
