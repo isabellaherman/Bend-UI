@@ -84,6 +84,7 @@ document.getElementById("thread-play").addEventListener("click", async () => {
 import { keyLabel } from "../keys.js";
 import { highlight } from "../syntax.js";
 import { mountDiagram } from "../diagram.js";
+import { mountPie, mountBars, mountLine, mountArea } from "../chart.js";
 import { LAWS } from "./laws.data.js";
 import pkg from "../package.json";
 import { mountChatPattern } from "./patterns/chat.js";
@@ -124,7 +125,7 @@ const FILES = {
   color: ["TOKENS.bend", "ui.js", "ui.css"], space: ["TOKENS.bend", "ui.js", "ui.css"], size: ["TOKENS.bend", "ui.js", "ui.css"],
   radius: ["TOKENS.bend", "ui.js", "ui.css"], type: ["TOKENS.bend", "ui.js", "ui.css"],
   icons: ["icons.js", "ui.js"], keyboard: ["KEYS.bend", "keys.js"],
-  diagram: ["DIAGRAM.bend", "diagram.js", "ui.css"], thread: ["MOTION.bend", "thread.js", "ui.css"],
+  diagram: ["DIAGRAM.bend", "diagram.js", "ui.css"], chart: ["CHART.bend", "chart.js", "MOTION.bend", "TOKENS.bend", "ui.css"], thread: ["MOTION.bend", "thread.js", "ui.css"],
   follow: ["MOTION.bend", "follow.js", "ui.css"], agent: ["MOTION.bend", "agent.js", "ui.css"],
   syntax: ["SYNTAX.bend", "syntax.js", "ui.css"],
 };
@@ -220,6 +221,8 @@ const LABEL = {
   ".section-title · --role-section · .prose h1": "section", ".group-title · --role-group · .prose h2": "group",
   ".text · .prose p": "text", ".item-title · --role-item · .prose h3": "item", ".detail · .meta": "detail",
   ".syntax__kw · __type · __str · __num · __com · __punct · __name": "colors",
+  "mountPie(el, slices)": "pie", "mountBars(el, points)": "bars", "mountLine(el, points)": "line", "mountArea(el, points)": "area",
+  "replay()": "play again",
 };
 const words = (s) => s.replace(/[-_]+/g, " ").trim();
 function labelOf(raw, siblings) {
@@ -255,6 +258,7 @@ function go(id) {
   main.querySelectorAll("[data-page]").forEach((s) => (s.hidden = s.dataset.page !== id));
   document.querySelectorAll("#docs-nav [data-go]").forEach((b) => (b.dataset.go === id ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
   main.scrollTop = 0;
+  if (id === "chart") charts.forEach((c) => c.replay());   // the entrance plays when the page shows
 }
 $("docs-nav").addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); });
 main.addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); });   // "Made of" links
@@ -300,5 +304,16 @@ mountDiagram($("diagram-demo-soft"), {
     { from: 3, to: 5 },
   ],
 });
+// Chart: the four marks, then the pie's looks. Each plays its entrance when the page shows, or on Play.
+const schools = [{ label: "Fire", value: 46 }, { label: "Water", value: 27 }, { label: "Earth", value: 17 }, { label: "Air", value: 10 }];
+const week = (values) => values.map((value, i) => ({ label: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][i], value }));
+const charts = [
+  mountPie($("chart-pie"), schools),
+  mountBars($("chart-bars"), week([42, 58, 51, 74, 66, 38, 47])),
+  mountLine($("chart-line"), week([28, 34, 31, 45, 52, 49, 61])),
+  mountArea($("chart-area"), week([12, 18, 15, 26, 31, 27, 36])),
+  ...["chart-plain", "chart-split", "chart-donut", "chart-donut-split"].map((id) => mountPie($(id), schools)),
+];
+$("chart-play").addEventListener("click", () => charts.forEach((c) => c.replay()));
 $("docs-side-toggle").addEventListener("click", () => $("docs-side").classList.toggle("is-open"));
 go("overview");

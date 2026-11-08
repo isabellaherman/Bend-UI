@@ -248,6 +248,19 @@ mountDiagram(el, {
 
 A node's `tone` is `accent`, `law`, `draft`, `conflict`, or none; `tag` is a short word on it. Two looks: a colored border (default), or add `diagram--soft` to `el` for a soft fill with the tone in the text. Arrows with the same ends become one line, their labels joined.
 
+## Chart
+
+Pie, bars, line and area: one mark each, no card around them. `CHART.bend` places every mark (a slice's turns, the grid's step, where a value sits, the curve); `chart.js` only draws. The motion is `MOTION.bend` and the duration tokens, the same the thread and the agent use.
+
+```js
+import { mountPie, mountBars, mountLine, mountArea } from "bend-ui/chart";
+mountPie(el, [{ label: "Fire", value: 46 }, { label: "Air", value: 10 }]);
+const bars = mountBars(el, [{ label: "Mon", value: 42 }]);
+bars.replay();   // the entrance again; also draw() and destroy()
+```
+
+A pie takes up to 4 slices; line and area take the same points as bars. Colors are tones of the accent (`--chart-1` to `--chart-4`), so `theme({ accent })` recolors every chart. A pie takes two looks on `el`: `chart--split` (a gap between slices) and `chart--donut` (a hole). Pointing at a mark keeps it and dims the rest; line and area show the thread's node on the point.
+
 ## Disclosure
 
 A section that opens and closes, on the native `<details>` (keyboard and screen readers work as anywhere). Closed unless it has `open`.
@@ -470,10 +483,10 @@ Every value is a token: use `var(--…)`, never a loose number.
 
 | | |
 |---|---|
-| Components | `page`, `doc`, `pair`, `thread` + `node`, `follow`, `chat` + `msg` + `composer`, `disclosure`, `form`, `link`, `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent` |
+| Components | `page`, `doc`, `pair`, `thread` + `node`, `follow`, `chat` + `msg` + `composer`, `disclosure`, `form`, `link`, `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent`, `diagram`, `chart` |
 | Text | `display`, `heading`, `lead`, `text`, `list`, `meta`, `mono` |
 | Icons | plus, arrow-up, shield, github, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left, book-open, lock, minimize-2, maximize-2, minimize, maximize, text, rows-2, columns-2, heading-1, pilcrow, check |
-| Tokens | space, radius, type, controls, icons, art, status, side bar, window, agent, chat, motion, color (light theme) |
+| Tokens | space, radius, type, controls, icons, art, status, side bar, window, agent, chat, chart, motion, color (light theme) |
 
 See everything: https://isabellaherman.github.io/Bend-UI/ (or `bun run docs`). After changing the docs, `bun run site` rebuilds `site/`; pushing it publishes the page.
 

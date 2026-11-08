@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.5 (2026-11-08)
+
+- **Chart** (`CHART.bend`, `chart.js`): pie, bars, line and area, one mark each. Bend places every mark; JS only draws. Colors are four tones of the accent (`chart_tone_1` to `chart_tone_4`), so a theme recolors them. The pie takes `.chart--split` and `.chart--donut`.
+- Motion, all from the lib: the pie sweeps in (`ease_out`), bars rise one after another on the agent's spring (`MOTION.spring`, `stagger_ms`), the line runs in like the thread with its glow, node and glint, the area rises. Pointing keeps a mark and dims the rest (`chart_dim`); line and area use the thread's `.node`.
+- Tokens: `chart_tone_1`…`4`, `chart_hole`, `chart_dim` are new values; `chart_gap`, `chart_lift`, `chart_bar_max`, `chart_bar_gap`, `chart_axis_x`, `chart_axis_y` name values the scale already has. No new law.
+- Docs: a Chart page under Components.
+
 ## 1.0.3 (2026-11-07)
 
 - **Window foot at the end**: `.window__foot--end` puts a foot at the bottom right, for the app's version (`.tag.tag--mono`). It sits under the dock, not on it.

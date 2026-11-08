@@ -1,6 +1,6 @@
 {
   "name": "bend-ui",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Design system in Bend: tokens in TOKENS.bend, rules in LAWS.bend.",
   "type": "module",
   "main": "ui.js",
@@ -19,7 +19,9 @@
     "./syntax": "./syntax.js",
     "./SYNTAX.bend": "./SYNTAX.bend",
     "./diagram": "./diagram.js",
-    "./DIAGRAM.bend": "./DIAGRAM.bend"
+    "./DIAGRAM.bend": "./DIAGRAM.bend",
+    "./chart": "./chart.js",
+    "./CHART.bend": "./CHART.bend"
   },
   "files": [
     "ui.js",
@@ -31,11 +33,13 @@
     "keys.js",
     "syntax.js",
     "diagram.js",
+    "chart.js",
     "TOKENS.bend",
     "MOTION.bend",
     "KEYS.bend",
     "SYNTAX.bend",
     "DIAGRAM.bend",
+    "CHART.bend",
     "SPEC.bend",
     "LAWS.bend",
     "PROOF.bend",

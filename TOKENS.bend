@@ -188,3 +188,17 @@ def syntax_number() -> String: "#0550ae"
 def syntax_comment() -> String: "#5f6870"
 def syntax_punct() -> String: "#424a53"
 def syntax_name() -> String: "#5a32a3"
+
+# Chart: a series' color is the accent this strong (percent), mixed toward the surface.
+def chart_tone_1() -> U32: 100
+def chart_tone_2() -> U32: 66
+def chart_tone_3() -> U32: 40
+def chart_tone_4() -> U32: 22
+def chart_gap() -> U32: space_hairline()   # the surface between slices
+def chart_lift() -> U32: space_1()         # how far a pointed slice steps out
+def chart_hole() -> U32: 60                # a donut's hole, percent of its radius
+def chart_dim() -> U32: 40                 # the rest while one is pointed, percent opacity
+def chart_bar_max() -> U32: space_5()      # a bar is never wider
+def chart_bar_gap() -> U32: space_2()      # the least space between two bars
+def chart_axis_x() -> U32: space_6()       # the labels' column, left of the plot
+def chart_axis_y() -> U32: space_5()       # the labels' row, under the plot
