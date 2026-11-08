@@ -44,6 +44,7 @@ document.getElementById("brand-openai").src = openai;
 
 // dropdown: the button shows the picked item
 document.addEventListener("pick", (e) => {
+  if (e.target.closest(".diagram__node")) return;   // a diagram's node menu: its items act, the label stays
   const btn = e.target.querySelector(':scope > [aria-haspopup="menu"]');
   btn.querySelector("span").textContent = e.detail.querySelector("span").textContent;
   btn.querySelector("use").setAttribute("href", e.detail.querySelector("use").getAttribute("href"));
@@ -83,7 +84,7 @@ document.getElementById("thread-play").addEventListener("click", async () => {
 // =========================================================
 import { keyLabel } from "../keys.js";
 import { highlight } from "../syntax.js";
-import { mountDiagram } from "../diagram.js";
+import { mountDiagram, announce } from "../diagram.js";
 import { mountPie, mountBars, mountLine, mountArea } from "../chart.js";
 import { LAWS } from "./laws.data.js";
 import pkg from "../package.json";
@@ -112,7 +113,7 @@ const LAWS_OF = {
 };
 const byName = Object.fromEntries(LAWS.map((l) => [l.name, l]));
 const lawBlock = (l) => `<div class="docs-law">` +
-  line("dot dot--ok", esc(l.what.charAt(0).toUpperCase() + l.what.slice(1))) +
+  line("dot dot--success", esc(l.what.charAt(0).toUpperCase() + l.what.slice(1))) +
   `<div class="block block--code" data-code><div class="block__slot"></div><div class="block__text">${esc(l.code)}</div></div></div>`;
 // Every page has the same shape, in this order (a section shows only when the page has it):
 //   title, and what it is
@@ -168,21 +169,30 @@ document.querySelectorAll("[data-page]").forEach((page) => {
   const ex = kids.filter((k) => k !== heading && k !== laws && !about.includes(k) && !(k.matches("article.prose") && k.querySelector("h2")));
   const head = document.createElement("header"); head.className = "page-head";
   head.append(heading, ...about.map((a) => { const p = document.createElement("p"); p.className = "lead"; p.innerHTML = a.querySelector("p")?.innerHTML || ""; return p; }));
-  const exBox = document.createElement("div"); exBox.className = "section__body"; exBox.append(...ex);
-  const parts = [head, section("Examples", exBox)];
-  const raws = [...exBox.querySelectorAll(".v-item > code")].map((c) => c.textContent);
+  // A page can split its examples into named sections (data-section="Variants", "Composition", …);
+  // whatever has none goes under Examples.
+  const named = new Map();
+  for (const k of ex.filter((k) => k.dataset.section)) {
+    if (!named.has(k.dataset.section)) { const b = document.createElement("div"); b.className = "section__body"; named.set(k.dataset.section, b); }
+    named.get(k.dataset.section).append(k);
+  }
+  const exBox = document.createElement("div"); exBox.className = "section__body"; exBox.append(...ex.filter((k) => !k.dataset.section));
+  const parts = [head, ...[...named].map(([title, b]) => section(title, b)), section("Examples", exBox)];
+  const raws = [exBox, ...named.values()].flatMap((b) => [...b.querySelectorAll(".v-item > code")]).map((c) => c.textContent);
   const snippets = SNIPPETS[README_OF[id] || heading.textContent.trim()] || [];
-  if (snippets.length) parts.push(section("Code", ...snippets.map(({ lang, code }) => {
+  const files = FILES[id] || ["ui.css"];
+  // Pages in the new layout (named sections) list their files under Code and have no Implementation.
+  const fileLine = named.size ? [box(`<p class="detail mono">${files.map(esc).join(" · ")}</p>`)] : [];
+  if (snippets.length || fileLine.length) parts.push(section("Code", ...fileLine, ...snippets.map(({ lang, code }) => {
     const pre = box(`<article class="prose"><pre><code></code></pre></article>`);
     pre.querySelector("code").textContent = code;
     pre.querySelector("pre").dataset.lang = lang;
     return pre;
   })));
-  const files = FILES[id] || ["ui.css"];
   const classes = [...new Set(raws.flatMap((r) => r.match(/\.[a-z][\w-]*(?:__[\w-]+)?(?:--[\w-]+)?/g) || []))];
   const tokens = [...new Set(raws.filter((r) => r.startsWith("--")).map((r) => r.split(" ")[0]))];
-  const named = classes.length ? classes : tokens;
-  parts.push(section("Implementation", box(`<div class="outline"><div class="outline__item"><span class="item-title">Files</span><p class="detail mono">${files.map(esc).join(" · ")}</p></div>${named.length ? `<div class="outline__item"><span class="item-title">${classes.length ? "Classes" : "Tokens"}</span><p class="detail mono">${named.map(esc).join(" · ")}</p></div>` : ""}</div>`)));
+  const listed = classes.length ? classes : tokens;
+  if (!named.size) parts.push(section("Implementation", box(`<div class="outline"><div class="outline__item"><span class="item-title">Files</span><p class="detail mono">${files.map(esc).join(" · ")}</p></div>${listed.length ? `<div class="outline__item"><span class="item-title">${classes.length ? "Classes" : "Tokens"}</span><p class="detail mono">${listed.map(esc).join(" · ")}</p></div>` : ""}</div>`)));
   const names = LAWS_OF[laws?.dataset.laws] || [];
   if (names.length) parts.push(section(`Laws · ${names.length}`, box(`<div>${names.map((n) => lawBlock(byName[n])).join("")}</div>`)));
   laws?.remove();
@@ -200,7 +210,7 @@ document.querySelector("[data-keys]").innerHTML = [
   ["Scopes", "0 the app, always on; 1 an open menu; 2 an open agent. An app key clashes with every scope."],
   ["Typing", "In a field, only keys with ⌘/Ctrl or Alt run. A plain key types its letter (WCAG 2.1.4)."],
   ["Reserved", "⌘/Ctrl + W, T, N, Q, L, R stay the browser's."],
-].map(([a, b]) => line("dot dot--ok", `<b>${a}</b>. ${esc(b)}`)).join("") +
+].map(([a, b]) => line("dot dot--success", `<b>${a}</b>. ${esc(b)}`)).join("") +
   `<article class="prose"><h2>The lib's own keys</h2></article>` +
   [["Open menu", "escape", "Close it"], ["Open menu", "arrowdown", "Next item"], ["Open menu", "arrowup", "Previous item"], ["Open agent", "escape", "Close it"]]
     .map(([scope, k, what]) => line("", `<span class="kbd">${esc(keyLabel(0, k))}</span> ${what}`, scope)).join("");
@@ -216,8 +226,7 @@ const LABEL = {
   ".window__follow · createFollow(page, { button })": "follow button", "createThread · openBlock · formBlock": "thread",
   "brand/claude.webp": "Claude mark", "brand/openai.svg": "OpenAI mark",
   ".page-head · .section · .section__body": "page", ".separator": "separator", ".divided": "divided",
-  ".diagram--soft .diagram__node": "soft", ".diagram--soft .diagram__node--accent": "soft accent", ".diagram--soft .diagram__node--law": "soft law",
-  ".diagram--soft .diagram__node--draft": "soft draft", ".diagram--soft .diagram__node--conflict": "soft conflict",
+  ".diagram--soft": "soft", ".diagram__node + .tag--mono": "with tag",
   ".section-title · --role-section · .prose h1": "section", ".group-title · --role-group · .prose h2": "group",
   ".text · .prose p": "text", ".item-title · --role-item · .prose h3": "item", ".detail · .meta": "detail",
   ".syntax__kw · __type · __str · __num · __com · __punct · __name": "colors",
@@ -265,45 +274,50 @@ main.addEventListener("click", (e) => { const b = e.target.closest("[data-go]");
 
 // Patterns: components put together.
 mountChatPattern(document.querySelector('[data-pattern="chat"]'));
-// Diagram: its parts, then a small game's flow, in both looks.
-mountDiagram($("diagram-arrow"), { nodes: [{ label: "Node" }, { label: "Node" }], edges: [{ from: 0, to: 1 }] });
-mountDiagram($("diagram-label"), { nodes: [{ label: "Node" }, { label: "Node" }], edges: [{ from: 0, to: 1, label: "Label" }] });
-mountDiagram($("diagram-branch"), { nodes: [{ label: "Node" }, { label: "Node" }, { label: "Node" }], edges: [{ from: 0, to: 1, label: "A" }, { from: 0, to: 2, label: "B" }] });
-mountDiagram($("diagram-join"), { nodes: [{ label: "Node" }, { label: "Node" }], edges: [{ from: 0, to: 1, label: "A" }, { from: 0, to: 1, label: "B" }] });
-mountDiagram($("diagram-demo"), {
-  nodes: [
-    { label: "Title screen" },
-    { label: "Play", tone: "accent" },
-    { label: "Lose a life", tone: "draft" },
-    { label: "Clear the level", tone: "law" },
-    { label: "Game over", tone: "conflict" },
-    { label: "Next level", tone: "law" },
-  ],
-  edges: [
-    { from: 0, to: 1, label: "Start" },
-    { from: 1, to: 2, label: "hit" },
-    { from: 1, to: 3, label: "all keys" },
-    { from: 2, to: 4, label: "0 lives" },
-    { from: 3, to: 5 },
-  ],
-});
-mountDiagram($("diagram-demo-soft"), {
-  nodes: [
-    { label: "Title screen" },
-    { label: "Play", tone: "accent" },
-    { label: "Lose a life", tone: "draft" },
-    { label: "Clear the level", tone: "law" },
-    { label: "Game over", tone: "conflict" },
-    { label: "Next level", tone: "law" },
-  ],
-  edges: [
-    { from: 0, to: 1, label: "Start" },
-    { from: 1, to: 2, label: "hit" },
-    { from: 1, to: 3, label: "all keys" },
-    { from: 2, to: 4, label: "0 lives" },
-    { from: 3, to: 5 },
-  ],
-});
+// Diagram: one live example. Its node menu renames, adds, connects and removes; a double-click or F2
+// renames; dragging the dot under a node connects it. Every change moves the way the lib does it.
+const flow = {
+  nodes: [{ label: "Hello" }, { label: "Click me", tone: "accent" }],
+  edges: [{ from: 0, to: 1 }],
+};
+let live;
+const linked = (a, b) => flow.edges.some((e) => e.from === a && e.to === b);
+function drawLive() {
+  live?.destroy();
+  live = mountDiagram($("diagram-live"), flow, {
+    label: "Publishing flow",
+    isValidConnection: ({ source, target }) => !linked(source, target),
+    onConnect: ({ source, target }) => { flow.edges.push({ from: source, to: target }); drawLive(); },
+    onLabelEdit: (i, label) => { flow.nodes[i] = { ...flow.nodes[i], label }; drawLive(); },
+    nodeMenu: (i) => [
+      { label: "Rename", onSelect: () => live.editLabel(i) },
+      { label: "Add node below", onSelect: () => {
+        let n = 1; while (flow.nodes.some((x) => x.label === "Step " + n)) n++;
+        flow.nodes.push({ label: "Step " + n }); flow.edges.push({ from: i, to: flow.nodes.length - 1 });
+        announce("Added Step " + n + " below " + flow.nodes[i].label); live.focusAfterDraw("Step " + n); drawLive();
+      } },
+      ...flow.nodes.map((x, j) => (j !== i && !linked(i, j) ? { label: "Connect to " + x.label, onSelect: () => {
+        announce("Connected " + flow.nodes[i].label + " to " + x.label); live.focusAfterDraw(flow.nodes[i].label);
+        flow.edges.push({ from: i, to: j }); drawLive();
+      } } : null)).filter(Boolean),
+      { label: "Remove", disabled: flow.nodes.length < 2, onSelect: async () => {
+        await live.leave(i);
+        const near = flow.edges.find((e) => e.to === i)?.from ?? flow.edges.find((e) => e.from === i)?.to;
+        const keep = near !== undefined ? flow.nodes[near].label : null;
+        flow.nodes.splice(i, 1);
+        flow.edges = flow.edges.filter((e) => e.from !== i && e.to !== i).map((e) => ({ ...e, from: e.from - (e.from > i), to: e.to - (e.to > i) }));
+        if (keep) live.focusAfterDraw(keep);
+        drawLive();
+      } },
+    ],
+  });
+}
+drawLive();
+// Diagram: its arrows.
+mountDiagram($("diagram-arrow"), { nodes: [{ label: "Node" }, { label: "Node", tone: "accent" }], edges: [{ from: 0, to: 1 }] });
+mountDiagram($("diagram-label"), { nodes: [{ label: "Node", tone: "warning" }, { label: "Node", tone: "success" }], edges: [{ from: 0, to: 1, label: "Label" }] });
+mountDiagram($("diagram-branch"), { nodes: [{ label: "Node", tone: "accent" }, { label: "Node", tone: "success" }, { label: "Node", tone: "danger" }], edges: [{ from: 0, to: 1, label: "A" }, { from: 0, to: 2, label: "B" }] });
+mountDiagram($("diagram-join"), { nodes: [{ label: "Node" }, { label: "Node", tone: "warning" }], edges: [{ from: 0, to: 1, label: "A" }, { from: 0, to: 1, label: "B" }] });
 // Chart: the four marks, then the pie's looks. Each plays its entrance when the page shows, or on Play.
 const schools = [{ label: "Fire", value: 46 }, { label: "Water", value: 27 }, { label: "Earth", value: 17 }, { label: "Air", value: 10 }];
 const week = (values) => values.map((value, i) => ({ label: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][i], value }));

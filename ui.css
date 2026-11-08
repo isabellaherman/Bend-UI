@@ -196,9 +196,9 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
   background: var(--surface-2);
   color: var(--text-2);
 }
-.tag--law { background: var(--law-soft); color: var(--law); }
-.tag--draft { background: var(--draft-soft); color: var(--draft); }
-.tag--conflict { background: var(--conflict-soft); color: var(--conflict); }
+.tag--success { background: var(--success-soft); color: var(--success); }
+.tag--warning { background: var(--warning-soft); color: var(--warning); }
+.tag--danger { background: var(--danger-soft); color: var(--danger); }
 .tag--mono { font-family: var(--font-mono); }
 
 .kbd {
@@ -346,9 +346,9 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
   transition: background var(--duration), border-color var(--duration), opacity var(--duration-enter);
 }
 .dot--busy  { border-color: var(--accent);   background: var(--accent);   animation: bend-pulse var(--duration-slow) ease-in-out infinite; }
-.dot--ok    { border-color: var(--law);      background: var(--law); }
-.dot--warn  { border-color: var(--draft);    background: var(--draft); }
-.dot--error { border-color: var(--conflict); background: var(--conflict); }
+.dot--success    { border-color: var(--success);      background: var(--success); }
+.dot--warning  { border-color: var(--warning);    background: var(--warning); }
+.dot--danger { border-color: var(--danger); background: var(--danger); }
 @keyframes bend-pulse { 50% { opacity: .35; } }
 
 /* ---------- Status ring: a state around a round element ----------
@@ -368,11 +368,11 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
   overflow: visible;
 }
 .status-ring circle { fill: none; stroke: transparent; stroke-width: var(--ring-width); stroke-linecap: round; }
-[data-status="busy"]  > .status-ring circle { stroke: var(--law); stroke-dasharray: 30 70; animation: bend-ring-spin var(--duration-slow) linear infinite; }
-[data-status="ok"]    > .status-ring circle { stroke: var(--law); stroke-dasharray: 100; animation: bend-ring-draw calc(var(--duration) * 5) var(--ease) both; }
-[data-status="hold"]  > .status-ring circle { stroke: var(--draft); stroke-dasharray: 100; animation: bend-ring-draw var(--duration-slow) linear both; }
-[data-status="warn"]  > .status-ring circle { stroke: var(--draft); }
-[data-status="error"] > .status-ring circle { stroke: var(--conflict); }
+[data-status="busy"]  > .status-ring circle { stroke: var(--success); stroke-dasharray: 30 70; animation: bend-ring-spin var(--duration-slow) linear infinite; }
+[data-status="ok"]    > .status-ring circle { stroke: var(--success); stroke-dasharray: 100; animation: bend-ring-draw calc(var(--duration) * 5) var(--ease) both; }
+[data-status="hold"]  > .status-ring circle { stroke: var(--warning); stroke-dasharray: 100; animation: bend-ring-draw var(--duration-slow) linear both; }
+[data-status="warn"]  > .status-ring circle { stroke: var(--warning); }
+[data-status="error"] > .status-ring circle { stroke: var(--danger); }
 @keyframes bend-ring-draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
 @keyframes bend-ring-spin { to { stroke-dashoffset: -100; } }
 
@@ -397,7 +397,7 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 .block--code .block__text { font-family: var(--font-mono); white-space: pre-wrap; }
 .block__line { display: block; }   /* one line of a block's text, for line-by-line motion (formBlock) */
 .block__out { grid-column: 2; margin: var(--space-1) 0 0; font-family: var(--font-mono); font-size: var(--text-sm); line-height: var(--leading-ui); white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text-2); }
-.block__out--error { color: var(--conflict); }
+.block__out--error { color: var(--danger); }
 
 /* ---------- Page and doc: a scrolling area with a column of blocks ----------
    <main class="page"><div class="doc">…blocks…</div></main>
@@ -441,10 +441,21 @@ html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); 
 .divided > * { margin-block: 0; padding-block: var(--space-3); }
 .divided > * + * { border-top: var(--border-width) solid var(--border); }
 
+/* ---------- Canvas: a surface that is yours to change ----------
+   <div class="canvas">…</div>: a dot grid, canvas_gap apart, behind something editable (a live diagram).
+   The dots are decoration; in forced colors the browser drops them and the surface stays plain. */
+.canvas {
+  overflow: auto; padding: var(--space-5);
+  border: var(--border-width) solid var(--border); border-radius: var(--radius-lg);
+  background-color: var(--surface);
+  background-image: radial-gradient(var(--border-strong) var(--border-width), transparent 0);
+  background-size: var(--canvas-gap) var(--canvas-gap);
+}
+
 /* ---------- Diagram: nodes and arrows, read top to bottom ----------
    mountDiagram (diagram.js) fills <div class="diagram">: a .diagram__row per row, a .diagram__node per node,
    the arrows in .diagram__wires, their words in .diagram__label. Rows and places come from DIAGRAM.bend.
-   A node takes a tone: .diagram__node--accent, --law, --draft, --conflict (neutral without one).
+   A node takes a tone: .diagram__node--accent, --success, --warning, --danger (neutral without one).
    Two looks: a colored border (the default), or .diagram--soft on the diagram.
    Like Mermaid's flowchart TD and Unity's Animator, but the layout is Bend's and the look is the tokens. */
 .diagram { position: relative; display: flex; flex-direction: column; gap: var(--space-7); padding: var(--space-4) var(--space-2); }
@@ -452,24 +463,25 @@ html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); 
 .diagram__node {
   position: relative;
   display: flex; flex-direction: column; align-items: center; gap: var(--space-1);
-  max-width: calc(var(--measure) / 2);
+  min-width: var(--diagram-node-min); max-width: calc(var(--measure) / 2);
   padding: var(--space-2) var(--space-3);
-  border: var(--border-width) solid var(--border-strong); border-radius: var(--radius-md);
+  border: var(--border-width) solid var(--text-3); border-radius: var(--radius-md);
   background: var(--surface); color: var(--text);
   font-size: var(--text-md); line-height: var(--leading-ui); text-align: center;
+  transition: border-color var(--duration-enter) var(--ease);
 }
 .diagram__node--accent { background: var(--accent-soft); border-color: var(--accent); }
-.diagram__node--law { background: var(--law-soft); border-color: var(--law); }
-.diagram__node--draft { background: var(--draft-soft); border-color: var(--draft); }
-.diagram__node--conflict { background: var(--conflict-soft); border-color: var(--conflict); }
+.diagram__node--success { background: var(--success-soft); border-color: var(--success); }
+.diagram__node--warning { background: var(--warning-soft); border-color: var(--warning); }
+.diagram__node--danger { background: var(--danger-soft); border-color: var(--danger); }
 /* .diagram--soft: the same nodes as a tag draws them, a soft fill and the tone in the text, no visible border
    (the border stays, clear, so a node is the same size in both looks). */
 .diagram--soft .diagram__node { border-color: transparent; background: var(--surface-2); }
 .diagram--soft .diagram__node--accent { background: var(--accent-soft); color: var(--accent); }
-.diagram--soft .diagram__node--law { background: var(--law-soft); color: var(--law); }
-.diagram--soft .diagram__node--draft { background: var(--draft-soft); color: var(--draft); }
-.diagram--soft .diagram__node--conflict { background: var(--conflict-soft); color: var(--conflict); }
-.diagram__wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; color: var(--border-strong); }
+.diagram--soft .diagram__node--success { background: var(--success-soft); color: var(--success-text); }
+.diagram--soft .diagram__node--warning { background: var(--warning-soft); color: var(--warning-text); }
+.diagram--soft .diagram__node--danger { background: var(--danger-soft); color: var(--danger); }
+.diagram__wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; color: var(--text-3); }
 .diagram__wires path { fill: none; stroke: currentColor; stroke-width: var(--border-width); }
 .diagram__wires marker path { fill: currentColor; stroke: none; }
 
@@ -564,7 +576,7 @@ html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); 
    A node's handle is a .dot at the middle of its bottom edge, where its arrows leave. It shows on hover;
    drag it and a straight arrow (the diagram's own wire) follows the pointer. A node it may connect to takes
    the accent border (.is-target) while the pointer is over it. */
-.diagram__handle { position: absolute; left: 50%; bottom: 0; transform: translate(-50%, 50%); background: var(--surface); opacity: 0; cursor: crosshair; touch-action: none; }
+.diagram__handle { position: absolute; left: 50%; bottom: 0; transform: translate(-50%, 50%); border-color: var(--text-3); background: var(--surface); opacity: 0; cursor: crosshair; touch-action: none; }
 .diagram__node:hover .diagram__handle, .diagram__handle.is-active { opacity: 1; }
 .diagram.is-connecting .diagram__node { transition: border-color var(--duration) var(--ease); }
 .diagram__node.is-target { border-color: var(--accent); }
@@ -573,7 +585,8 @@ html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); 
    below while the menu is open. */
 .diagram__open { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
 .diagram__open::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
-.diagram__node:has(> .diagram__open:focus-visible) { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-offset); }
+.diagram__open:focus-visible { outline: none; }   /* the node shows the ring, not its label */
+.diagram__node:has(> .diagram__open:focus-visible), .diagram__node[tabindex]:focus-visible { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-offset); }
 .diagram__row:has(> .diagram__node > .menu:not([hidden])) { z-index: var(--layer-menu); }
 /* Free layout (positions): nodes sit where the app puts them; a node is grabbed to move it. */
 .diagram--free { display: block; }
@@ -581,6 +594,15 @@ html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); 
 .diagram--free > .diagram__node.is-moving { cursor: grabbing; box-shadow: var(--shadow-float); transition: none; }
 .diagram--free > .diagram__node:has(> .menu:not([hidden])) { z-index: var(--layer-menu); }
 .diagram--free .diagram__open { cursor: inherit; }
+
+/* ---------- Diagram: rename ----------
+   d.editLabel(i), a double-click or F2: the node itself becomes the field (no box inside the box). */
+.diagram__node .diagram__input, .diagram__node .diagram__input:focus { position: relative; height: auto; min-width: var(--space-4); padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; outline: none; font: inherit; color: inherit; text-align: center; field-sizing: content; }
+.diagram__node.is-editing { border-color: var(--accent); box-shadow: 0 0 0 var(--focus-halo) var(--accent-soft); }
+.diagram__node.is-editing .diagram__handle { display: none; }
+
+/* Read by screen readers, not shown: a node's tone and arrows, the diagram's announcements. */
+.sr-only { position: absolute; width: var(--border-width); height: var(--border-width); overflow: hidden; opacity: 0; white-space: nowrap; pointer-events: none; }
 
 /* ---------- Pair: a block and the block that goes with it ----------
    <div class="pair"><div class="block">…</div><div class="block pair__aside">…</div></div>
@@ -630,8 +652,8 @@ html:not([data-narrow]) .doc--split .doc__columns { display: grid; grid-template
 }
 .node[data-state="writing"] .node__core { border-color: var(--accent); }
 .node[data-state="now"] .node__core { background: var(--accent); border-color: var(--accent); }
-.node[data-state="ok"] .node__core { background: var(--law); border-color: var(--law); }
-.node[data-state="error"] .node__core { background: var(--conflict); border-color: var(--conflict); }
+.node[data-state="ok"] .node__core { background: var(--success); border-color: var(--success); }
+.node[data-state="error"] .node__core { background: var(--danger); border-color: var(--danger); }
 
 /* Text being read: one slow pass of light over it. */
 .thread__reading {
@@ -867,7 +889,7 @@ html[data-narrow] .side .side__text { opacity: 1; }
 .agent--lg.is-open .agent__item[data-status="error"] .agent__label,
 .agent--lg.is-open.is-asking .agent__item .agent__label { opacity: 1; }
 .agent--sm .agent__item:hover ~ .agent__item .agent__label { opacity: 0; }
-.agent__item[data-status="error"] .agent__label { color: var(--conflict); }
+.agent__item[data-status="error"] .agent__label { color: var(--danger); }
 .agent__item:disabled { opacity: 1; color: var(--text-3); }
 
 /* ---------- Less motion ---------- */

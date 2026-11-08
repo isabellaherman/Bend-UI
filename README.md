@@ -206,7 +206,7 @@ Prose takes the same ladder: its body is `text`'s size, and its `h1`, `h2`, `h3`
     <h3 class="group-title">Tools</h3>
     <div class="outline__kids">
       <div class="outline__item">
-        <div class="outline__row"><i class="dot dot--ok"></i><span class="item-title">Read</span></div>
+        <div class="outline__row"><i class="dot dot--success"></i><span class="item-title">Read</span></div>
         <p class="detail">Looks at a file. Changes nothing.</p>
       </div>
       <div class="outline__item is-off">
@@ -246,7 +246,7 @@ mountDiagram(el, {
 });
 ```
 
-A node's `tone` is `accent`, `law`, `draft`, `conflict`, or none; `tag` is a short word on it. Two looks: a colored border (default), or add `diagram--soft` to `el` for a soft fill with the tone in the text. Arrows with the same ends become one line, their labels joined.
+A node's `tone` is `accent`, `success`, `warning`, `danger`, or none (neutral); `tag` is a short word on it. Two looks: a colored border (default), or add `diagram--soft` to `el` for a soft fill with the tone in the text. Arrows with the same ends become one line, their labels joined.
 
 Connect (optional): pass `{ isValidConnection, onConnect }` as a third argument. Drag the dot under a node onto another node; both get `{ source, target }` (node indexes). The diagram doesn't change itself: add the edge to your data and draw again in the same element; the nodes glide to their new places and the new arrow runs in.
 
@@ -260,6 +260,34 @@ mountDiagram(el, data, {
 Node menu (optional): pass `nodeMenu: (i) => [{ label, disabled, onSelect }]`. Clicking a node opens the lib's `.menu` with those items; picking one calls its `onSelect`. As with connect, the diagram doesn't change itself.
 
 Free layout (optional): pass `positions: [{ x, y }]` (px from the diagram's corner) and `onNodeMove: (i, { x, y }) => …`. The nodes sit at those places instead of in rows, and dragging a node calls `onNodeMove` when it's let go. Keep the positions in your data and draw again.
+
+Rename (optional): pass `onLabelEdit: (i, label) => …`. A double-click on a node, `F2` on it, or `d.editLabel(i)` (e.g. from its menu) turns the node itself into a field; `Enter` or leaving saves, `Escape` cancels, an empty name shakes and says why. Save the name and draw again: the node keeps its place and the new name forms.
+
+Motion follows what changed, with `MOTION.bend` and the duration tokens: a new node grows out of the node it comes from, a new arrow runs in, a renamed node takes its width while the others make room, and `await d.leave(i)` shrinks a node away before you draw without it. Reduced motion turns it all off.
+
+Size: a node is at least `diagram_node_min` wide (128) and grows in `diagram_node_step` steps (24), so short labels don't become chips (`DIAGRAM.bend`: `node_width`). On a narrow screen the diagram keeps its size; put it in a container that scrolls.
+
+Accessibility (WCAG 2.2 AA): name the diagram with `label: "…"`. Each node tells screen readers its tone and where its arrows go and come from. Lines and borders are at 3:1 or more and soft text at 4.5:1 or more. Changes are announced in a polite live region: the diagram announces renames and drag connects, and `announce(text)` (exported) is for your own changes. `d.focusAfterDraw(label)` puts the focus back on a node after you draw again. Dragging must always have another way: offer "Connect to …" in the node menu, and in free layout `Shift` + an arrow moves the focused node one step.
+
+```js
+import { mountDiagram, announce } from "bend-ui/diagram";
+const d = mountDiagram(el, data, {
+  label: "Release flow",
+  onLabelEdit: (i, label) => { data.nodes[i].label = label; redraw(); },
+  nodeMenu: (i) => [
+    { label: "Rename", onSelect: () => d.editLabel(i) },
+    { label: "Remove", onSelect: async () => { await d.leave(i); removeNode(i); announce("Removed"); redraw(); } },
+  ],
+});
+```
+
+## Canvas
+
+A surface that is yours to change: a dot grid behind something editable, like a live diagram. The dots are `canvas_gap` apart (`space_5`) in `--border-strong`; they are decoration, and in forced colors the surface stays plain.
+
+```html
+<div class="canvas"><div id="diagram"></div></div>
+```
 
 ## Chart
 
@@ -390,7 +418,7 @@ Every value is a token: use `var(--…)`, never a loose number.
 ### Tag and kbd
 
 ```html
-<span class="tag tag--law">Law</span>
+<span class="tag tag--success">Success</span>
 <span class="tag tag--mono">L-012</span>
 <span class="kbd">⌘K</span>
 ```
@@ -398,7 +426,7 @@ Every value is a token: use `var(--…)`, never a loose number.
 ### Dot
 
 ```html
-<span class="dot dot--ok"></span>
+<span class="dot dot--success"></span>
 ```
 
 ### Status ring
@@ -487,7 +515,7 @@ Every value is a token: use `var(--…)`, never a loose number.
 
 ```html
 <div class="block">
-  <div class="block__slot"><span class="dot dot--ok"></span></div>
+  <div class="block__slot"><span class="dot dot--success"></span></div>
   <div class="block__text">Mana never goes above 10</div>
 </div>
 ```
@@ -523,6 +551,18 @@ See everything: https://isabellaherman.github.io/Bend-UI/ (or `bun run docs`). A
 | `app_scope_overlaps_all` | An app key clashes with any scope's key |
 
 Try it: change `btn_padding_x` to `10` in `TOKENS.bend` and run `bun run check`.
+
+## Accessibility
+
+Accessibility isn't something anyone turns on. A blind person can't find an "accessibility mode", so Bend-UI doesn't have one. It works in three layers:
+
+1. **Always on: WCAG 2.2 AA.** Every component is built to meet AA by default, with no option to turn it off: contrast, roles and names for screen readers, keyboard use, visible focus, and changes announced as they happen.
+2. **Automatic: the person's own settings.** Reduced motion, more contrast, forced colors and text zoom come from the person's system. No setting lives in the app.
+3. **Your choice: a larger size.** The library is drawn at its minimum. An app can choose a larger size scale (and offer it to its users). Everything grows through the tokens, and the Laws still hold. WCAG asks for targets of at least 24px at AA and 44px at AAA.
+
+Components are reviewed one at a time. Each component's docs page lists every WCAG criterion it touches and where it stands on each one. A page carries the WCAG conformance logo only after it passes every A and AA criterion and has been tested with a keyboard and with screen readers.
+
+Sources: [WCAG 2.2](https://www.w3.org/TR/WCAG22/), [ARIA Authoring Practices Guide](https://www.w3.org/WAI/ARIA/apg/), [WCAG conformance logos](https://www.w3.org/WAI/standards-guidelines/wcag/conformance-logos/), [prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion), [prefers-contrast](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-contrast).
 
 ## Contributing
 

@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.9 (2026-11-08)
+
+- **Accessibility in the Overview** (and the README): accessibility isn't something anyone turns on, so the library works in three layers: always on (WCAG 2.2 AA), automatic from the person's own settings (reduced motion, more contrast, forced colors, text zoom), and the app's choice of a larger size. Sources linked.
+- **Tones are named by role, not by LawEditor**: `law` → `success`, `draft` → `warning`, `conflict` → `danger`, everywhere: tokens (`color_success`, `color_success_soft`…), CSS variables (`--success`…), classes (`.diagram__node--success`, `.tag--success`…), `theme()` keys (`success`, `successSoft`…) and the diagram's `tone`. The dot follows the same names: `.dot--ok` → `.dot--success`, `.dot--warn` → `.dot--warning`, `.dot--error` → `.dot--danger` (`.dot--busy` stays). **Breaking**: rename these in apps.
+- **Diagram at WCAG AA by default**: arrows, node borders and the connect handle use `--text-3` (3.04–3.35:1, it was 1.52–1.59:1); soft success and warning text use the new `color_success_text` and `color_warning_text` (4.85:1 and 4.78:1, they were 3.94:1 and 3.30:1).
+- **Diagram for screen readers**: `label` names the diagram (`role="graphics-document"`); each node says its tone and where its arrows go and come from; renames and connects are announced, and `announce(text)` is exported for the app's own changes; `d.focusAfterDraw(label)` keeps the focus on the node acted on; one focus ring instead of two; in free layout `Shift` + an arrow moves the focused node.
+- **Diagram: rename**: `onLabelEdit(i, label)` and `d.editLabel(i)`; a double-click or `F2` also starts it. The node becomes the field, the new name forms from a blur, an empty name shakes and says why.
+- **Diagram: motion from what changed**: a new node grows out of the node it comes from; `await d.leave(i)` shrinks a node and its arrows away before the app draws without it; a renamed node keeps its place. Existing motion (`MOTION.bend`, duration tokens), off with reduced motion.
+- **Diagram: size**: a node is at least `diagram_node_min` (128) wide and grows in `diagram_node_step` (`space_5`) steps, from `node_width` in DIAGRAM.bend. In CSS, `--diagram-node-min` is its `min-width`, so a node drawn by hand has it too.
+- **Canvas**: `.canvas`, a surface with a dot grid for something editable (the Diagram page's live example sits on one). Token `canvas_gap` (alias of `space_5`).
+- New in ui.css: `.diagram__input`, `.is-editing`, `.sr-only`. New tokens: `color_success_text`, `color_warning_text` (new values), `diagram_node_min` (new value), `diagram_node_step` (alias). No new law.
+- Docs: a page can split its examples into named sections (`data-section`). The Diagram page now has Variants (border tones, soft tones, the node with a tag), Composition (the arrows) and one live Example (its node menu renames, adds, connects and removes). Pages in this layout list their files under Code and have no Implementation section. The two full demos are gone.
+
 ## 1.0.8 (2026-11-08)
 
 - **Diagram: free layout**: `mountDiagram(el, data, { positions: [{ x, y }], onNodeMove })`. With positions the nodes sit where the app puts them instead of in rows (`.diagram--free`); press a node and move it past a few pixels to drag it, and `onNodeMove(i, { x, y })` is called when it's let go. The click that ends a move doesn't open the node's menu. The diagram grows to where its nodes reach. Switching between rows and positions glides, as any redraw does.

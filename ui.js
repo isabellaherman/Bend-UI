@@ -72,7 +72,7 @@ const VARS = {
   "--ease-spring": () => T.ease_spring(),
   "--duration-enter": () => T.duration_enter_ms() + "ms", "--duration-connect": () => T.duration_connect_ms() + "ms",
   "--duration-read": () => T.duration_read_ms() + "ms", "--stagger": () => T.stagger_ms() + "ms",
-  "--blur-form": () => px(T.blur_form()), "--node-size": () => px(T.node_size()),
+  "--blur-form": () => px(T.blur_form()), "--node-size": () => px(T.node_size()), "--diagram-node-min": () => px(T.diagram_node_min()), "--canvas-gap": () => px(T.canvas_gap()),
   "--ease": () => T.ease(),
   "--chart-tone-1": () => T.chart_tone_1() + "%", "--chart-tone-2": () => T.chart_tone_2() + "%",
   "--chart-tone-3": () => T.chart_tone_3() + "%", "--chart-tone-4": () => T.chart_tone_4() + "%",
@@ -84,9 +84,10 @@ const VARS = {
   "--text-2": () => T.color_text_2(), "--text-3": () => T.color_text_3(),
   "--accent": () => T.color_accent(), "--accent-fg": () => T.color_accent_fg(),
   "--accent-soft": () => T.color_accent_soft(),
-  "--law": () => T.color_law(), "--law-soft": () => T.color_law_soft(),
-  "--draft": () => T.color_draft(), "--draft-soft": () => T.color_draft_soft(),
-  "--conflict": () => T.color_conflict(), "--conflict-soft": () => T.color_conflict_soft(),
+  "--success": () => T.color_success(), "--success-soft": () => T.color_success_soft(),
+  "--warning": () => T.color_warning(), "--warning-soft": () => T.color_warning_soft(),
+  "--success-text": () => T.color_success_text(), "--warning-text": () => T.color_warning_text(),
+  "--danger": () => T.color_danger(), "--danger-soft": () => T.color_danger_soft(),
   "--syntax-bg": () => T.syntax_bg(), "--syntax-border": () => T.syntax_border(), "--syntax-fg": () => T.syntax_fg(),
   "--syntax-keyword": () => T.syntax_keyword(), "--syntax-type": () => T.syntax_type(),
   "--syntax-string": () => T.syntax_string(), "--syntax-number": () => T.syntax_number(),
@@ -174,8 +175,8 @@ const THEME_KEYS = {
   bg: "--bg", surface: "--surface", surface2: "--surface-2", border: "--border", borderStrong: "--border-strong",
   text: "--text", text2: "--text-2", text3: "--text-3",
   accent: "--accent", accentFg: "--accent-fg", accentSoft: "--accent-soft",
-  law: "--law", lawSoft: "--law-soft", draft: "--draft", draftSoft: "--draft-soft",
-  conflict: "--conflict", conflictSoft: "--conflict-soft",
+  success: "--success", successSoft: "--success-soft", successText: "--success-text", warning: "--warning", warningSoft: "--warning-soft", warningText: "--warning-text",
+  danger: "--danger", dangerSoft: "--danger-soft",
 };
 const FONT_KEYS = { fontSans: "--font-sans", fontDisplay: "--font-display", fontMono: "--font-mono" };
 

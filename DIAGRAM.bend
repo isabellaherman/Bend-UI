@@ -103,3 +103,9 @@ def depth(rows: List<&2, Nat>) -> Nat:
       0n
     case h <> t:
       max((h + 1n : Nat), depth(t))
+
+# ---------- Size ----------
+
+# A node's width: at least min, growing in whole steps, at most max (all in px).
+def node_width(+natural: F32, +min: F32, +step: F32, +max: F32) -> F32:
+  F32.min(max, F32.max(min, ((0.0 - F32.floor(((0.0 - natural) / step : F32))) * step : F32)))

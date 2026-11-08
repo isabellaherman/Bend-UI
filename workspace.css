@@ -4,9 +4,9 @@
 .dialog__header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-4); }
 .dialog__body { display: flex; flex-direction: column; gap: var(--space-4); }
 .feedback { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); padding: var(--feedback-padding-y) var(--feedback-padding-x); border: var(--border-width) solid var(--border); border-radius: var(--radius-md); background: var(--surface-2); }
-.feedback[data-tone="error"] { background: var(--conflict-soft); border-color: var(--conflict); }
+.feedback[data-tone="error"] { background: var(--danger-soft); border-color: var(--danger); }
 .feedback__message { color: var(--text-2); }
-.feedback[data-tone="error"] .feedback__message, .status-text[data-tone="error"] { color: var(--conflict); }
+.feedback[data-tone="error"] .feedback__message, .status-text[data-tone="error"] { color: var(--danger); }
 .breadcrumbs { display: flex; align-items: center; gap: var(--breadcrumb-gap); min-width: 0; overflow: hidden; white-space: nowrap; }
 .breadcrumbs__item { overflow: hidden; text-overflow: ellipsis; }
 .workbench { display: flex; flex-direction: column; gap: var(--workbench-gap); padding: var(--workbench-padding); }

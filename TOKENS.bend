@@ -169,12 +169,15 @@ def color_text_3() -> String: "#8f8c86"
 def color_accent() -> String: "#3b5bdb"
 def color_accent_fg() -> String: "#ffffff"
 def color_accent_soft() -> String: "#eef1fd"
-def color_law() -> String: "#2b8a3e"
-def color_law_soft() -> String: "#ebf6ed"
-def color_draft() -> String: "#b7791f"
-def color_draft_soft() -> String: "#fbf3e4"
-def color_conflict() -> String: "#c92a2a"
-def color_conflict_soft() -> String: "#fdecec"
+def color_success() -> String: "#2b8a3e"
+def color_success_soft() -> String: "#ebf6ed"
+def color_warning() -> String: "#b7791f"
+def color_warning_soft() -> String: "#fbf3e4"
+# Text in a tone on its soft fill, at 4.5:1 or more (WCAG AA): success and warning are too light for that.
+def color_success_text() -> String: "#237a35"
+def color_warning_text() -> String: "#946119"
+def color_danger() -> String: "#c92a2a"
+def color_danger_soft() -> String: "#fdecec"
 
 # Code (Snow): a white ground for code boxes, and a color for each kind of piece (SYNTAX.bend).
 # Each color stays at 5.7:1 or more on the ground (WCAG AA).
@@ -205,6 +208,13 @@ def preview_min_height() -> U32: 256
 def preview_max_height() -> U32: 640
 def snapshot_max_height() -> U32: 192
 def breadcrumb_gap() -> U32: space_2()
+
+# Canvas: the dots of an editable surface are this far apart.
+def canvas_gap() -> U32: space_5()
+
+# Diagram: a node is at least this wide, and grows in steps of this much (DIAGRAM.bend: node_width).
+def diagram_node_min() -> U32: 128
+def diagram_node_step() -> U32: space_5()
 
 # Chart: a series' color is the accent this strong (percent), mixed toward the surface.
 def chart_tone_1() -> U32: 100
