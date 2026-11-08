@@ -42,7 +42,7 @@
   .v-agent-lg { width: 280px; height: 280px; display: flex; align-items: flex-end; justify-content: flex-end; padding: var(--space-5); }
   .v-radius { width: 48px; height: 48px; background: var(--accent-soft); border: var(--border-width) solid var(--accent); }
 </style>
-<link rel="stylesheet" crossorigin href="./chunk-tbc3zbe8.css"><script type="module" crossorigin src="./chunk-rqs0xabc.js"></script></head>
+<link rel="stylesheet" crossorigin href="./chunk-vqa234j7.css"><script type="module" crossorigin src="./chunk-4fsh92cf.js"></script></head>
 <body class="desk">
 <div class="window" id="docs" data-agent="lg">
   <aside class="side is-open" id="docs-side">
@@ -54,7 +54,7 @@
       <span class="tag tag--mono" id="docs-version"></span>
       <div class="toolbar__spacer"></div>
       <a class="btn btn--ghost btn--sm" href="https://github.com/isabellaherman/Bend-UI" target="_blank" rel="noopener" title="Open the repository on GitHub"><svg class="icon"><use href="#i-github"/></svg>GitHub</a>
-      <span class="tag tag--law" id="docs-status"><svg class="icon icon--sm"><use href="#i-circle-check"/></svg><span></span></span>
+      <span class="tag tag--success" id="docs-status"><svg class="icon icon--sm"><use href="#i-circle-check"/></svg><span></span></span>
     </div>
     <main class="page" id="docs-main">
       <section class="view" data-page="overview" hidden><div class="doc doc--wide">
@@ -65,11 +65,28 @@
 <article class="prose"><p class="meta">Install</p><pre data-lang="sh"><code>bun add github:isabellaherman/Bend-UI</code></pre></article>
 <article class="prose"><p class="meta">Import</p><pre data-lang="js"><code>import "bend-ui";</code></pre></article>
 <article class="prose"><p class="meta">Use</p><pre data-lang="html"><code>&lt;button class="btn btn--primary"&gt;Create LAW&lt;/button&gt;</code></pre></article>
+<article class="prose"><h2>Accessibility</h2>
+<p>Accessibility isn't something anyone turns on. A blind person can't find an "accessibility mode", so the library doesn't have one. Instead it works in three layers.</p>
+<h3>1. Always on: WCAG 2.2 AA</h3>
+<p>Every component is built to meet WCAG 2.2 level AA by default, with no option to turn it off: text and line contrast, roles and names for screen readers, everything usable from the keyboard, a visible focus, and changes announced as they happen. People who don't need it don't notice it.</p>
+<h3>2. Automatic: the person's own settings</h3>
+<p>People who need more set it once on their computer or phone, and the library follows: reduced motion (<code>prefers-reduced-motion</code>), more contrast (<code>prefers-contrast</code>), forced colors (Windows high contrast) and text zoom. No setting lives in the app.</p>
+<h3>3. Your choice: a larger size</h3>
+<p>The library is drawn at its minimum. An app can choose a larger size scale, and an app can offer it to its own users as a "comfortable" size. Everything grows through the tokens, and the Laws still hold at every size. WCAG asks for targets of at least 24px at AA and 44px at AAA.</p>
+<p>Components are reviewed one at a time. Each component's page lists every WCAG criterion it touches and where it stands on each one. A page carries the WCAG conformance logo only after it passes every A and AA criterion and has been tested with a keyboard and with screen readers (VoiceOver and NVDA).</p>
+<p class="meta">Sources</p>
+<ul>
+<li><a class="link" href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener">Web Content Accessibility Guidelines (WCAG) 2.2</a>, W3C</li>
+<li><a class="link" href="https://www.w3.org/WAI/ARIA/apg/" target="_blank" rel="noopener">ARIA Authoring Practices Guide</a>, W3C WAI</li>
+<li><a class="link" href="https://www.w3.org/WAI/standards-guidelines/wcag/conformance-logos/" target="_blank" rel="noopener">WCAG conformance logos</a>, W3C WAI</li>
+<li><a class="link" href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion" target="_blank" rel="noopener">prefers-reduced-motion</a> and <a class="link" href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-contrast" target="_blank" rel="noopener">prefers-contrast</a>, MDN</li>
+</ul>
+</article>
       </div></section>
       <section class="view" data-page="color" hidden><div class="doc doc--wide">
 <p class="heading">Color</p>
 <article class="prose"><h2>Examples</h2></article>
-<div><div class="v-grid"><div class="v-item"><div class="v-swatch" style="background:var(--bg)"></div><code>--bg</code></div><div class="v-item"><div class="v-swatch" style="background:var(--surface)"></div><code>--surface</code></div><div class="v-item"><div class="v-swatch" style="background:var(--surface-2)"></div><code>--surface-2</code></div><div class="v-item"><div class="v-swatch" style="background:var(--border)"></div><code>--border</code></div><div class="v-item"><div class="v-swatch" style="background:var(--border-strong)"></div><code>--border-strong</code></div><div class="v-item"><div class="v-swatch" style="background:var(--text)"></div><code>--text</code></div><div class="v-item"><div class="v-swatch" style="background:var(--text-2)"></div><code>--text-2</code></div><div class="v-item"><div class="v-swatch" style="background:var(--text-3)"></div><code>--text-3</code></div><div class="v-item"><div class="v-swatch" style="background:var(--accent)"></div><code>--accent</code></div><div class="v-item"><div class="v-swatch" style="background:var(--accent-fg)"></div><code>--accent-fg</code></div><div class="v-item"><div class="v-swatch" style="background:var(--accent-soft)"></div><code>--accent-soft</code></div><div class="v-item"><div class="v-swatch" style="background:var(--law)"></div><code>--law</code></div><div class="v-item"><div class="v-swatch" style="background:var(--law-soft)"></div><code>--law-soft</code></div><div class="v-item"><div class="v-swatch" style="background:var(--draft)"></div><code>--draft</code></div><div class="v-item"><div class="v-swatch" style="background:var(--draft-soft)"></div><code>--draft-soft</code></div><div class="v-item"><div class="v-swatch" style="background:var(--conflict)"></div><code>--conflict</code></div><div class="v-item"><div class="v-swatch" style="background:var(--conflict-soft)"></div><code>--conflict-soft</code></div></div></div>
+<div><div class="v-grid"><div class="v-item"><div class="v-swatch" style="background:var(--bg)"></div><code>--bg</code></div><div class="v-item"><div class="v-swatch" style="background:var(--surface)"></div><code>--surface</code></div><div class="v-item"><div class="v-swatch" style="background:var(--surface-2)"></div><code>--surface-2</code></div><div class="v-item"><div class="v-swatch" style="background:var(--border)"></div><code>--border</code></div><div class="v-item"><div class="v-swatch" style="background:var(--border-strong)"></div><code>--border-strong</code></div><div class="v-item"><div class="v-swatch" style="background:var(--text)"></div><code>--text</code></div><div class="v-item"><div class="v-swatch" style="background:var(--text-2)"></div><code>--text-2</code></div><div class="v-item"><div class="v-swatch" style="background:var(--text-3)"></div><code>--text-3</code></div><div class="v-item"><div class="v-swatch" style="background:var(--accent)"></div><code>--accent</code></div><div class="v-item"><div class="v-swatch" style="background:var(--accent-fg)"></div><code>--accent-fg</code></div><div class="v-item"><div class="v-swatch" style="background:var(--accent-soft)"></div><code>--accent-soft</code></div><div class="v-item"><div class="v-swatch" style="background:var(--success)"></div><code>--success</code></div><div class="v-item"><div class="v-swatch" style="background:var(--success-soft)"></div><code>--success-soft</code></div><div class="v-item"><div class="v-swatch" style="background:var(--warning)"></div><code>--warning</code></div><div class="v-item"><div class="v-swatch" style="background:var(--warning-soft)"></div><code>--warning-soft</code></div><div class="v-item"><div class="v-swatch" style="background:var(--danger)"></div><code>--danger</code></div><div class="v-item"><div class="v-swatch" style="background:var(--danger-soft)"></div><code>--danger-soft</code></div></div></div>
 <div data-laws="color"></div>
       </div></section>
       <section class="view" data-page="space" hidden><div class="doc doc--wide">
@@ -112,10 +129,11 @@
       <section class="view" data-page="diagram" hidden><div class="doc doc--wide">
 <p class="heading">Diagram</p>
 <article class="prose"><h2>Examples</h2></article>
-<div><div class="v-row"><div class="v-item"><div class="diagram__node">Node</div><code>.diagram__node</code></div><div class="v-item"><div class="diagram__node diagram__node--accent">Node</div><code>.diagram__node--accent</code></div><div class="v-item"><div class="diagram__node diagram__node--law">Node</div><code>.diagram__node--law</code></div><div class="v-item"><div class="diagram__node diagram__node--draft">Node</div><code>.diagram__node--draft</code></div><div class="v-item"><div class="diagram__node diagram__node--conflict">Node</div><code>.diagram__node--conflict</code></div><div class="v-item"><div class="diagram__node"><span class="diagram__text">Node</span><span class="tag tag--mono">tag</span></div><code>.diagram__node + .tag--mono</code></div></div></div>
-<div><div class="v-row" style="align-items:flex-start"><div class="v-item"><div id="diagram-arrow"></div><code>edge</code></div><div class="v-item"><div id="diagram-label"></div><code>edge + label · .diagram__label</code></div><div class="v-item"><div id="diagram-branch"></div><code>two edges out · .diagram__row</code></div><div class="v-item"><div id="diagram-join"></div><code>same ends · labels join</code></div></div></div>
-<div><div class="v-row diagram--soft"><div class="v-item"><div class="diagram__node">Node</div><code>.diagram--soft .diagram__node</code></div><div class="v-item"><div class="diagram__node diagram__node--accent">Node</div><code>.diagram--soft .diagram__node--accent</code></div><div class="v-item"><div class="diagram__node diagram__node--law">Node</div><code>.diagram--soft .diagram__node--law</code></div><div class="v-item"><div class="diagram__node diagram__node--draft">Node</div><code>.diagram--soft .diagram__node--draft</code></div><div class="v-item"><div class="diagram__node diagram__node--conflict">Node</div><code>.diagram--soft .diagram__node--conflict</code></div></div></div>
-<div><div class="v-col"><div class="v-item"><div id="diagram-demo" style="width:100%"></div><code>mountDiagram(el, { nodes, edges })</code></div><div class="v-item"><div id="diagram-demo-soft" class="diagram--soft" style="width:100%"></div><code>.diagram--soft</code></div></div></div>
+<div data-section="Variants"><div class="v-row"><div class="v-item"><div class="diagram__node">Neutral</div><code>.diagram__node</code></div><div class="v-item"><div class="diagram__node diagram__node--accent">Accent</div><code>.diagram__node--accent</code></div><div class="v-item"><div class="diagram__node diagram__node--success">Success</div><code>.diagram__node--success</code></div><div class="v-item"><div class="diagram__node diagram__node--warning">Warning</div><code>.diagram__node--warning</code></div><div class="v-item"><div class="diagram__node diagram__node--danger">Danger</div><code>.diagram__node--danger</code></div></div></div>
+<div data-section="Variants"><div class="v-row diagram--soft"><div class="v-item"><div class="diagram__node">Neutral</div><code>.diagram--soft</code></div><div class="v-item"><div class="diagram__node diagram__node--accent">Accent</div><code>.diagram__node--accent</code></div><div class="v-item"><div class="diagram__node diagram__node--success">Success</div><code>.diagram__node--success</code></div><div class="v-item"><div class="diagram__node diagram__node--warning">Warning</div><code>.diagram__node--warning</code></div><div class="v-item"><div class="diagram__node diagram__node--danger">Danger</div><code>.diagram__node--danger</code></div></div></div>
+<div data-section="Variants"><div class="v-row" style="align-items:flex-start"><div class="v-item"><div class="diagram__node"><span class="diagram__text">Node</span><span class="tag tag--mono">tag</span></div><code>.diagram__node + .tag--mono</code></div></div></div>
+<div data-section="Composition"><div class="v-row" style="align-items:flex-start"><div class="v-item"><div id="diagram-arrow"></div><code>edge</code></div><div class="v-item"><div id="diagram-label"></div><code>edge + label · .diagram__label</code></div><div class="v-item"><div id="diagram-branch"></div><code>two edges out · .diagram__row</code></div><div class="v-item"><div id="diagram-join"></div><code>same ends · labels join</code></div></div></div>
+<div><div class="canvas"><div id="diagram-live"></div></div></div>
 <article class="prose"><p><code>DIAGRAM.bend</code> decides where each node goes: its row is the longest path to it, so every arrow goes down, and nodes on a row keep their order. <code>diagram.js</code> only draws: the boxes, then the arrows from where the boxes landed.</p></article>
 <div data-laws="diagram"></div>
       </div></section>
@@ -173,13 +191,13 @@
       <section class="view" data-page="tag" hidden><div class="doc doc--wide">
 <p class="heading">Tag and kbd</p>
 <article class="prose"><h2>Examples</h2></article>
-<div><div class="v-row"><div class="v-item"><span class="tag">Tag</span><code>.tag</code></div><div class="v-item"><span class="tag tag--law"><svg class="icon icon--sm"><use href="#i-circle-check"/></svg>Tag</span><code>.tag--law</code></div><div class="v-item"><span class="tag tag--draft">Tag</span><code>.tag--draft</code></div><div class="v-item"><span class="tag tag--conflict"><svg class="icon icon--sm"><use href="#i-triangle-alert"/></svg>Tag</span><code>.tag--conflict</code></div><div class="v-item"><span class="tag tag--mono">L-012</span><code>.tag--mono</code></div><div class="v-item"><span class="kbd">⌘K</span><code>.kbd</code></div></div></div>
+<div><div class="v-row"><div class="v-item"><span class="tag">Tag</span><code>.tag</code></div><div class="v-item"><span class="tag tag--success"><svg class="icon icon--sm"><use href="#i-circle-check"/></svg>Tag</span><code>.tag--success</code></div><div class="v-item"><span class="tag tag--warning">Tag</span><code>.tag--warning</code></div><div class="v-item"><span class="tag tag--danger"><svg class="icon icon--sm"><use href="#i-triangle-alert"/></svg>Tag</span><code>.tag--danger</code></div><div class="v-item"><span class="tag tag--mono">L-012</span><code>.tag--mono</code></div><div class="v-item"><span class="kbd">⌘K</span><code>.kbd</code></div></div></div>
 <div data-laws="tag"></div>
       </div></section>
       <section class="view" data-page="dot" hidden><div class="doc doc--wide">
 <p class="heading">Dot</p>
 <article class="prose"><h2>Examples</h2></article>
-<div><div class="v-row"><div class="v-item"><span class="dot"></span><code>.dot</code></div><div class="v-item"><span class="dot dot--busy"></span><code>.dot--busy</code></div><div class="v-item"><span class="dot dot--ok"></span><code>.dot--ok</code></div><div class="v-item"><span class="dot dot--warn"></span><code>.dot--warn</code></div><div class="v-item"><span class="dot dot--error"></span><code>.dot--error</code></div></div></div>
+<div><div class="v-row"><div class="v-item"><span class="dot"></span><code>.dot</code></div><div class="v-item"><span class="dot dot--busy"></span><code>.dot--busy</code></div><div class="v-item"><span class="dot dot--success"></span><code>.dot--success</code></div><div class="v-item"><span class="dot dot--warning"></span><code>.dot--warning</code></div><div class="v-item"><span class="dot dot--danger"></span><code>.dot--danger</code></div></div></div>
 <div data-laws="dot"></div>
       </div></section>
       <section class="view" data-page="ring" hidden><div class="doc doc--wide">
@@ -240,7 +258,7 @@
       <section class="view" data-page="page" hidden><div class="doc doc--wide">
 <p class="heading">Page and doc</p>
 <article class="prose"><h2>Examples</h2></article>
-<div><div class="v-item"><div class="v-frame" style="height:180px;width:100%;max-width:560px"><main class="page"><div class="doc" style="padding:var(--space-4)"><div class="doc__head"><span class="meta mono">GDD.md</span></div><div class="block"><div class="block__slot"><span class="dot dot--ok"></span></div><div class="block__text">Mana never goes above 10</div></div><div class="block"><div class="block__slot"><span class="dot"></span></div><div class="block__text">A spell costs at least 1 mana</div></div></div></main></div><code>.page · .doc · .doc__head · .doc__note · .doc__sub · .doc--wide</code></div></div>
+<div><div class="v-item"><div class="v-frame" style="height:180px;width:100%;max-width:560px"><main class="page"><div class="doc" style="padding:var(--space-4)"><div class="doc__head"><span class="meta mono">GDD.md</span></div><div class="block"><div class="block__slot"><span class="dot dot--success"></span></div><div class="block__text">Mana never goes above 10</div></div><div class="block"><div class="block__slot"><span class="dot"></span></div><div class="block__text">A spell costs at least 1 mana</div></div></div></main></div><code>.page · .doc · .doc__head · .doc__note · .doc__sub · .doc--wide</code></div></div>
 <div data-laws="page"></div>
       </div></section>
       <section class="view" data-page="section" hidden><div class="doc doc--wide">
@@ -254,14 +272,14 @@
       <section class="view" data-page="block" hidden><div class="doc doc--wide">
 <p class="heading">Block</p>
 <article class="prose"><h2>Examples</h2></article>
-<div><div class="v-col"><div class="v-item"><div style="width:100%;max-width:560px"><div class="block block--title"><div class="block__slot"></div><div class="block__text">Title</div></div><div class="block"><div class="block__slot"><span class="dot"></span></div><div class="block__text">Line</div></div><div class="block"><div class="block__slot"><span class="dot dot--busy"></span></div><div class="block__text">Line</div></div><div class="block" aria-selected="true"><div class="block__slot"><span class="dot dot--ok"></span></div><div class="block__text">Line</div><pre class="block__out">law line:
-  …</pre></div><div class="block"><div class="block__slot"><span class="dot dot--error"></span></div><div class="block__text">Line</div><pre class="block__out block__out--error">error: …</pre></div><div class="block"><div class="block__slot"></div><div class="block__text" contenteditable="true" data-placeholder="Placeholder"></div></div></div><code>.block</code></div></div></div>
+<div><div class="v-col"><div class="v-item"><div style="width:100%;max-width:560px"><div class="block block--title"><div class="block__slot"></div><div class="block__text">Title</div></div><div class="block"><div class="block__slot"><span class="dot"></span></div><div class="block__text">Line</div></div><div class="block"><div class="block__slot"><span class="dot dot--busy"></span></div><div class="block__text">Line</div></div><div class="block" aria-selected="true"><div class="block__slot"><span class="dot dot--success"></span></div><div class="block__text">Line</div><pre class="block__out">law line:
+  …</pre></div><div class="block"><div class="block__slot"><span class="dot dot--danger"></span></div><div class="block__text">Line</div><pre class="block__out block__out--error">error: …</pre></div><div class="block"><div class="block__slot"></div><div class="block__text" contenteditable="true" data-placeholder="Placeholder"></div></div></div><code>.block</code></div></div></div>
 <div data-laws="block"></div>
       </div></section>
       <section class="view" data-page="pair" hidden><div class="doc doc--wide">
 <p class="heading">Pair</p>
 <article class="prose"><h2>Examples</h2></article>
-<div><div class="v-col"><div class="v-item"><div style="width:100%;max-width:560px"><div class="doc doc--stack" id="pair-demo" style="padding:0;max-width:none"><div class="doc__columns"><span class="meta mono">GDD.md</span><span class="meta mono">LAWS.bend</span></div><div class="pair"><div class="block"><div class="block__slot"><span class="dot dot--ok"></span></div><div class="block__text">Mana never goes above 10</div></div><div class="block block--code pair__aside"><div class="block__slot"><span class="dot dot--ok"></span></div><div class="block__text">law mana_at_most_10:
+<div><div class="v-col"><div class="v-item"><div style="width:100%;max-width:560px"><div class="doc doc--stack" id="pair-demo" style="padding:0;max-width:none"><div class="doc__columns"><span class="meta mono">GDD.md</span><span class="meta mono">LAWS.bend</span></div><div class="pair"><div class="block"><div class="block__slot"><span class="dot dot--success"></span></div><div class="block__text">Mana never goes above 10</div></div><div class="block block--code pair__aside"><div class="block__slot"><span class="dot dot--success"></span></div><div class="block__text">law mana_at_most_10:
   for s: T.State
   {(T.mana(s) &lt;= 10 : U32) == True{} : Bool}</div></div></div><div class="pair"><div class="block"><div class="block__slot"><span class="dot"></span></div><div class="block__text">Bosses drop a key</div></div><div class="block pair__aside"></div></div></div></div><div class="segmented" id="pair-mode"><button aria-pressed="false" data-mode="">doc</button><button aria-pressed="true" data-mode="doc--stack">doc--stack</button><button aria-pressed="false" data-mode="doc--split">doc--split</button></div><code>.pair .pair__aside · .block--code</code></div></div></div>
 <div data-laws="pair"></div>
@@ -302,7 +320,7 @@ type State is Data:
 def mana(s: State) -&gt; U32:
   match s:
     case State{+m}:
-      m</code></pre></article><code>.prose pre.syntax</code></div><div class="v-item"><div style="width:100%;max-width:560px"><div class="block block--code" data-syntax-demo><div class="block__slot"><span class="dot dot--ok"></span></div><div class="block__text"># LAW: "Mana never goes above 10"
+      m</code></pre></article><code>.prose pre.syntax</code></div><div class="v-item"><div style="width:100%;max-width:560px"><div class="block block--code" data-syntax-demo><div class="block__slot"><span class="dot dot--success"></span></div><div class="block__text"># LAW: "Mana never goes above 10"
 law mana_at_most_10:
   for s: T.State
   {(T.mana(s) &lt;= 10 : U32) == True{} : Bool}</div></div></div><code>.block--code.syntax</code></div><div class="v-item"><article class="prose" style="width:100%;max-width:560px"><pre class="syntax"><code><span class="syntax__kw">keyword</span> <span class="syntax__type">Type</span> <span class="syntax__str">"string"</span> <span class="syntax__num">10</span> <span class="syntax__com"># comment</span> <span class="syntax__punct">{ }</span> <span class="syntax__name">name</span></code></pre></article><code>.syntax__kw · __type · __str · __num · __com · __punct · __name</code></div></div></div>
