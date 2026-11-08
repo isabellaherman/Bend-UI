@@ -121,12 +121,86 @@ document.addEventListener("click", (e) => {
   group.dispatchEvent(new CustomEvent("change", { detail: btn, bubbles: true }));
 });
 
-// ---------- Side bar groups: a parent opens and closes its children ----------
-// <button class="side__toggle" aria-expanded="true"> before its <div class="side__items">.
+// ---------- Side bar: sections, groups, the rail and the drawer ----------
+// A .side__section is a <button class="side__toggle" aria-expanded> before its <div class="side__items">.
+// Opening a section closes the others in its group; without groups the whole side bar is one group.
+// data-side-multiple on a .side__group (or on the .side) lets its sections stay open together.
+// [data-side-toggle] opens and closes the side bar (the .side it's in, or the one whose id it names).
+// On the rail a section's button opens the side bar too. Under [data-narrow] the side bar is a drawer:
+// Escape or a click outside closes it, focus goes in when it opens and back when it closes, and it's
+// inert while hidden. A section grows and shrinks like the thread's openBlock (duration_enter, ease).
+const sideLess = matchMedia("(prefers-reduced-motion: reduce)");
+let sideUid = 0;
+const sideAnim = (el, frames) => (sideLess.matches ? Promise.resolve() : el.animate(frames, { duration: T.duration_enter_ms(), easing: T.ease() }).finished);
+const sideGroupOf = (section) => section.parentElement.closest(".side__group, .side");
+const isDrawer = (side) => !!side.closest("[data-narrow]");
+const sideOf = (b) => (b.dataset.sideToggle ? document.getElementById(b.dataset.sideToggle) : b.closest(".side"));
+const sideToggles = (side) => [...document.querySelectorAll("[data-side-toggle]")].filter((b) => sideOf(b) === side);
+export function initSide(side) {
+  side.querySelectorAll(".side__section").forEach((s) => {
+    const t = s.querySelector(":scope > .side__toggle"), items = s.querySelector(":scope > .side__items");
+    if (!t || !items) return;
+    if (!items.id) items.id = "side-items-" + ++sideUid;
+    t.setAttribute("aria-controls", items.id);
+  });
+  const open = side.classList.contains("is-open");
+  sideToggles(side).forEach((b) => b.setAttribute("aria-expanded", String(open)));
+  side.inert = isDrawer(side) && !open;
+}
+function setSection(section, open) {
+  const t = section.querySelector(":scope > .side__toggle"), items = section.querySelector(":scope > .side__items");
+  if (!t || (t.getAttribute("aria-expanded") === "true") === open) return;
+  const h = items?.scrollHeight ?? 0;
+  t.setAttribute("aria-expanded", String(open));
+  if (!items || !section.closest(".side").classList.contains("is-open")) return;
+  items.style.overflow = "hidden";
+  if (open) {
+    const to = items.scrollHeight;
+    sideAnim(items, [{ height: "0px", opacity: 0 }, { height: to + "px", opacity: 1 }]).then(() => { items.style.overflow = ""; });
+  } else {
+    items.style.display = "flex";   // stays drawn while it closes
+    sideAnim(items, [{ height: h + "px", opacity: 1 }, { height: "0px", opacity: 0 }]).then(() => { items.style.display = items.style.overflow = ""; });
+  }
+}
+export function setSide(side, open) {
+  side.classList.toggle("is-open", open);
+  const toggles = sideToggles(side);
+  toggles.forEach((b) => b.setAttribute("aria-expanded", String(open)));
+  if (!isDrawer(side)) { side.inert = false; return; }
+  side.inert = !open;
+  if (open) side.querySelector(".side__body .btn, .side__body a")?.focus();
+  else if (side.contains(document.activeElement)) toggles[0]?.focus();   // only when the focus was in it
+}
 document.addEventListener("click", (e) => {
+  const rail = e.target.closest("[data-side-toggle]");
+  if (rail) { const side = sideOf(rail); if (side) setSide(side, !side.classList.contains("is-open")); return; }
   const t = e.target.closest(".side__toggle");
-  if (t) t.setAttribute("aria-expanded", t.getAttribute("aria-expanded") !== "true");
+  if (t) {
+    const section = t.closest(".side__section"), side = t.closest(".side");
+    if (!section || !side) return;
+    const opening = t.getAttribute("aria-expanded") !== "true";
+    if (!side.classList.contains("is-open")) { setSide(side, true); if (!opening) return; }
+    if (opening) {
+      const g = sideGroupOf(section);
+      if (!g.hasAttribute("data-side-multiple"))
+        g.querySelectorAll(".side__section").forEach((x) => { if (x !== section && sideGroupOf(x) === g) setSection(x, false); });
+    }
+    setSection(section, opening);
+    return;
+  }
+  // A click outside a drawer, but over what it covers (its [data-narrow] area), closes it.
+  document.querySelectorAll(".side.is-open").forEach((side) => {
+    if (isDrawer(side) && !side.contains(e.target) && side.closest("[data-narrow]").contains(e.target)) setSide(side, false);
+  });
 });
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  const side = [...document.querySelectorAll(".side.is-open")].find(isDrawer);
+  if (side) setSide(side, false);
+});
+const initSides = () => document.querySelectorAll(".side").forEach(initSide);
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initSides); else initSides();
+narrow.addEventListener("change", initSides);
 
 // ---------- Dropdown: a button that opens a menu ----------
 // <div class="dropdown"><button class="btn" aria-haspopup="menu">…</button>

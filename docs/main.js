@@ -5,7 +5,6 @@ import claude from "../brand/claude.webp";
 import openai from "../brand/openai.svg";
 
 // side: open / close
-document.querySelectorAll("[data-side-toggle]").forEach((b) => b.addEventListener("click", () => b.closest(".side").classList.toggle("is-open")));
 
 // window: framed / full
 document.getElementById("win-full").addEventListener("click", (e) => {
@@ -337,7 +336,6 @@ const charts = [
   ...["chart-plain", "chart-split", "chart-donut", "chart-donut-split"].map((id) => mountPie($(id), schools)),
 ];
 $("chart-play").addEventListener("click", () => charts.forEach((c) => c.replay()));
-$("docs-side-toggle").addEventListener("click", () => $("docs-side").classList.toggle("is-open"));
 go("overview");
 
 // Dropdown menu: a diagram whose nodes are triggers; the items are built as any Dropdown menu's.

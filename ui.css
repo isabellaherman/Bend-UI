@@ -50,7 +50,7 @@ html:not([data-narrow]) .only-narrow { display: none !important; }
 
 .btn--ghost { background: transparent; border-color: transparent; color: var(--text-2); }
 .btn--ghost:hover { background: var(--surface-2); color: var(--text); }
-.btn--ghost[aria-current="page"] { background: var(--surface-2); color: var(--text); }
+.btn--ghost[aria-current="page"] { background: var(--surface-2); color: var(--text); font-weight: var(--weight-medium); }   /* not color alone */
 
 .btn--sm { height: var(--control-sm); padding: 0 var(--space-2); font-size: var(--text-sm); border-radius: var(--radius-sm); }
 .btn--icon { width: var(--control-md); padding: 0; justify-content: center; }
@@ -822,29 +822,34 @@ html:not([data-narrow]) .window:not(.is-full) {
 .side .btn { justify-content: flex-start; width: 100%; padding: 0 var(--space-2); white-space: nowrap; flex: none; }
 .side .btn--icon { width: var(--control-md); padding: 0; justify-content: center; }
 .side__head { display: flex; align-items: center; gap: var(--space-1); margin-bottom: var(--space-2); }
-.side__label { padding: var(--space-3) var(--space-2) var(--space-1); white-space: nowrap; }
+.side__label { margin: 0; padding: var(--space-3) var(--space-2) var(--space-1); font: inherit; font-size: var(--role-detail); line-height: var(--leading-ui); color: var(--text-2); white-space: nowrap; }   /* text-2: 6.58:1 (AA) */
 .side__text { transition: opacity var(--duration); }
 .side:not(.is-open) .side__text { opacity: 0; }
-html[data-narrow] .side {
+[data-narrow] .side {
   position: absolute; z-index: var(--layer-side); top: 0; bottom: 0; left: 0;
   width: var(--side-width);
   transform: translateX(-100%);
   box-shadow: var(--shadow-float);
 }
-html[data-narrow] .side.is-open { transform: none; }
-html[data-narrow] .side .side__text { opacity: 1; }
+[data-narrow] .side.is-open { transform: none; }
+[data-narrow] .side .side__text { opacity: 1; }
 
-/* Side bar groups: a parent that opens and closes its children; .side__body scrolls when there is more than fits.
-   <div class="side__body">
-     <div class="side__group">
+/* Side bar sections and groups; .side__body scrolls when there is more than fits.
+   <nav class="side__body" aria-label="…">
+     <div class="side__section">
        <button class="btn btn--ghost side__toggle" aria-expanded="true"><svg class="icon">…</svg><span class="side__text">Components</span><svg class="icon icon--sm side__chevron"><use href="#i-chevron-down"/></svg></button>
        <div class="side__items"><button class="btn btn--ghost">Button</button>…</div>
      </div>
-   </div>
-   A group is closed unless its toggle has aria-expanded="true". A child lines up with its parent's text.
-   A closed side bar shows only the parents' icons. ui.js opens and closes. */
+     <div class="side__group" role="group" aria-labelledby="tools" data-side-multiple>   (optional)
+       <h2 class="side__label side__text" id="tools">Tools</h2> <div class="side__section">…</div>
+     </div>
+   </nav>
+   A section is closed unless its toggle has aria-expanded="true"; opening one closes the others in its group
+   (the whole side bar without groups), unless the group has data-side-multiple. A child lines up with its
+   parent's text. A closed side bar shows only the sections' icons. ui.js opens and closes. */
 .side__body { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-hairline); }
-.side__group, .side__items { display: flex; flex-direction: column; gap: var(--space-hairline); }
+.side__section, .side__group, .side__items { display: flex; flex-direction: column; gap: var(--space-hairline); }
+.side__group + .side__group { margin-top: var(--space-3); }
 .side__chevron { margin-left: auto; color: var(--text-3); transition: transform var(--duration) var(--ease); }
 .side__toggle:not([aria-expanded="true"]) .side__chevron { transform: rotate(-90deg); }
 .side__toggle:not([aria-expanded="true"]) + .side__items,

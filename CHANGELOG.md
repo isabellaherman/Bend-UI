@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.11 (2026-11-08)
+
+- **Side bar: sections and groups**: every part that opens and closes is a `.side__section`. Opening one closes the others in its group; without groups the whole side bar is one group. `.side__group` is now an optional group: its sections close each other, never another group's. `data-side-multiple` on a group (or on the `.side`) keeps its sections open together. **Breaking**: rename `.side__group` to `.side__section` in apps.
+- **Side bar behavior is in ui.js**: `[data-side-toggle]` opens and closes it (or the side bar whose id it names); on the rail a section's button opens the side bar too; the drawer closes with Escape or a click outside, takes the focus in and gives it back, and is `inert` while hidden. The drawer works under any `[data-narrow]`, not only the page's. `initSide` and `setSide` are exported. The docs no longer have their own toggle code.
+- **Motion**: a section grows and shrinks like the thread's `openBlock` (`duration_enter`, `ease`); reduced motion turns it off. Nothing new in MOTION.bend.
+- **Accessibility**: the list is a `nav`; group names are headings in text-2 (6.58:1, `.meta` was 3.35:1); groups are `role="group"`; section buttons have `aria-controls`; the side bar's button has `aria-expanded`; the current item is also medium weight (not color alone).
+- Docs: the Side bar page in the new layout (Variants, Examples with and without groups, Accessibility), and a menu button on narrow screens. No new token, motion or law.
+
 ## 1.0.10 (2026-11-08)
 
 - **Dropdown menu** (the docs page, was "Dropdown"): Variants (each kind of item: plain, with an icon, the radio check, a tag in every tone, disabled, separators; the three placements), Examples on a `.canvas` (the Text menu, a menu in groups, a diagram whose nodes open it) and an Accessibility review (WCAG 2.2, with what still fails).

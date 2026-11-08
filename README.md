@@ -503,12 +503,31 @@ Every value is a token: use `var(--…)`, never a loose number.
 
 ### Side bar
 
+Closed: a rail of icon buttons. Open: icon and label. Narrow (or under any `[data-narrow]`): a drawer over the content. `ui.js` does the rest:
+
+- **Sections** (`.side__section`): a `.side__toggle` before its `.side__items`. Opening one closes the others in its group; without groups the whole side bar is one group.
+- **Groups** (`.side__group`, optional): sections close each other only inside their group, so one group never closes another. `data-side-multiple` on a group (or on the `.side`) lets its sections stay open together.
+- `[data-side-toggle]` opens and closes the side bar it's in, or the one whose id it names (`data-side-toggle="nav"`). On the rail a section's button opens the side bar too.
+- The drawer closes with `Escape` or a click outside; focus goes in when it opens and back to its button when it closes; it's `inert` while hidden.
+- A section grows and shrinks like the thread's `openBlock` (`duration_enter`, `ease`); reduced motion turns it off.
+
 ```html
 <aside class="side is-open">
-  <div class="side__head"><button class="btn btn--ghost btn--icon" data-side-toggle><svg class="icon"><use href="#i-panel-left"/></svg></button></div>
-  <button class="btn btn--ghost" aria-current="page"><svg class="icon"><use href="#i-file-text"/></svg><span class="side__text">Item</span></button>
+  <div class="side__head"><button class="btn btn--ghost btn--icon" data-side-toggle aria-label="Side bar"><svg class="icon"><use href="#i-panel-left"/></svg></button></div>
+  <nav class="side__body" aria-label="Library">
+    <div class="side__section">
+      <button class="btn btn--ghost side__toggle" aria-expanded="true"><svg class="icon"><use href="#i-list"/></svg><span class="side__text">Components</span><svg class="icon icon--sm side__chevron"><use href="#i-chevron-down"/></svg></button>
+      <div class="side__items"><button class="btn btn--ghost" aria-current="page"><span class="side__text">Button</span></button></div>
+    </div>
+    <div class="side__group" role="group" aria-labelledby="tools" data-side-multiple>
+      <h2 class="side__label side__text" id="tools">Tools</h2>
+      <div class="side__section">…</div>
+    </div>
+  </nav>
 </aside>
 ```
+
+`initSide(side)` and `setSide(side, open)` are exported for a side bar added later.
 
 ### Window
 
