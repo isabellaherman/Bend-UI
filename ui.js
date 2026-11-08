@@ -4,6 +4,7 @@
 // loads the components (ui.css) and the icon sprite, and marks narrow screens.
 
 import T from "./TOKENS.bend";
+import MENU from "./MENU.bend";
 import { ICONS } from "./icons.js";
 import "./ui.css";
 
@@ -138,7 +139,7 @@ const sideOf = (b) => (b.dataset.sideToggle ? document.getElementById(b.dataset.
 const sideToggles = (side) => [...document.querySelectorAll("[data-side-toggle]")].filter((b) => sideOf(b) === side);
 export function initSide(side) {
   side.querySelectorAll(".side__section").forEach((s) => {
-    const t = s.querySelector(":scope > .side__toggle"), items = s.querySelector(":scope > .side__items");
+    const t = s.querySelector(":scope > .side__toggle, :scope > .side__row > .side__toggle"), items = s.querySelector(":scope > .side__items");
     if (!t || !items) return;
     if (!items.id) items.id = "side-items-" + ++sideUid;
     t.setAttribute("aria-controls", items.id);
@@ -148,7 +149,7 @@ export function initSide(side) {
   side.inert = isDrawer(side) && !open;
 }
 function setSection(section, open) {
-  const t = section.querySelector(":scope > .side__toggle"), items = section.querySelector(":scope > .side__items");
+  const t = section.querySelector(":scope > .side__toggle, :scope > .side__row > .side__toggle"), items = section.querySelector(":scope > .side__items");
   if (!t || (t.getAttribute("aria-expanded") === "true") === open) return;
   const h = items?.scrollHeight ?? 0;
   t.setAttribute("aria-expanded", String(open));
@@ -210,10 +211,31 @@ narrow.addEventListener("change", initSides);
 // outside close. Opening or picking doesn't take focus from where the person is typing.
 const ddMenu = (dd) => dd.querySelector(":scope > .menu");
 const ddButton = (dd) => dd.querySelector(':scope > [aria-haspopup="menu"]');
-function ddSet(dd, open) {
-  ddMenu(dd).hidden = !open;
-  ddButton(dd).setAttribute("aria-expanded", open);
+// A menu opens in the browser's top layer (popover), so no scroll area cuts it and no layer covers it.
+// It sits by its button (.menu--end: aligned to its end), and opens up when it doesn't fit below
+// (MENU.bend: opens_up). It follows its button while the page or a list scrolls.
+function ddPlace(dd) {
+  const menu = ddMenu(dd), b = ddButton(dd).getBoundingClientRect();
+  if (!menu.matches(":popover-open")) return;
+  const gap = T.space_1(), h = menu.offsetHeight, w = menu.offsetWidth;
+  const up = menu.classList.contains("menu--up") || !!MENU.opens_up(innerHeight - b.bottom - gap, b.top - gap, h);
+  const left = Math.min(Math.max(gap, menu.classList.contains("menu--end") ? b.right - w : b.left), innerWidth - w - gap);
+  menu.style.left = left + "px";
+  menu.style.top = (up ? b.top - gap - h : b.bottom + gap) + "px";
 }
+function ddSet(dd, open) {
+  const menu = ddMenu(dd);
+  menu.hidden = !open;
+  ddButton(dd).setAttribute("aria-expanded", open);
+  if (!menu.showPopover) return;   // no top layer: the menu stays where ui.css puts it
+  if (!menu.hasAttribute("popover")) menu.setAttribute("popover", "manual");
+  if (open && !menu.matches(":popover-open")) menu.showPopover();
+  if (!open && menu.matches(":popover-open")) menu.hidePopover();
+  ddPlace(dd);
+}
+const ddFollow = () => document.querySelectorAll(".dropdown").forEach((dd) => ddMenu(dd) && !ddMenu(dd).hidden && ddPlace(dd));
+addEventListener("scroll", ddFollow, true);
+addEventListener("resize", ddFollow);
 const ddCloseAll = (except) => document.querySelectorAll(".dropdown").forEach((dd) => { if (dd !== except && ddMenu(dd) && !ddMenu(dd).hidden) ddSet(dd, false); });
 document.addEventListener("mousedown", (e) => {
   if (e.target.closest(".dropdown > [aria-haspopup='menu'], .dropdown > .menu")) e.preventDefault();   // keep the caret
@@ -239,6 +261,28 @@ document.addEventListener("keydown", (e) => {
   const i = items.indexOf(document.activeElement);
   const next = i < 0 ? items.findIndex((x) => x.getAttribute("aria-checked") === "true") : (i + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
   items[Math.max(0, next)].focus();
+});
+
+// ---------- Side bar row actions ----------
+// <div class="side__row"><button class="btn btn--ghost">…</button>
+//   <div class="dropdown side__more"><button class="btn btn--ghost btn--icon btn--sm" aria-haspopup="menu" aria-label="Actions for …">⋯</button><div class="menu menu--end" role="menu" hidden>…</div></div></div>
+// A right-click on the row, the context-menu key or Shift+F10 opens the same menu, focus on its first item.
+function openRowMenu(row) {
+  const dd = row.querySelector(":scope > .side__more");
+  if (!dd || !ddMenu(dd)) return false;
+  ddCloseAll(dd);
+  if (ddMenu(dd).hidden) ddSet(dd, true);
+  (ddMenu(dd).querySelector(".menu__item:not(:disabled)") ?? ddButton(dd)).focus();
+  return true;
+}
+document.addEventListener("contextmenu", (e) => {
+  const row = e.target.closest(".side__row");
+  if (row && openRowMenu(row)) e.preventDefault();
+});
+document.addEventListener("keydown", (e) => {
+  if (!(e.key === "ContextMenu" || (e.key === "F10" && e.shiftKey))) return;
+  const row = e.target.closest?.(".side__row");
+  if (row && openRowMenu(row)) e.preventDefault();
 });
 
 // ---------- Theme per project ----------
@@ -285,5 +329,10 @@ export const icons = [
   "plus", "file-text", "scale", "triangle-alert", "circle-check", "x", "chevron-down", "list", "code",
   "wand-sparkles", "search", "panel-left", "book-open", "lock", "minimize-2", "maximize-2", "minimize", "maximize",
   "text", "rows-2", "columns-2", "heading-1", "pilcrow", "check",
+  "arrow-down", "arrow-left", "arrow-right", "chevron-up", "chevron-left", "chevron-right", "chevrons-up-down", "arrow-up-down", "corner-down-left",
+  "ellipsis", "ellipsis-vertical", "trash-2", "pencil", "copy", "external-link", "download", "upload", "refresh-cw",
+  "undo-2", "redo-2", "link", "filter", "grip-vertical", "settings", "lock-open", "eye", "eye-off",
+  "info", "circle-alert", "circle-x", "star", "bell", "folder", "user", "calendar", "house",
+  "image",
 ];
 export const tokens = T;

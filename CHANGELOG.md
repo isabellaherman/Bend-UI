@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.12 (2026-11-08)
+
+- **Menus open above everything**: every Dropdown menu opens in the browser's top layer (`popover`), so no scroll area cuts it and no layer covers it. It sits by its button (`.menu--end` aligns it to the end), opens up when it doesn't fit below, and follows while the page or a list scrolls. The direction comes from the new **MENU.bend** (`opens_up`); ui.js only measures. `.menu--up` still forces it up.
+- **Side bar row actions**: `.side__row` with a `.dropdown.side__more` at its end. The ⋯ shows on hover, keyboard focus, while its menu is open and on the current item, and always on narrow screens; on a section it sits before the chevron. A right-click, the context-menu key or `Shift+F10` on a row opens the same menu with the focus on its first item. A section's toggle may sit in a row.
+- **37 new icons** (Lucide 0.460.0, ISC), 64 in all, 2.9 KB compressed: `arrow-down`, `arrow-left`, `arrow-right`, `chevron-up`, `chevron-left`, `chevron-right`, `chevrons-up-down`, `arrow-up-down`, `corner-down-left`, `ellipsis`, `ellipsis-vertical`, `trash-2`, `pencil`, `copy`, `external-link`, `download`, `upload`, `refresh-cw`, `undo-2`, `redo-2`, `link`, `filter`, `grip-vertical`, `settings`, `lock-open`, `eye`, `eye-off`, `info`, `circle-alert`, `circle-x`, `star`, `bell`, `folder`, `user`, `calendar`, `house`, `image`.
+- Docs: the Side bar page shows row actions; the Icons page shows the new icons. No new token, motion or law.
+
 ## 1.0.11 (2026-11-08)
 
 - **Side bar: sections and groups**: every part that opens and closes is a `.side__section`. Opening one closes the others in its group; without groups the whole side bar is one group. `.side__group` is now an optional group: its sections close each other, never another group's. `data-side-multiple` on a group (or on the `.side`) keeps its sections open together. **Breaking**: rename `.side__group` to `.side__section` in apps.

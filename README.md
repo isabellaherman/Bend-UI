@@ -529,6 +529,18 @@ Closed: a rail of icon buttons. Open: icon and label. Narrow (or under any `[dat
 
 `initSide(side)` and `setSide(side, open)` are exported for a side bar added later.
 
+Row actions: wrap an item (or a section's toggle) in a `.side__row` with a `.dropdown.side__more` at its end. The ⋯ shows on hover, keyboard focus, while its menu is open and on the current item (always on narrow screens); on a section it sits before the chevron. A right-click on the row, the context-menu key or `Shift+F10` opens the same menu.
+
+```html
+<div class="side__row">
+  <button class="btn btn--ghost"><span class="side__text">Shop</span></button>
+  <div class="dropdown side__more">
+    <button class="btn btn--ghost btn--icon btn--sm" aria-haspopup="menu" aria-expanded="false" aria-label="Actions for Shop"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+    <div class="menu menu--end" role="menu" hidden>…</div>
+  </div>
+</div>
+```
+
 ### Window
 
 ```html

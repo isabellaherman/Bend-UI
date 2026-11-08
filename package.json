@@ -1,6 +1,6 @@
 {
   "name": "bend-ui",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Design system in Bend: tokens in TOKENS.bend, rules in LAWS.bend.",
   "type": "module",
   "main": "ui.js",
@@ -22,6 +22,7 @@
     "./DIAGRAM.bend": "./DIAGRAM.bend",
     "./chart": "./chart.js",
     "./CHART.bend": "./CHART.bend",
+    "./MENU.bend": "./MENU.bend",
     "./workspace": "./workspace.js",
     "./workspace.css": "./workspace.css",
     "./WORKSPACE.bend": "./WORKSPACE.bend"
@@ -46,6 +47,7 @@
     "SPEC.bend",
     "LAWS.bend",
     "PROOF.bend",
+    "MENU.bend",
     "brand",
     "ICONS-LICENSE",
     "docs",

@@ -139,6 +139,8 @@ textarea.input { display: block; width: 100%; height: auto; min-height: calc(var
 .menu--end { left: auto; right: 0; }
 /* Near the bottom of the screen (a composer), the menu opens upward. */
 .menu--up { top: auto; bottom: calc(100% + var(--space-1)); }
+/* In the top layer (ui.js: popover) the menu is placed by its button, so it escapes scroll areas and layers. */
+.dropdown > .menu[popover] { position: fixed; inset: auto; margin: 0; }
 .menu__item {
   display: flex; align-items: center; gap: var(--space-2);
   height: var(--control-md); padding: 0 var(--space-2);
@@ -855,7 +857,20 @@ html:not([data-narrow]) .window:not(.is-full) {
 .side__toggle:not([aria-expanded="true"]) + .side__items,
 .side:not(.is-open) .side__items { display: none; }
 .side .side__items .btn { padding-left: calc(var(--space-2) + var(--icon-md) + var(--space-1)); }
-@media (prefers-reduced-motion: reduce) { .side__chevron { transition: none; } }
+/* A row: the item (or a section's toggle) takes the width; a ⋯ Dropdown (.side__more) sits at its end.
+   The ⋯ shows on hover, on keyboard focus, while its menu is open, on the current item, and always when narrow.
+   On a section it sits before the chevron, which never moves. A right-click opens the same menu (ui.js). */
+.side__row { position: relative; display: flex; align-items: center; }
+.side .side__row > .btn:first-child { flex: 1; width: auto; min-width: 0; }
+.side .side__row:has(> .side__more) > .btn:first-child:not(.side__toggle) { padding-right: calc(var(--control-sm) + var(--space-1)); }
+.side__row > .side__more { position: absolute; right: var(--space-1); top: 50%; transform: translateY(-50%); opacity: 0; transition: opacity var(--duration) var(--ease); }
+.side .side__row > .side__more > .btn { width: var(--control-sm); padding: 0; justify-content: center; }
+.side__section > .side__row > .side__more { right: calc(var(--space-2) + var(--icon-sm) + var(--space-1)); }
+.side__row:hover > .side__more, .side__row:focus-within > .side__more, .side__more:has(> [aria-expanded="true"]),
+.side__row:has(> [aria-current="page"]) > .side__more, [data-narrow] .side__more { opacity: 1; }
+.side:not(.is-open) .side__more { display: none; }
+.side__section:has(> .side__row > .side__toggle:not([aria-expanded="true"])) > .side__items { display: none; }
+@media (prefers-reduced-motion: reduce) { .side__chevron, .side__more { transition: none; } }
 
 /* ---------- Agent: a face that opens into round options ----------
    Drawn by agent.js (motion in MOTION.bend). The face is the only part that is not a lib component:
