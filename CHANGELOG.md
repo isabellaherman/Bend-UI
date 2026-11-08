@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.8 (2026-11-08)
+
+- **Diagram: free layout**: `mountDiagram(el, data, { positions: [{ x, y }], onNodeMove })`. With positions the nodes sit where the app puts them instead of in rows (`.diagram--free`); press a node and move it past a few pixels to drag it, and `onNodeMove(i, { x, y })` is called when it's let go. The click that ends a move doesn't open the node's menu. The diagram grows to where its nodes reach. Switching between rows and positions glides, as any redraw does.
+- New: `.diagram--free`, `.is-moving` (the lifted node takes `--shadow-float`). No new token, law or motion.
+
 ## 1.0.7 (2026-11-08)
 
 - **Workspace (opt-in)**: `import "bend-ui/workspace"` adds dialog (`createDialog`), feedback (`createFeedback`, `setStatusTone`), breadcrumbs, the source/preview workbench (`configureSourceEditor`), the revision list, and the sidebar footer (`createSidebar`). Existing components keep their definitions and appearance.

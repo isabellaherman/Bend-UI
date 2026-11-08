@@ -13,6 +13,10 @@
 // Node menu (optional): { nodeMenu: (i) => [{ label, disabled, onSelect }] }. The node's label opens a .menu
 // with those items; picking one calls its onSelect. The diagram doesn't change itself here either.
 //
+// Free layout (optional): { positions: [{ x, y }], onNodeMove: (i, { x, y }) => … }. Nodes sit at those
+// places instead of in rows; drag a node to move it. The app keeps the positions and draws again.
+// Give every node a position: one without an entry sits at the diagram's corner.
+//
 // Connect (optional): mountDiagram(el, data, { isValidConnection, onConnect }). Drag the dot under a node
 // onto another node; both get { source, target }. The diagram doesn't change itself: draw it again in the same
 // element with the new edge, and the nodes glide to their new places while the new arrow runs in.
@@ -49,7 +53,7 @@ function tween(run, ms, ease, step) {
   });
 }
 
-export function mountDiagram(root, { nodes, edges: given }, { isValidConnection, onConnect, nodeMenu } = {}) {
+export function mountDiagram(root, { nodes, edges: given }, { isValidConnection, onConnect, nodeMenu, positions, onNodeMove } = {}) {
   const n = nodes.length;
   // Arrows with the same ends are one line: their words join ("Add · Always add").
   const edges = [];
@@ -61,7 +65,11 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
   const rows = D.rows(n, list(edges.map((e) => ({ $: "Edge", from: e.from, to: e.to }))));
   const row = array(rows), depth = Number(D.depth(rows));
 
+  // Free layout: with positions ([{ x, y }] per node, in px from the diagram's corner), the nodes sit
+  // where the app says instead of in rows, and dragging a node calls onNodeMove(i, { x, y }) when let go.
+  const free = Array.isArray(positions);
   root.classList.add("diagram");
+  root.classList.toggle("diagram--free", free);
   root.replaceChildren();
   const svg = document.createElementNS(NS, "svg");
   svg.classList.add("diagram__wires");
@@ -73,7 +81,7 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
   root.append(svg);
 
   // Rows top to bottom; on a row, nodes keep their order (DIAGRAM.bend: columns).
-  const rowEls = Array.from({ length: depth }, () => root.appendChild(el("div", "diagram__row")));
+  const rowEls = free ? [] : Array.from({ length: depth }, () => root.appendChild(el("div", "diagram__row")));
   const boxes = nodes.map((node, i) => {
     const items = nodeMenu?.(i) ?? [];
     const b = el("div", "diagram__node" + (node.tone ? " diagram__node--" + node.tone : "") + (items.length ? " dropdown" : ""));
@@ -94,7 +102,8 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
       b.addEventListener("pick", (e) => picks.get(e.detail)?.());
     }
     if (node.tag) b.append(el("span", "tag tag--mono", node.tag));
-    rowEls[row[i]].append(b);
+    if (free) { const p = positions[i] ?? { x: 0, y: 0 }; b.style.left = p.x + "px"; b.style.top = p.y + "px"; root.append(b); }
+    else rowEls[row[i]].append(b);
     return b;
   });
   const wires = edges.map(() => svg.appendChild(document.createElementNS(NS, "path")));
@@ -151,6 +160,45 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
     });
   });
 
+  // Moving a node in free layout: past a few pixels a press becomes a move, and the click that ends it
+  // doesn't open the node's menu.
+  if (free) {
+    const nudge = parseFloat(getComputedStyle(root).getPropertyValue("--space-1")) || 0;
+    boxes.forEach((b, i) => {
+      let start = null, moved = false;
+      // The move is followed on the whole document, so a fast drag can't slip off the node, and the node
+      // never captures the pointer, so a plain click still reaches its menu button.
+      const move = (e) => {
+        const dx = e.clientX - start.x, dy = e.clientY - start.y;
+        if (!moved && Math.hypot(dx, dy) < nudge) return;
+        moved = true; b.classList.add("is-moving");
+        b.style.left = Math.max(0, start.left + dx) + "px"; b.style.top = Math.max(0, start.top + dy) + "px";
+        fit(); draw();
+      };
+      const end = () => {
+        document.removeEventListener("pointermove", move); document.removeEventListener("pointerup", end); document.removeEventListener("pointercancel", end);
+        start = null; b.classList.remove("is-moving");
+        if (moved) onNodeMove?.(i, { x: parseFloat(b.style.left), y: parseFloat(b.style.top) });
+      };
+      b.addEventListener("pointerdown", (e) => {
+        if (start || e.target.closest(".diagram__handle, .menu")) return;
+        start = { x: e.clientX, y: e.clientY, left: parseFloat(b.style.left), top: parseFloat(b.style.top) }; moved = false;
+        document.addEventListener("pointermove", move); document.addEventListener("pointerup", end); document.addEventListener("pointercancel", end);
+      });
+      b.addEventListener("click", (e) => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+    });
+  }
+  // In free layout the diagram is as tall and wide as its nodes reach.
+  function fit() {
+    if (!free) return;
+    const box = root.getBoundingClientRect();
+    let w = 0, h = 0;
+    boxes.forEach((b) => { const r = b.getBoundingClientRect(); w = Math.max(w, r.right - box.left); h = Math.max(h, r.bottom - box.top); });
+    root.style.minWidth = w + "px"; root.style.minHeight = h + nudgeBottom() + "px";
+  }
+  const nudgeBottom = () => parseFloat(getComputedStyle(root).getPropertyValue("--space-7")) || 0;
+  fit();
+
   // An arrow leaves the bottom of its start and enters the top of its end, in a soft S.
   function draw() {
     const box = root.getBoundingClientRect();
@@ -205,6 +253,6 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
 
   return {
     nodes: boxes,
-    destroy() { run.stopped = true; watch.disconnect(); root.replaceChildren(); root.classList.remove("diagram", "is-connecting"); },
+    destroy() { run.stopped = true; watch.disconnect(); root.replaceChildren(); root.classList.remove("diagram", "diagram--free", "is-connecting"); root.style.minWidth = root.style.minHeight = ""; },
   };
 }

@@ -575,6 +575,12 @@ html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); 
 .diagram__open::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
 .diagram__node:has(> .diagram__open:focus-visible) { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-offset); }
 .diagram__row:has(> .diagram__node > .menu:not([hidden])) { z-index: var(--layer-menu); }
+/* Free layout (positions): nodes sit where the app puts them; a node is grabbed to move it. */
+.diagram--free { display: block; }
+.diagram--free > .diagram__node { position: absolute; z-index: var(--layer-part); cursor: grab; touch-action: none; }
+.diagram--free > .diagram__node.is-moving { cursor: grabbing; box-shadow: var(--shadow-float); transition: none; }
+.diagram--free > .diagram__node:has(> .menu:not([hidden])) { z-index: var(--layer-menu); }
+.diagram--free .diagram__open { cursor: inherit; }
 
 /* ---------- Pair: a block and the block that goes with it ----------
    <div class="pair"><div class="block">…</div><div class="block pair__aside">…</div></div>
