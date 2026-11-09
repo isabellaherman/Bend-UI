@@ -41,7 +41,7 @@ plugins = ["../bend/bend2/main.ts"]
 
 ## Theme
 
-A theme changes only color and font. Space, radius and sizes stay bound by the laws.
+A theme changes color, font, the controls' shape and the mode. Space and sizes stay bound by the laws.
 
 ```js
 import { theme } from "bend-ui";
@@ -53,6 +53,16 @@ theme({
   fontDisplay: { family: "Jaro", src: jaro },
 });
 ```
+
+Light is the default, always. Dark is a warm near-black: `theme({ mode: "dark" })`, or `mode: "system"` to follow the computer (`"light"` goes back). It sets `data-theme` and `color-scheme` on `<html>`; `currentTheme()` says which one shows. The accent, danger, success and warning are the same in both: as fills, borders, charts, the focus ring and the agent they need 3:1, and on black they have it. Only grounds, text and words in a tone change: links and tinted labels read `--accent-text`, error messages `--danger-text` (in light, the tone itself). Every dark value is in `TOKENS.bend` (`dark_*`), each the gentlest that passes AA.
+
+Colors at the top of `theme()` are for light, and for dark wherever dark keeps the same color. Give dark its own with `dark`. An app with its own accent gives its dark text tone and tint:
+
+```js
+theme({ accent: "#ffd21f", accentFg: "#02090a", dark: { accentText: "#ffe066", accentSoft: "#2b2614" } });
+```
+
+The tokens live in a stylesheet first in `<head>`, so an app's own CSS can also set any of them (`:root { --accent: … }`, `:root[data-theme="dark"] { … }`).
 
 ## Segmented
 

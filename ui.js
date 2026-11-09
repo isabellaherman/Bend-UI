@@ -74,7 +74,6 @@ const VARS = {
   "--border-width": () => px(T.border_width()),
   "--leading-tight": () => T.leading_tight(), "--leading-ui": () => T.leading_ui(),
   "--leading-body": () => T.leading_body(), "--measure": () => T.measure_ch() + "ch",
-  "--shadow-float": () => T.shadow_float(),
   "--duration": () => T.duration_ms() + "ms", "--duration-slow": () => T.duration_slow_ms() + "ms",
   "--ease-spring": () => T.ease_spring(),
   "--duration-enter": () => T.duration_enter_ms() + "ms", "--duration-connect": () => T.duration_connect_ms() + "ms",
@@ -83,32 +82,64 @@ const VARS = {
   "--ease": () => T.ease(),
   // MOTION.bend's ease_in_out (slow, fast, slow), sampled into a CSS easing: no slow tail at the end.
   "--ease-in-out": () => "linear(" + Array.from({ length: 21 }, (_, i) => MOTION.ease_in_out(i / 20).toFixed(4)).join(", ") + ")",
-  "--chart-tone-1": () => T.chart_tone_1() + "%", "--chart-tone-2": () => T.chart_tone_2() + "%",
-  "--chart-tone-3": () => T.chart_tone_3() + "%", "--chart-tone-4": () => T.chart_tone_4() + "%",
+  "--chart-tone-1": () => T.chart_tone_1() + "%",
   "--chart-ink": () => T.chart_ink() + "%",
   "--chart-soft-2": () => T.chart_soft_2() + "%", "--chart-soft-3": () => T.chart_soft_3() + "%", "--chart-soft-4": () => T.chart_soft_4() + "%",
   "--chart-gap": () => px(T.chart_gap()), "--chart-lift": () => px(T.chart_lift()),
   "--chart-dim": () => String(T.chart_dim() / 100),
-  "--bg": () => T.color_bg(), "--surface": () => T.color_surface(),
-  "--surface-2": () => T.color_surface_2(), "--border": () => T.color_border(),
-  "--border-strong": () => T.color_border_strong(), "--text": () => T.color_text(),
-  "--text-2": () => T.color_text_2(), "--text-3": () => T.color_text_3(), "--text-detail": () => T.color_text_detail(),
-  "--accent": () => T.color_accent(), "--accent-fg": () => T.color_accent_fg(),
-  "--accent-soft": () => T.color_accent_soft(),
-  "--success": () => T.color_success(), "--success-soft": () => T.color_success_soft(),
-  "--warning": () => T.color_warning(), "--warning-soft": () => T.color_warning_soft(),
-  "--success-text": () => T.color_success_text(), "--warning-text": () => T.color_warning_text(),
-  "--danger": () => T.color_danger(), "--danger-soft": () => T.color_danger_soft(),
-  "--syntax-bg": () => T.syntax_bg(), "--syntax-border": () => T.syntax_border(), "--syntax-fg": () => T.syntax_fg(),
-  "--syntax-keyword": () => T.syntax_keyword(), "--syntax-type": () => T.syntax_type(),
-  "--syntax-string": () => T.syntax_string(), "--syntax-number": () => T.syntax_number(),
-  "--syntax-comment": () => T.syntax_comment(), "--syntax-punct": () => T.syntax_punct(),
-  "--syntax-name": () => T.syntax_name(), "--syntax-added": () => T.syntax_added(), "--syntax-removed": () => T.syntax_removed(),
 };
 
-for (const [name, get] of Object.entries(VARS)) {
-  document.documentElement.style.setProperty(name, get());
-}
+// ---------- Colors, per theme ----------
+// Light is the default (:root). Dark is <html data-theme="dark">, and data-theme="system" when the computer is
+// dark. The accent, danger, success and warning are the same in both: only grounds, text and words in a tone change.
+const LIGHT = {
+  "--bg": T.color_bg(), "--surface": T.color_surface(), "--surface-2": T.color_surface_2(),
+  "--border": T.color_border(), "--border-strong": T.color_border_strong(),
+  "--text": T.color_text(), "--text-2": T.color_text_2(), "--text-3": T.color_text_3(), "--text-detail": T.color_text_detail(),
+  "--accent": T.color_accent(), "--accent-fg": T.color_accent_fg(), "--accent-soft": T.color_accent_soft(),
+  "--success": T.color_success(), "--success-soft": T.color_success_soft(), "--success-text": T.color_success_text(),
+  "--warning": T.color_warning(), "--warning-soft": T.color_warning_soft(), "--warning-text": T.color_warning_text(),
+  "--danger": T.color_danger(), "--danger-soft": T.color_danger_soft(),
+  // In light, words in a tone are the tone itself (color_accent_text, color_danger_text), so an app's accent carries.
+  "--accent-text": "var(--accent)", "--danger-text": "var(--danger)",
+  "--shadow-float": T.shadow_float(),
+  // Chart tones: 2 steps toward the surface, 3 and 4 toward the text.
+  "--chart-tone-2": T.chart_tone_2() + "%", "--chart-tone-3": T.chart_tone_3() + "%", "--chart-tone-4": T.chart_tone_4() + "%",
+  "--chart-2-toward": "var(--surface)",
+  "--syntax-bg": T.syntax_bg(), "--syntax-border": T.syntax_border(), "--syntax-fg": T.syntax_fg(),
+  "--syntax-keyword": T.syntax_keyword(), "--syntax-type": T.syntax_type(), "--syntax-string": T.syntax_string(),
+  "--syntax-number": T.syntax_number(), "--syntax-comment": T.syntax_comment(), "--syntax-punct": T.syntax_punct(),
+  "--syntax-name": T.syntax_name(), "--syntax-added": T.syntax_added(), "--syntax-removed": T.syntax_removed(),
+};
+const DARK = {
+  "--bg": T.dark_bg(), "--surface": T.dark_surface(), "--surface-2": T.dark_surface_2(),
+  "--border": T.dark_border(), "--border-strong": T.dark_border_strong(),
+  "--text": T.dark_text(), "--text-2": T.dark_text_2(), "--text-3": T.dark_text_3(), "--text-detail": T.dark_text_detail(),
+  "--accent-text": T.dark_accent_text(), "--accent-soft": T.dark_accent_soft(),
+  "--success-soft": T.dark_success_soft(), "--success-text": T.dark_success_text(),
+  "--warning-soft": T.dark_warning_soft(), "--warning-text": T.dark_warning_text(),
+  "--danger-text": T.dark_danger_text(), "--danger-soft": T.dark_danger_soft(),
+  "--shadow-float": T.dark_shadow_float(),
+  // Chart tones: on black all four step toward the text.
+  "--chart-tone-2": T.dark_chart_tone_2() + "%", "--chart-tone-3": T.dark_chart_tone_3() + "%", "--chart-tone-4": T.dark_chart_tone_4() + "%",
+  "--chart-2-toward": "var(--text)",
+  "--syntax-bg": T.dark_syntax_bg(), "--syntax-border": T.dark_syntax_border(), "--syntax-fg": T.dark_syntax_fg(),
+  "--syntax-keyword": T.dark_syntax_keyword(), "--syntax-type": T.dark_syntax_type(), "--syntax-string": T.dark_syntax_string(),
+  "--syntax-number": T.dark_syntax_number(), "--syntax-comment": T.dark_syntax_comment(), "--syntax-punct": T.dark_syntax_punct(),
+  "--syntax-name": T.dark_syntax_name(), "--syntax-added": T.dark_syntax_added(), "--syntax-removed": T.dark_syntax_removed(),
+};
+// The tokens go in a stylesheet, first in <head>: an app's own CSS can still set any of them, and dark can win
+// over light (inline styles would beat both).
+const decl = (o) => Object.entries(o).map(([k, v]) => `${k}: ${v};`).join(" ");
+const darkRules = (o) => `:root[data-theme="dark"] { ${decl(o)} color-scheme: dark; }\n` +
+  `@media (prefers-color-scheme: dark) { :root[data-theme="system"] { ${decl(o)} color-scheme: dark; } }\n`;
+const sizes = Object.fromEntries(Object.entries(VARS).map(([k, get]) => [k, get()]));
+const tokenSheet = document.createElement("style");
+tokenSheet.id = "bend-ui-tokens";
+tokenSheet.textContent = `:root { ${decl(sizes)} ${decl(LIGHT)} color-scheme: light; }\n` + darkRules(DARK);
+const themeSheet = document.createElement("style");   // what theme() sets, after the lib's own values
+themeSheet.id = "bend-ui-theme";
+document.head.prepend(tokenSheet, themeSheet);
 
 // ---------- Narrow screens ----------
 // CSS media queries can't read variables, so the breakpoint lives in TOKENS.bend
@@ -489,24 +520,41 @@ document.addEventListener("click", (e) => {
 }, true);
 
 // ---------- Theme per project ----------
-// A theme changes COLOR, FONT and the controls' SHAPE. Space and sizes stay bound by the laws.
+// A theme changes COLOR, FONT, the controls' SHAPE and the MODE. Space and sizes stay bound by the laws.
 //   import { theme } from "bend-ui";
 //   theme({ accent: "#ffd21f", accentFg: "#02090a", fontDisplay: { family: "Jaro", src: jaroUrl }, radius: "pill" });
+//   theme({ mode: "dark" });   // "light" (default) | "dark" | "system" (follows the computer)
+//   theme({ dark: { accentText: "#ffe066" } });   // a color for dark only
 // radius: "rounded" (default) | "pill" | "sharp", for every button and segmented; data-radius on a container does the same inside it.
+// Colors given at the top apply to light, and to dark wherever dark doesn't have its own value (the accent, danger,
+// success and warning are shared). An app with its own accent gives its dark accentText and accentSoft too.
 const THEME_KEYS = {
   bg: "--bg", surface: "--surface", surface2: "--surface-2", border: "--border", borderStrong: "--border-strong",
   text: "--text", text2: "--text-2", text3: "--text-3", textDetail: "--text-detail",
-  accent: "--accent", accentFg: "--accent-fg", accentSoft: "--accent-soft",
+  accent: "--accent", accentFg: "--accent-fg", accentSoft: "--accent-soft", accentText: "--accent-text",
   success: "--success", successSoft: "--success-soft", successText: "--success-text", warning: "--warning", warningSoft: "--warning-soft", warningText: "--warning-text",
-  danger: "--danger", dangerSoft: "--danger-soft",
+  danger: "--danger", dangerSoft: "--danger-soft", dangerText: "--danger-text",
 };
 const FONT_KEYS = { fontSans: "--font-sans", fontDisplay: "--font-display", fontMono: "--font-mono" };
+const MODES = ["light", "dark", "system"];
+const own = { light: {}, dark: {} };
 
 export function theme(t = {}) {
-  const root = document.documentElement.style;
   for (const [k, v] of Object.entries(t)) {
     if (k === "radius") { document.documentElement.dataset.radius = v; continue; }
-    if (THEME_KEYS[k]) { root.setProperty(THEME_KEYS[k], v); continue; }
+    if (k === "mode") {
+      if (!MODES.includes(v)) { console.warn(`bend-ui: mode is "light", "dark" or "system", not "${v}".`); continue; }
+      v === "light" ? delete document.documentElement.dataset.theme : (document.documentElement.dataset.theme = v);
+      continue;
+    }
+    if (k === "dark") {
+      for (const [dk, dv] of Object.entries(v)) {
+        if (THEME_KEYS[dk]) own.dark[THEME_KEYS[dk]] = dv;
+        else console.warn(`bend-ui: "${dk}" is not a dark color key.`);
+      }
+      continue;
+    }
+    if (THEME_KEYS[k]) { own.light[THEME_KEYS[k]] = v; continue; }
     if (FONT_KEYS[k]) {
       const font = typeof v === "string" ? { family: v } : v;
       if (font.src) {
@@ -514,12 +562,19 @@ export function theme(t = {}) {
         style.textContent = `@font-face { font-family: "${font.family}"; src: url("${font.src}"); font-display: swap; }`;
         document.head.appendChild(style);
       }
-      root.setProperty(FONT_KEYS[k], `"${font.family}", ${T.font_sans()}`);
+      own.light[FONT_KEYS[k]] = `"${font.family}", ${T.font_sans()}`;
       continue;
     }
-    console.warn(`bend-ui: "${k}" is not a theme key (color, font and radius).`);
+    console.warn(`bend-ui: "${k}" is not a theme key (color, font, radius, mode and dark).`);
   }
+  themeSheet.textContent = `:root { ${decl(own.light)} }\n` + (Object.keys(own.dark).length ? darkRules(own.dark) : "");
 }
+// Which theme shows now: "light" or "dark" (a "system" mode answers with what the computer shows).
+const systemDark = matchMedia("(prefers-color-scheme: dark)");
+export const currentTheme = () => {
+  const m = document.documentElement.dataset.theme;
+  return m === "dark" || (m === "system" && systemDark.matches) ? "dark" : "light";
+};
 
 function mountIcons() {
   if (document.getElementById("bend-ui-icons")) return;

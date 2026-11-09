@@ -1,4 +1,4 @@
-# Bend-UI: the design system's values. Light theme. Single source of truth.
+# Bend-UI: the design system's values. Single source of truth. Light is the default theme; dark_* at the end.
 
 import Base
 
@@ -196,6 +196,10 @@ def color_success_text() -> String: "#237a35"
 def color_warning_text() -> String: "#946119"
 def color_danger() -> String: "#c92a2a"
 def color_danger_soft() -> String: "#fdecec"
+# Words in a tone (links, tinted and plain labels, error messages). In light they are the tone itself;
+# in dark they are lighter, since words need 4.5:1 and the tone itself only 3:1 (fills, borders, charts).
+def color_accent_text() -> String: color_accent()
+def color_danger_text() -> String: color_danger()
 
 # Code (Snow): a white ground for code boxes, and a color for each kind of piece (SYNTAX.bend).
 # Each color stays at 5.7:1 or more on the ground (WCAG AA).
@@ -269,3 +273,47 @@ def chart_bar_max() -> U32: space_5()      # a bar is never wider
 def chart_bar_gap() -> U32: space_2()      # the least space between two bars
 def chart_axis_x() -> U32: space_6()       # the labels' column, left of the plot
 def chart_axis_y() -> U32: space_5()       # the labels' row, under the plot
+
+# ---------- Dark theme ----------
+# theme({ mode: "dark" }), or "system" to follow the computer. Light stays the default.
+# A warm near-black, the light theme's stone grays turned over. Never pure black, never pure white text.
+# The accent, danger, success and warning keep their light values: as fills, borders, charts, the focus ring and
+# the agent they need 3:1, and on black they have it (3.08, 3.19, 3.99, 4.79). Only words in a tone get lighter.
+# Every value is the gentlest that passes: the light value moved the least it had to.
+def dark_bg() -> String: "#111110"
+def dark_surface() -> String: "#1a1a18"
+def dark_surface_2() -> String: "#232321"
+def dark_border() -> String: "#2e2d2a"
+def dark_border_strong() -> String: "#45433f"
+def dark_text() -> String: "#ecebe7"            # 14.61:1 on surface
+def dark_text_2() -> String: "#a0a09c"          # 6.64:1
+def dark_text_3() -> String: "#72726f"          # 3.61:1, lines and borders
+def dark_text_detail() -> String: "#8a8a86"     # 5.03:1, small text (4.54 on surface-2)
+def dark_accent_text() -> String: "#6787e4"     # the accent 72% toward the text: 5.11:1
+def dark_accent_soft() -> String: "#1f2338"     # a tinted label on it: 4.55:1
+def dark_success_soft() -> String: "#17271b"
+def dark_success_text() -> String: "#509a5a"    # 4.55:1 on its soft fill
+def dark_warning_soft() -> String: "#2b2213"
+def dark_warning_text() -> String: "#b97e2c"    # 4.54:1 on its soft fill
+def dark_danger_text() -> String: "#da6a61"     # the danger 72% toward the text: 5.16:1
+def dark_danger_soft() -> String: "#2e1d1c"     # 4.75:1
+# A shadow can't be seen on black: a deeper one, and a hairline of light around it.
+def dark_shadow_float() -> String: "0 4px 16px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(255 255 255 / 0.06)"
+# Chart: on black every tone steps from the accent toward the text, so all four stay vivid and 3:1 or more
+# (toward the surface would be darker, under 3:1). Percent of the accent: 3.08, 3.86, 4.95, 6.44:1.
+def dark_chart_tone_2() -> U32: 88
+def dark_chart_tone_3() -> U32: 74
+def dark_chart_tone_4() -> U32: 58
+# Code: GitHub's dark colors on the surface, each 5:1 or more.
+def dark_syntax_bg() -> String: dark_surface()
+def dark_syntax_border() -> String: dark_border()
+def dark_syntax_fg() -> String: "#e6edf3"
+def dark_syntax_keyword() -> String: "#ff7b72"
+def dark_syntax_type() -> String: "#d2a8ff"
+def dark_syntax_string() -> String: "#a5d6ff"
+def dark_syntax_number() -> String: "#79c0ff"
+def dark_syntax_comment() -> String: "#8b949e"
+def dark_syntax_punct() -> String: "#c3c7cc"
+def dark_syntax_name() -> String: "#d2a8ff"
+def dark_syntax_added() -> String: dark_success_text()
+def dark_syntax_removed() -> String: dark_danger_text()

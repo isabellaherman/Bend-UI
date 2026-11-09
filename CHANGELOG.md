@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.8 (2026-11-09)
+
+- **Dark theme**: a warm near-black, the light theme's stone grays turned over. Light stays the default; `theme({ mode: "dark" })`, or `"system"` to follow the computer. `currentTheme()` says which one shows. Every dark value is in `TOKENS.bend` (`dark_*`), each the gentlest that passes AA, as approved in the Black proposal.
+- **The tones stay**: the accent, danger, success and warning keep their light values in dark. As fills, borders, charts, the focus ring and the agent they need 3:1 and have it on black (3.08, 3.19, 3.99, 4.79). The agent looks the same in both.
+- **Words in a tone** read two new colors, `--accent-text` and `--danger-text` (`color_accent_text`, `color_danger_text`; theme keys `accentText`, `dangerText`): button labels in a tone, links in prose, error messages, accent and danger tags, soft diagram nodes, an agent option's error. In light they are the tone itself, so light doesn't change. In dark they are lighter (5.11 and 5.16:1).
+- **Charts in dark**: all four tones step from the accent toward the text (`dark_chart_tone_2..4`: 88, 74, 58; 3.08 to 6.44:1), so they stay vivid. In light nothing changes.
+- **Code in dark**: GitHub's dark colors on the surface, each 5:1 or more. A floating shadow gets a dark value too.
+- **Tokens move into a stylesheet** (`<style id="bend-ui-tokens">`, first in `<head>`) instead of inline styles on `<html>`, so dark can win over light and an app's own CSS can set any token. `theme()` writes to its own stylesheet and takes `dark: { … }` for colors in dark only.
+- New icons (Lucide): `sun`, `moon`.
+- Docs: a moon/sun button in the toolbar (a ghost icon button, like the side bar's) turns dark on and off; the docs remember it. The Accessibility tables still measure light.
+
 ## 1.1.7 (2026-11-09)
 
 - **Small text passes AA**: a new color, `color_text_detail` (`--text-detail`, theme key `textDetail`): text-3 moved 59% toward text-2, the gentlest that gives 4.5:1 on surface, page and surface-2 (4.95, 4.74, 4.50; text-3 was 3.35, 3.21, 3.03). It colors the small text people read: `.meta`, `.detail`, a row's lead and date (`.row__lead`, `.row__meta`), a muted outline item (`.outline__item.is-off`) and a block's placeholder.

@@ -1,4 +1,4 @@
-import { busy, done, initSegmented, initButtons, setFieldError } from "../ui.js";
+import { busy, done, initSegmented, initButtons, setFieldError, theme } from "../ui.js";
 import { mountAgent } from "../agent.js";
 import { createThread, openBlock, formBlock } from "../thread.js";
 import claude from "../brand/claude.webp";
@@ -220,6 +220,16 @@ document.querySelectorAll("[data-page]").forEach((page) => {
 
 // Overview: the version and how many laws hold.
 $("docs-version").textContent = "v" + pkg.version;
+// Theme: light by default. One ghost button, like the side bar's: it shows the moon in light and the sun in dark.
+const themeBtn = $("docs-theme");
+const setDocsTheme = (dark) => {
+  theme({ mode: dark ? "dark" : "light" });
+  themeBtn.setAttribute("aria-pressed", String(dark));
+  themeBtn.querySelector("use").setAttribute("href", dark ? "#i-sun" : "#i-moon");
+  try { localStorage.setItem("bend-ui-docs-theme", dark ? "dark" : "light"); } catch {}
+};
+themeBtn.addEventListener("click", () => setDocsTheme(themeBtn.getAttribute("aria-pressed") !== "true"));
+try { if (localStorage.getItem("bend-ui-docs-theme") === "dark") setDocsTheme(true); } catch {}
 $("docs-status").lastChild.textContent = `${LAWS.length} laws · all proofs check`;
 
 // Keyboard: the rules, and the lib's own keys.

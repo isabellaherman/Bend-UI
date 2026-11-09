@@ -34,7 +34,7 @@ body {
 [data-radius="pill"] { --btn-radius: var(--radius-full); --btn-radius-sm: var(--radius-full); --seg-radius: var(--radius-full); --seg-radius-inner: var(--radius-full); --input-radius: var(--radius-full); }
 [data-radius="sharp"] { --btn-radius: var(--space-0); --btn-radius-sm: var(--space-0); --seg-radius: var(--space-0); --seg-radius-inner: var(--space-0); --input-radius: var(--space-0); }
 .btn {
-  --tone: var(--accent); --tone-soft: var(--accent-soft); --tone-fg: var(--accent-fg); --tone-text: var(--accent);
+  --tone: var(--accent); --tone-soft: var(--accent-soft); --tone-fg: var(--accent-fg); --tone-text: var(--accent-text);
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -59,7 +59,7 @@ body {
 
 /* Tone */
 .btn--neutral { --tone: var(--text); --tone-soft: var(--surface-2); --tone-fg: var(--surface); --tone-text: var(--text); }
-.btn--danger { --tone: var(--danger); --tone-soft: var(--danger-soft); --tone-fg: var(--accent-fg); --tone-text: var(--danger); }
+.btn--danger { --tone: var(--danger); --tone-soft: var(--danger-soft); --tone-fg: var(--accent-fg); --tone-text: var(--danger-text); }
 
 /* Style */
 .btn--filled, .btn--primary { background: var(--tone); border-color: var(--tone); color: var(--tone-fg); }
@@ -227,7 +227,7 @@ textarea.input { display: block; width: 100%; height: auto; min-height: var(--te
 .field__help { color: var(--text-2); }
 .field__msg { display: inline-flex; align-items: center; gap: var(--space-1); }
 .field__msg > .icon { width: var(--icon-sm); height: var(--icon-sm); flex: none; }
-.field__msg--error { color: var(--danger); }
+.field__msg--error { color: var(--danger-text); }
 .field__msg--success { color: var(--success-text); }
 .field__count { margin-left: auto; color: var(--text-2); font-variant-numeric: tabular-nums; }
 /* ---------- Form ----------
@@ -249,7 +249,7 @@ textarea.input { display: block; width: 100%; height: auto; min-height: var(--te
 .form__summary { display: flex; gap: var(--space-3); padding: var(--space-3) var(--space-4); border: var(--border-width) solid var(--danger); border-radius: var(--radius-md); background: var(--danger-soft); color: var(--text); }
 .form__summary > .icon { flex: none; color: var(--danger); margin-top: var(--space-hairline); }
 .form__summary ul { margin: var(--space-1) 0 0; padding-left: var(--space-4); }
-.form__summary .link { color: var(--danger); text-decoration: underline; }
+.form__summary .link { color: var(--danger-text); text-decoration: underline; }
 .form__summary:focus-visible { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-offset); }
 
 /* ---------- Segmented ----------
@@ -369,10 +369,10 @@ textarea.input { display: block; width: 100%; height: auto; min-height: var(--te
   background: var(--surface-2);
   color: var(--text-2);
 }
-.tag--accent { background: var(--accent-soft); color: var(--accent); }
+.tag--accent { background: var(--accent-soft); color: var(--accent-text); }
 .tag--success { background: var(--success-soft); color: var(--success-text); }
 .tag--warning { background: var(--warning-soft); color: var(--warning-text); }
-.tag--danger { background: var(--danger-soft); color: var(--danger); }
+.tag--danger { background: var(--danger-soft); color: var(--danger-text); }
 .tag--mono { font-family: var(--font-mono); }
 
 .kbd {
@@ -447,7 +447,7 @@ textarea.input { display: block; width: 100%; height: auto; min-height: var(--te
 .prose p { margin: 0 0 var(--space-3); }
 .prose ul, .prose ol { margin: 0 0 var(--space-3); padding-left: var(--space-4); }
 .prose li { margin: 0 0 var(--space-1); }
-.prose a { color: var(--accent); }
+.prose a { color: var(--accent-text); }
 .prose code { font-family: var(--font-mono); font-size: var(--text-sm); background: var(--surface-2); border-radius: var(--radius-sm); padding: 0 var(--space-1); }
 .prose pre { margin: 0 0 var(--space-3); padding: var(--space-3); background: var(--surface-2); border: var(--border-width) solid var(--border); border-radius: var(--radius-md); overflow: auto; }
 .prose pre code { background: none; padding: 0; }
@@ -601,7 +601,7 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 .block--code .block__text { font-family: var(--font-mono); white-space: pre-wrap; }
 .block__line { display: block; }   /* one line of a block's text, for line-by-line motion (formBlock) */
 .block__out { grid-column: 2; margin: var(--space-1) 0 0; font-family: var(--font-mono); font-size: var(--text-sm); line-height: var(--leading-ui); white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text-2); }
-.block__out--error { color: var(--danger); }
+.block__out--error { color: var(--danger-text); }
 
 /* ---------- Page and doc: a scrolling area with a column of blocks ----------
    <main class="page"><div class="doc">…blocks…</div></main>
@@ -684,10 +684,10 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 /* .diagram--soft: the same nodes as a tag draws them, a soft fill and the tone in the text, no visible border
    (the border stays, clear, so a node is the same size in both looks). */
 .diagram--soft .diagram__node { border-color: transparent; background: var(--surface-2); }
-.diagram--soft .diagram__node--accent { background: var(--accent-soft); color: var(--accent); }
+.diagram--soft .diagram__node--accent { background: var(--accent-soft); color: var(--accent-text); }
 .diagram--soft .diagram__node--success { background: var(--success-soft); color: var(--success-text); }
 .diagram--soft .diagram__node--warning { background: var(--warning-soft); color: var(--warning-text); }
-.diagram--soft .diagram__node--danger { background: var(--danger-soft); color: var(--danger); }
+.diagram--soft .diagram__node--danger { background: var(--danger-soft); color: var(--danger-text); }
 .diagram__wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; color: var(--text-3); }
 .diagram__wires path { fill: none; stroke: currentColor; stroke-width: var(--border-width); }
 .diagram__wires marker path { fill: currentColor; stroke: none; }
@@ -701,7 +701,7 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
    Line and area reuse the thread's pieces: its weight, its glow, its glint and its .node. */
 .chart {
   --chart-1: color-mix(in oklch, var(--accent) var(--chart-tone-1), var(--surface));
-  --chart-2: color-mix(in oklch, var(--accent) var(--chart-tone-2), var(--surface));
+  --chart-2: color-mix(in oklch, var(--accent) var(--chart-tone-2), var(--chart-2-toward));   /* the surface; the text in dark */
   --chart-3: color-mix(in oklch, var(--accent) var(--chart-tone-3), var(--text));
   --chart-4: color-mix(in oklch, var(--accent) var(--chart-tone-4), var(--text));
   --chart-size: var(--chart-md);
@@ -1125,7 +1125,7 @@ html:not([data-narrow]) .window:not(.is-full) {
 .agent--lg.is-open .agent__item[data-status="error"] .agent__label,
 .agent--lg.is-open.is-asking .agent__item .agent__label { opacity: 1; }
 .agent--sm .agent__item:hover ~ .agent__item .agent__label { opacity: 0; }
-.agent__item[data-status="error"] .agent__label { color: var(--danger); }
+.agent__item[data-status="error"] .agent__label { color: var(--danger-text); }
 .agent__item:disabled { opacity: 1; color: var(--text-3); }
 
 /* ---------- Less motion ---------- */
