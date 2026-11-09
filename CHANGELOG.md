@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.25 (2026-11-09)
+
+- **Docs: the Agent page in the standard format**. The large and the small agent side by side, centered, with no box; on top, Action (Look, Spin, Shake, Ask, Busy → Done) and Open (Click, Hover), both segmented. Each action plays on both agents; in Look they look at each other. Accessibility collapsed (4 of 4 pass, full review pending), Code, Laws. The separate Claude and OpenAI marks row is gone; the marks show inside the options. Nothing in the lib changes.
+
 ## 1.0.24 (2026-11-08)
 
 - **Docs: Components in alphabetical order** in the side bar. Nothing in the lib changes.

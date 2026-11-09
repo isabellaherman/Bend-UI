@@ -18,28 +18,49 @@ let holdT;
 hold.addEventListener("pointerdown", () => { hold.dataset.status = "hold"; holdT = setTimeout(() => hold.dataset.status = "warn", 960); });
 ["pointerup", "pointerleave"].forEach((ev) => hold.addEventListener(ev, () => { clearTimeout(holdT); if (hold.dataset.status === "hold") delete hold.dataset.status; }));
 
-// agent
-const items = (control) => [
-  { id: control.id, icon: control.icon, label: control.label },
-  { id: "a", mark: `<img src="${claude}" alt="">`, label: "Claude", ring: true },
-  { id: "b", mark: `<img src="${openai}" alt="">`, label: "Codex", ring: true },
-];
-function demo(el, size, control) {
-  const a = mountAgent(el, {
-    size, items: items(control),
-    onPick: (id) => {
-      if (id === control.id) return a.close();
-      a.setItem(id, { status: "busy" });
-      setTimeout(() => { a.setItem(id, { status: "ok", pressed: true }); a.setItem(id === "a" ? "b" : "a", { status: "", pressed: false }); a.spin(); }, 900);
-    },
-  });
+// agent: the large and the small side by side. Open rebuilds both; each Action plays its move on both.
+{
+  let agents = [], timers = [], open = "click";
+  const later = (ms, f) => timers.push(setTimeout(f, ms));
+  const busyThenDone = (a, id) => {
+    a.open(); a.setItem(id, { status: "busy", label: "Connecting…" });
+    later(1400, () => {
+      a.setItem(id, { status: "ok", pressed: true, label: id === "a" ? "Claude" : "Codex" });
+      a.setItem(id === "a" ? "b" : "a", { status: "", pressed: false });
+      a.spin();
+    });
+  };
+  const mount = (spot, size) => {
+    spot.replaceChildren(document.createElement("div"));   // a fresh root each time
+    const control = size === "lg" ? { id: "min", icon: "minimize-2", label: "Minimize" } : { id: "max", icon: "maximize-2", label: "Expand" };
+    const a = mountAgent(spot.firstElementChild, {
+      size, open, label: size === "lg" ? "Assistant, large" : "Assistant, small",
+      items: [control,
+        { id: "a", mark: `<img src="${claude}" alt="">`, label: "Claude", ring: true },
+        { id: "b", mark: `<img src="${openai}" alt="">`, label: "Codex", ring: true }],
+      onPick: (id) => (id === "a" || id === "b" ? busyThenDone(a, id) : a.close()),
+    });
+    a.setItem("a", { pressed: true, status: "ok" });
+    return a;
+  };
+  const build = () => {
+    timers.forEach(clearTimeout); timers = [];
+    agents.forEach((a) => a.destroy());
+    agents = [mount(document.getElementById("agent-lg"), "lg"), mount(document.getElementById("agent-sm"), "sm")];
+  };
+  const ACTIONS = {
+    // Look: each one looks at the other for a moment.
+    look: (a) => { a.close(); a.lookAtEl(agents.find((o) => o !== a).face); later(2600, () => a.lookAtEl(null)); },
+    spin: (a) => { a.lookAtEl(null); a.spin(); },
+    shake: (a) => { a.lookAtEl(null); a.shake(); },
+    ask: (a) => a.ask(true),
+    busy: (a) => busyThenDone(a, a.el.querySelector('[data-id="a"]').getAttribute("aria-pressed") === "true" ? "b" : "a"),
+  };
+  document.querySelector("[data-agent-open]").addEventListener("change", (e) => { open = e.detail.dataset.value; build(); });
+  // Action is a segmented: picking an option plays it, and picking it again plays it again.
+  document.querySelectorAll("[data-agent-actions] button").forEach((b) => b.addEventListener("click", () => agents.forEach(ACTIONS[b.dataset.value])));
+  build();
 }
-demo(document.getElementById("agent-lg"), "lg", { id: "min", icon: "minimize-2", label: "Minimize" });
-demo(document.getElementById("agent-sm"), "sm", { id: "max", icon: "maximize-2", label: "Expand" });
-
-// brand marks
-document.getElementById("brand-claude").src = claude;
-document.getElementById("brand-openai").src = openai;
 
 // dropdown: the button shows the picked item
 document.addEventListener("pick", (e) => {
