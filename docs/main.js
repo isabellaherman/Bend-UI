@@ -351,6 +351,10 @@ if (nodePreview) {
   document.querySelectorAll('[data-page="diagram"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
   draw();
 }
+// A Playground control is a segmented ("change") or, when its options don't fit the column, a dropdown ("pick").
+// The dropdown's button shows the option picked.
+const filterEvent = (g) => g.classList.contains("dropdown") ? "pick" : "change";
+document.addEventListener("pick", (e) => { const dd = e.target.closest(".v-filter__controls .dropdown"); if (dd) dd.querySelector(":scope > .btn > span").textContent = e.detail.textContent; });
 // Segmented: the playground. Shape and animation come from the filters; the three rows follow them.
 const segPreview = document.getElementById("seg-preview");
 if (segPreview) {
@@ -396,7 +400,7 @@ if (inputPreview) {
   };
   const ROWS = [["text", "Text"], ["icon", "With icon"], ["button", "With button"], ["mono", "Mono"], ["area", "Textarea"]];
   const draw = () => { inputPreview.dataset.radius = pick.shape; inputPreview.innerHTML = ROWS.map(([k, n]) => `<span class="detail">${n}</span>${field(k)}`).join(""); };
-  document.querySelectorAll('[data-page="input"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
+  document.querySelectorAll('[data-page="input"] [data-filter]').forEach((g) => g.addEventListener(filterEvent(g), (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
   draw();
 }
 // Form: the playground. A real form (data-validate): Send checks it; the filters show its layouts and states.
@@ -528,7 +532,7 @@ if (codePreview) {
     codePreview.innerHTML = codeBlock(code, { lang: pick.lang, name: pick.header === "file" ? file : undefined, head: pick.header !== "none", numbers: pick.lines === "on", wrap: pick.wrap === "wrap" });
     initButtons();
   };
-  document.querySelectorAll('[data-page="code-block"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
+  document.querySelectorAll('[data-page="code-block"] [data-filter]').forEach((g) => g.addEventListener(filterEvent(g), (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
   draw();
 }
 // Button animations: Publish shows busy, then done (a real app would wait for its work here).

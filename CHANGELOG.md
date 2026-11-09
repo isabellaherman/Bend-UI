@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0 (2026-11-09)
+
+- **10 new icons** (Lucide): `square-round-corner`, `ruler`, `move-horizontal`, `toggle-right`, `tag`, `move`, `list-ordered`, `text-wrap`, `play`, `mouse-pointer-click`.
+- Docs: the visual standard for every page. Every Playground puts its stage on the left and its controls in a column on the right (320px, `space_8 × 5`). Each control is a lib `.field`: an icon and its name above it, the same icon for the same kind of control on every page. On narrow screens the controls go above the stage, side by side. Code block's Language (12 options) and Input's State (6) are a pill dropdown, since they don't fit the column. Segmented, field and dropdown don't change.
+
 ## 1.0.34 (2026-11-09)
 
 - Docs: every segmented that drives a page (the filters, Agent's Action and Open, Pages, Pair, Panel, Prose) is now a pill with the spring thumb (`.segmented--slide`, `data-motion="spring"`, `data-radius="pill"`). The Segmented page's own previews still follow its Shape and Animation filters. Nothing in the lib changes.
