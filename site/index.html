@@ -45,6 +45,14 @@
   .v-btn-grid > .detail { padding-right: var(--space-3); }
   /* Dropdown playground: one real dropdown, open, with room for its menu below or above. */
   .v-dd-stage { display: flex; align-items: center; justify-content: center; min-height: calc(var(--space-8) * 4); }
+  /* Input playground: each kind of field as a row, its name on the left; .is-focus only shows the focus look. */
+  .v-input-grid { display: grid; grid-template-columns: max-content minmax(0, 360px); align-items: start; gap: var(--space-5); padding-block: var(--space-3); }
+  .v-input-grid > .detail { padding-top: var(--space-5); }
+  .v-input-grid .input:not(textarea) { width: 100%; }
+  .v-input-grid .input.is-focus { border-color: var(--accent); box-shadow: 0 0 0 var(--focus-halo) var(--accent-soft); }
+  .v-input-grid .input.is-focus[aria-invalid="true"] { box-shadow: 0 0 0 var(--focus-halo) var(--danger-soft); }
+  .v-input-grid .input-group:has(> .input.is-focus) { border-color: var(--accent); box-shadow: 0 0 0 var(--focus-halo) var(--accent-soft); }
+  .v-input-grid .input-group:not(:has(> .input--sm)) > .input.is-focus { box-shadow: none; }
   /* Segmented playground: one segmented per row; shape and animation come from the filters. */
   .v-seg-grid { display: inline-grid; align-self: flex-start; grid-template-columns: auto auto; align-items: center; justify-items: start; gap: var(--space-3) var(--space-5); padding-block: var(--space-3); }
   /* Diagram playground: every look (rows) in every tone (columns); nodes share one width. */
@@ -62,7 +70,7 @@
   .v-agent-lg { width: 280px; height: 280px; display: flex; align-items: flex-end; justify-content: flex-end; padding: var(--space-5); }
   .v-radius { width: 48px; height: 48px; background: var(--accent-soft); border: var(--border-width) solid var(--accent); }
 </style>
-<link rel="stylesheet" crossorigin href="./chunk-zcxwt7j0.css"><script type="module" crossorigin src="./chunk-2pz4vb4s.js"></script></head>
+<link rel="stylesheet" crossorigin href="./chunk-y6zbtk6g.css"><script type="module" crossorigin src="./chunk-smz4442y.js"></script></head>
 <body class="desk">
 <div class="window" id="docs" data-agent="lg">
   <aside class="side is-open" id="docs-side">
@@ -205,8 +213,9 @@
       <section class="view" data-page="input" hidden><div class="doc doc--wide">
 <p class="heading">Input and field</p>
 <article class="prose"><h2>Examples</h2></article>
-<div><div class="v-row"><div class="v-item"><input class="input" placeholder="Input"><code>.input</code></div><div class="v-item"><input class="input input--mono" value="L-012"><code>.input--mono</code></div><div class="v-item"><div class="field"><span class="field__label">Label</span><input class="input" placeholder="Input"></div><code>.field</code></div><div class="v-item"><textarea class="input input--mono" style="width:280px">law name:
-  {a == b : T}</textarea><code>textarea.input</code></div></div></div>
+<div data-section="Playground"><div class="v-filter"><div class="v-filter__bar"><span class="v-filter__group"><span class="detail">Shape</span><div class="segmented" role="group" aria-label="Shape" data-filter="shape"><button type="button" data-value="rounded" aria-pressed="true">Rounded</button><button type="button" data-value="pill" aria-pressed="false">Pill</button><button type="button" data-value="sharp" aria-pressed="false">Sharp</button></div></span><span class="v-filter__group"><span class="detail">Size</span><div class="segmented" role="group" aria-label="Size" data-filter="size"><button type="button" data-value="sm" aria-pressed="false">sm</button><button type="button" data-value="md" aria-pressed="true">md</button><button type="button" data-value="lg" aria-pressed="false">lg</button><button type="button" data-value="xl" aria-pressed="false">xl</button></div></span><span class="v-filter__group"><span class="detail">State</span><div class="segmented" role="group" aria-label="State" data-filter="state"><button type="button" data-value="focus" aria-pressed="true">Focus</button><button type="button" data-value="error" aria-pressed="false">Error</button><button type="button" data-value="success" aria-pressed="false">Success</button><button type="button" data-value="disabled" aria-pressed="false">Disabled</button><button type="button" data-value="readonly" aria-pressed="false">Read-only</button><button type="button" data-value="rest" aria-pressed="false">Rest</button></div></span></div><div class="v-input-grid" id="input-preview" data-radius="rounded"></div></div></div>
+<div data-section="Accessibility"><details class="disclosure"><summary><svg class="icon icon--sm disclosure__chevron"><use href="#i-chevron-down"/></svg><span class="disclosure__title">WCAG 2.2 AA</span><span class="meta">9 of 9 pass · not yet tested with VoiceOver or NVDA</span></summary><article class="prose"><table><thead><tr><th>Criterion</th><th>Status</th><th>How</th></tr></thead><tbody><tr><td>1.4.11 Non-text contrast</td><td>Pass</td><td>The field's border (text-3) 3.35:1 on surface; error (danger) 5.46:1, success 4.37:1, focus (accent) 5.67:1.</td></tr><tr><td>1.4.3 Contrast (minimum)</td><td>Pass</td><td>Text 17.21:1; placeholder and help (text-2) 6.58:1; error 5.46:1; success (success-text) 5.38:1.</td></tr><tr><td>1.4.1 Use of color</td><td>Pass</td><td>Error and success are said in words, with an icon, not only by the border.</td></tr><tr><td>1.3.1 Info and relationships</td><td>Pass</td><td>The label is tied to the field; help and messages with aria-describedby.</td></tr><tr><td>3.3.1 Error identification</td><td>Pass</td><td>aria-invalid on the field, and a message right under it that says what's wrong.</td></tr><tr><td>3.3.2 Labels or instructions</td><td>Pass</td><td>A visible label, help text, and Required in words.</td></tr><tr><td>2.4.7 Focus visible</td><td>Pass</td><td>Accent border and halo.</td></tr><tr><td>2.5.8 Target size</td><td>Pass</td><td>sm is 24px, the minimum; md to xl are 32 to 48px.</td></tr><tr><td>4.1.2 Name, role, value</td><td>Pass</td><td>Native inputs and textareas, named by their labels.</td></tr></tbody></table></article></details></div>
+<article class="prose"><p>A text field and its label, help and messages. The same sizes and shapes as buttons, so a field and a button line up.</p></article>
 <div data-laws="input"></div>
       </div></section>
       <section class="view" data-page="form" hidden><div class="doc doc--wide">
