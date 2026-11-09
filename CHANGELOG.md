@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.29 (2026-11-09)
+
+- Docs: the **Prose** page in the standard format. A Prose filter (On, Off) over the same HTML on a panel without a header: On shows the lib's type, Off what the browser draws. Nothing in the lib changes.
+
 ## 1.0.28 (2026-11-09)
 
 - Docs: **Responsive** and **Prose** move to Foundations (`/foundations/responsive` after Size, `/foundations/prose` after Type). **Panel** is in the standard format: a Header filter (With, Without) over one panel with an empty art in its body. Nothing in the lib changes.

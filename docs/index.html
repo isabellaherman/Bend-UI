@@ -52,6 +52,8 @@
   .v-pairs { width: 100%; padding: var(--space-3) 0; }
   .v-pairs .pair { gap: var(--space-3); margin-bottom: var(--space-3); }
   html:not([data-narrow]) .v-pairs.doc--split .pair, html:not([data-narrow]) .v-pairs.doc--split .doc__columns { column-gap: var(--space-3); }
+  /* Prose playground: the same HTML on a panel, with or without .prose. */
+  .v-prose { max-width: var(--measure); padding-block: var(--space-3); }
   /* Panel playground: one panel at a width a panel has in an app. */
   .v-panel { max-width: calc(var(--space-8) * 5); padding-block: var(--space-3); }
   /* Code sections: one code block per snippet, stacked. */
@@ -272,8 +274,8 @@
       <section class="view" data-page="prose" hidden><div class="doc doc--wide">
 <p class="heading">Prose</p>
 <article class="prose"><h2>Examples</h2></article>
-<div><div class="v-row"><div class="v-item"><article class="prose"><h1>Heading 1</h1><p>Paragraph with <code>code</code> and a <a href="#">link</a>.</p><h2>Heading 2</h2><ul><li>Item</li><li>Item</li></ul><pre><code>law name:
-  {a == b : T}</code></pre></article><code>.prose</code></div></div></div>
+<div data-section="Playground"><div class="v-filter"><div class="v-filter__bar"><span class="v-filter__group"><span class="detail">Prose</span><div class="segmented" role="group" aria-label="Prose" data-prose-on><button type="button" data-value="on" aria-pressed="true">On</button><button type="button" data-value="off" aria-pressed="false">Off</button></div></span></div><div class="v-prose"><div class="panel"><div class="panel__body"><article class="prose" id="prose-demo"><h1>Getting started</h1><p>Install the library, then import it once. Every class reads its values from the tokens, so <code>theme()</code> changes them all. See the <a href="#">README</a> for the rest.</p><h2>What you get</h2><ul><li>Components that read the tokens</li><li>Laws that the check proves</li><li>Motion that Bend computes</li></ul></article></div></div></div></div></div>
+<article class="prose"><p>The lib's type for plain HTML: put <code>class="prose"</code> around it, and headings, paragraphs, lists, links and code take the tokens, with no class on each one. For text that comes ready: Markdown, help, an agent's answer. Off shows the same HTML as the browser draws it.</p></article>
 <div data-laws="prose"></div>
       </div></section>
       <section class="view" data-page="rows" hidden><div class="doc doc--wide">

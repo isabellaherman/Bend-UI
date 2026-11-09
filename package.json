@@ -1,6 +1,6 @@
 {
   "name": "bend-ui",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "description": "Design system in Bend: tokens in TOKENS.bend, rules in LAWS.bend.",
   "type": "module",
   "main": "ui.js",
