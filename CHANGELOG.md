@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.26 (2026-11-09)
+
+- **Docs: every snippet is a code block**. Each page's Code section and the Overview's Install, Import and Use show their code in a code block: the language in the head (from the README's fence), Copy, the code colored in that language. Laws keep their own look. Nothing in the lib changes.
+
 ## 1.0.25 (2026-11-09)
 
 - **Docs: the Agent page in the standard format**. The large and the small agent side by side, centered, with no box; on top, Action (Look, Spin, Shake, Ask, Busy → Done) and Open (Click, Hover), both segmented. Each action plays on both agents; in Look they look at each other. Accessibility collapsed (4 of 4 pass, full review pending), Code, Laws. The separate Claude and OpenAI marks row is gone; the marks show inside the options. Nothing in the lib changes.

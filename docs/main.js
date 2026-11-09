@@ -103,7 +103,7 @@ document.getElementById("thread-play").addEventListener("click", async () => {
 // The docs: one page per foundation and component; each shows the laws that guard it.
 // =========================================================
 import { keyLabel } from "../keys.js";
-import { highlight, codeBlock } from "../syntax.js";
+import { highlight, codeBlock, upgrade } from "../syntax.js";
 import { mountDiagram, announce } from "../diagram.js";
 import { mountPie, mountBars, mountLine, mountArea } from "../chart.js";
 import { LAWS } from "./laws.data.js";
@@ -210,12 +210,9 @@ document.querySelectorAll("[data-page]").forEach((page) => {
   const files = FILES[id] || ["ui.css"];
   // Pages in the new layout (named sections) list their files under Code and have no Implementation.
   const fileLine = named.size ? [box(`<p class="detail mono">${files.map(esc).join(" · ")}</p>`)] : [];
-  if (snippets.length || fileLine.length) parts.push(section("Code", ...fileLine, ...snippets.map(({ lang, code }) => {
-    const pre = box(`<article class="prose"><pre><code></code></pre></article>`);
-    pre.querySelector("code").textContent = code;
-    pre.querySelector("pre").dataset.lang = lang;
-    return pre;
-  })));
+  // Each snippet is a code block: its language in the head, Copy, the code colored in that language.
+  if (snippets.length || fileLine.length) parts.push(section("Code", ...fileLine,
+    ...(snippets.length ? [box(`<div class="docs-codes">${snippets.map(({ lang, code }) => codeBlock(code, { lang })).join("")}</div>`)] : [])));
   const classes = [...new Set(raws.flatMap((r) => r.match(/\.[a-z][\w-]*(?:__[\w-]+)?(?:--[\w-]+)?/g) || []))];
   const tokens = [...new Set(raws.filter((r) => r.startsWith("--")).map((r) => r.split(" ")[0]))];
   const listed = classes.length ? classes : tokens;
@@ -225,7 +222,6 @@ document.querySelectorAll("[data-page]").forEach((page) => {
   laws?.remove();
   doc.replaceChildren(...parts);
 });
-document.querySelectorAll(".section .prose pre[data-lang]").forEach((pre) => highlight(pre));
 
 // Overview: the version and how many laws hold.
 $("docs-version").textContent = "v" + pkg.version;
@@ -285,6 +281,8 @@ document.querySelectorAll("[data-page]").forEach((page) => {
 });
 
 // Code in the lib's own syntax (Snow).
+// Overview: Install, Import and Use are code blocks too; laws (.block--code) are colored in place.
+document.querySelectorAll('[data-page="overview"] .prose pre[data-lang]').forEach((pre) => upgrade(pre));
 document.querySelectorAll('[data-code], [data-page="overview"] .prose pre').forEach((el) => highlight(el));
 const chatFace = $("chat-face"); if (chatFace) mountAgent(chatFace, { size: "sm", items: [] });
 
