@@ -450,6 +450,10 @@ html[data-narrow] .form--inline .form__legend { margin-left: 0; }
 .prose code { font-family: var(--font-mono); font-size: var(--text-sm); background: var(--surface-2); border-radius: var(--radius-sm); padding: 0 var(--space-1); }
 .prose pre { margin: 0 0 var(--space-3); padding: var(--space-3); background: var(--surface-2); border: var(--border-width) solid var(--border); border-radius: var(--radius-md); overflow: auto; }
 .prose pre code { background: none; padding: 0; }
+/* A code block inside prose keeps its own look: prose styles a bare <pre> and inline <code>, not a code block's. */
+.prose .code-block { margin: 0 0 var(--space-3); }
+.prose .code-block__pre { margin: 0; padding: var(--space-3) 0; background: none; border: 0; border-radius: 0; }
+.prose .code-block code { background: none; padding: 0; border-radius: 0; font-size: inherit; }
 
 /* ---------- Syntax: code in color (Snow) ----------
    Add .syntax to a code box (.prose pre, or a .block--code); syntax.js cuts its text into pieces (SYNTAX.bend)

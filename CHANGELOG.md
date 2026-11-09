@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.33 (2026-11-09)
+
+- **Code block inside prose** keeps its own look: `.prose` styles a bare `<pre>` and inline `<code>`, no longer a code block's (no box inside the box, no inline-code ground on its lines).
+- Docs: the Overview's Install, Import and Use code blocks are colored once again (they were colored twice, which broke them into one word per line).
+
 ## 1.0.32 (2026-11-09)
 
 - Docs: **Accessibility** is its own page (`/accessibility`), next to Overview in the side bar. It holds what the Overview said: the three layers, how components are reviewed, and the sources. The Overview no longer has that section; each component's page keeps its own accessibility list. Nothing in the lib changes.

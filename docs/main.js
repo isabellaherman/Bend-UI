@@ -274,9 +274,9 @@ document.querySelectorAll("[data-page]").forEach((page) => {
 });
 
 // Code in the lib's own syntax (Snow).
-// Overview: Install, Import and Use are code blocks too; laws (.block--code) are colored in place.
+// Overview: Install, Import and Use are code blocks; laws (.block--code) are colored in place.
 document.querySelectorAll('[data-page="overview"] .prose pre[data-lang]').forEach((pre) => upgrade(pre));
-document.querySelectorAll('[data-code], [data-page="overview"] .prose pre').forEach((el) => highlight(el));
+document.querySelectorAll("[data-code]").forEach((el) => highlight(el));   // a code block is colored already
 
 // Navigation: one page at a time, each at its own address (/components/button, /foundations/color);
 // the side bar marks it, and back and forward work. The group comes from the side bar's section.
