@@ -45,6 +45,9 @@
   .v-btn-grid > .detail { padding-right: var(--space-3); }
   /* Dropdown playground: one real dropdown, open, with room for its menu below or above. */
   .v-dd-stage { display: flex; align-items: center; justify-content: center; min-height: calc(var(--space-8) * 4); }
+  /* Agent playground: the large and the small agent side by side, centered together; each opens to its left. */
+  .v-agent { position: relative; height: calc(var(--space-8) * 5); }
+  .v-agent__pair { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; gap: calc(var(--space-8) * 3); padding: var(--space-8) 0 0 var(--space-8); }
   /* Code block playground. */
   .v-code { max-width: calc(var(--measure) * 0.9); padding-block: var(--space-3); }
   /* Form playground: one real form, as wide as a form reads well. */
@@ -75,7 +78,7 @@
   .v-agent-lg { width: 280px; height: 280px; display: flex; align-items: flex-end; justify-content: flex-end; padding: var(--space-5); }
   .v-radius { width: 48px; height: 48px; background: var(--accent-soft); border: var(--border-width) solid var(--accent); }
 </style>
-<link rel="stylesheet" crossorigin href="./chunk-ah1wtxxa.css"><script type="module" crossorigin src="./chunk-bfgqbcrw.js"></script></head>
+<link rel="stylesheet" crossorigin href="./chunk-ah1wtxxa.css"><script type="module" crossorigin src="./chunk-z0w3p3e1.js"></script></head>
 <body class="desk">
 <div class="window" id="docs" data-agent="lg">
   <aside class="side is-open" id="docs-side">
@@ -332,7 +335,10 @@
       <section class="view" data-page="agent" hidden><div class="doc doc--wide">
 <p class="heading">Agent</p>
 <article class="prose"><h2>Examples</h2></article>
-<div><div class="v-row" style="align-items:center;gap:var(--space-8)"><div class="v-item"><div class="v-agent-lg"><div id="agent-lg"></div></div><code>.agent--lg</code></div><div class="v-item"><div class="toolbar" style="width:320px;border:1px solid var(--border);border-radius:var(--radius-md)"><div class="toolbar__spacer"></div><div id="agent-sm"></div></div><code>.agent--sm</code></div></div><div class="v-row"><div class="v-item"><span class="agent__mark"><img id="brand-claude" alt="" style="width:var(--icon-lg);height:var(--icon-lg)"></span><code>brand/claude.webp</code></div><div class="v-item"><span class="agent__mark"><img id="brand-openai" alt="" style="width:var(--icon-lg);height:var(--icon-lg)"></span><code>brand/openai.svg</code></div></div></div>
+<div data-section="Playground"><div class="v-filter"><div class="v-filter__bar"><span class="v-filter__group"><span class="detail">Action</span><div class="segmented" role="group" aria-label="Action" data-agent-actions><button type="button" data-value="look" aria-pressed="true">Look</button><button type="button" data-value="spin" aria-pressed="false">Spin</button><button type="button" data-value="shake" aria-pressed="false">Shake</button><button type="button" data-value="ask" aria-pressed="false">Ask</button><button type="button" data-value="busy" aria-pressed="false">Busy → Done</button></div></span></div><div class="v-filter__bar"><span class="v-filter__group"><span class="detail">Open</span><div class="segmented" role="group" aria-label="Open" data-agent-open><button type="button" data-value="click" aria-pressed="true">Click</button><button type="button" data-value="hover" aria-pressed="false">Hover</button></div></span></div>
+<div class="v-agent"><div class="v-agent__pair"><div id="agent-lg"></div><div id="agent-sm"></div></div></div></div></div>
+<div data-section="Accessibility"><details class="disclosure"><summary><svg class="icon icon--sm disclosure__chevron"><use href="#i-chevron-down"/></svg><span class="disclosure__title">WCAG 2.2 AA</span><span class="meta">4 of 4 pass · full review pending</span></summary><article class="prose"><table><thead><tr><th>Criterion</th><th>Status</th><th>How</th></tr></thead><tbody><tr><td>4.1.2 Name, role, value</td><td>Pass</td><td>The face is a button named by its label, with aria-expanded; each option is a button with a name, and aria-pressed when picked.</td></tr><tr><td>2.1.1 Keyboard</td><td>Pass</td><td>Enter or Space opens it; Tab reaches the options only while it is open; Esc closes it and gives the focus back to the face.</td></tr><tr><td>2.3.3 Animation from interactions</td><td>Pass</td><td>With less motion, the face no longer turns, spins or shakes; the options appear without moving.</td></tr><tr><td>1.4.13 Content on hover or focus</td><td>Pass</td><td>An option's name shows on hover and on focus, and stays while the pointer is over it.</td></tr></tbody></table></article></details></div>
+<article class="prose"><p>A face that opens into round options. It looks at the pointer, or at a line, and says done or no with a move. <code>MOTION.bend</code> moves it; <code>agent.js</code> only draws.</p></article>
 <div data-laws="agent"></div>
       </div></section>
       <section class="view" data-page="chat" hidden><div class="doc doc--wide">
