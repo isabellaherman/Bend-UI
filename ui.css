@@ -30,9 +30,9 @@ html:not([data-narrow]) .only-narrow { display: none !important; }
    default; theme({ radius }) or data-radius on a container ("rounded" | "pill" | "sharp") shapes buttons and
    segmented alike; .btn--pill / .btn--sharp for one button.
    .btn--primary is filled accent and .btn--ghost is plain neutral, under their older names. */
-:root, [data-radius="rounded"] { --btn-radius: var(--radius-md); --btn-radius-sm: var(--radius-sm); --seg-radius: var(--segmented-outer-radius); --seg-radius-inner: var(--segmented-inner-radius); }   /* rounded is the default */
-[data-radius="pill"] { --btn-radius: var(--radius-full); --btn-radius-sm: var(--radius-full); --seg-radius: var(--radius-full); --seg-radius-inner: var(--radius-full); }
-[data-radius="sharp"] { --btn-radius: var(--space-0); --btn-radius-sm: var(--space-0); --seg-radius: var(--space-0); --seg-radius-inner: var(--space-0); }
+:root, [data-radius="rounded"] { --btn-radius: var(--radius-md); --btn-radius-sm: var(--radius-sm); --seg-radius: var(--segmented-outer-radius); --seg-radius-inner: var(--segmented-inner-radius); --input-radius: var(--radius-md); }   /* rounded is the default */
+[data-radius="pill"] { --btn-radius: var(--radius-full); --btn-radius-sm: var(--radius-full); --seg-radius: var(--radius-full); --seg-radius-inner: var(--radius-full); --input-radius: var(--radius-full); }
+[data-radius="sharp"] { --btn-radius: var(--space-0); --btn-radius-sm: var(--space-0); --seg-radius: var(--space-0); --seg-radius-inner: var(--space-0); --input-radius: var(--space-0); }
 .btn {
   --tone: var(--accent); --tone-soft: var(--accent-soft); --tone-fg: var(--accent-fg); --tone-text: var(--accent);
   position: relative;
@@ -160,23 +160,76 @@ html:not([data-narrow]) .only-narrow { display: none !important; }
 .icon--lg { width: var(--icon-lg); height: var(--icon-lg); }
 
 /* ---------- Input ---------- */
+/* ---------- Input and field ----------
+   .input is a text field; textarea.input grows with its text. Sizes match buttons (.input--sm 24, md 32,
+   .input--lg 36, .input--xl 48), so a field and a button line up; the shape follows theme({ radius }) and
+   data-radius, like buttons and segmented. States: aria-invalid="true" (error), .is-valid, :disabled, [readonly].
+   The border is text-3 (3.35:1) and the placeholder text-2 (6.58:1): a field's edge is what shows where to type. */
 .input {
   height: var(--control-md);
   padding: 0 var(--space-2);
-  border: var(--border-width) solid var(--border-strong);
-  border-radius: var(--radius-md);
+  border: var(--border-width) solid var(--text-3);
+  border-radius: var(--input-radius);
   background: var(--surface);
   color: var(--text);
   font: inherit;
   min-width: 0;
+  transition: border-color var(--duration), box-shadow var(--duration);
 }
+.input::placeholder { color: var(--text-2); opacity: 1; }
 .input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 var(--focus-halo) var(--accent-soft); }
 .input--mono { font-family: var(--font-mono); font-size: var(--text-sm); }
-/* A textarea.input grows with its text: no fixed height, same border and focus. */
-textarea.input { display: block; width: 100%; height: auto; min-height: calc(var(--control-md) * 3); padding: var(--space-2); line-height: var(--leading-body); resize: vertical; }
+.input--sm { height: var(--control-sm); padding: 0 var(--space-2); font-size: var(--text-sm); }
+.input--lg { height: var(--control-lg); padding: 0 var(--space-3); }
+.input--xl { height: var(--control-xl); padding: 0 var(--space-4); font-size: var(--text-lg); }
+.input[aria-invalid="true"] { border-color: var(--danger); }
+.input[aria-invalid="true"]:focus { box-shadow: 0 0 0 var(--focus-halo) var(--danger-soft); }
+.input.is-valid { border-color: var(--success); }
+.input:disabled { opacity: var(--disabled-opacity); cursor: default; }
+.input[readonly] { background: var(--surface-2); border-style: dashed; }
+/* A textarea.input grows with its text: no fixed height, same border and focus. A pill can't wrap lines. */
+textarea.input { display: block; width: 100%; height: auto; min-height: var(--textarea-min-height); padding: var(--space-2); line-height: var(--leading-body); resize: vertical; border-radius: min(var(--input-radius), var(--radius-lg)); }
+/* An icon inside the field (.input-icon wraps both), or a button joined to it (.input-group). */
+.input-icon { position: relative; display: flex; }
+.input-icon > .icon { position: absolute; left: var(--space-2); top: 50%; transform: translateY(-50%); color: var(--text-2); pointer-events: none; }
+.input-icon > .input { flex: 1; padding-left: calc(var(--space-2) + var(--icon-md) + var(--space-2)); }
+/* .input-group: the button sits inside the field, and the pair looks and behaves as one field: one border,
+   one focus ring, one error or success. The button is inset by a hairline, with the inner radius (like a
+   segmented item). In sm there's no room for a 24px button inside, so there the button is joined on the side. */
+.input-group { display: flex; align-items: stretch; gap: var(--space-hairline); height: var(--control-md); padding: var(--space-hairline); border: var(--border-width) solid var(--text-3); border-radius: var(--input-radius); background: var(--surface); transition: border-color var(--duration), box-shadow var(--duration); }
+.input-group:has(> .input--lg) { height: var(--control-lg); }
+.input-group:has(> .input--xl) { height: var(--control-xl); }
+.input-group:focus-within { border-color: var(--accent); box-shadow: 0 0 0 var(--focus-halo) var(--accent-soft); }
+.input-group:has(> .input[aria-invalid="true"]) { border-color: var(--danger); }
+.input-group:has(> .input[aria-invalid="true"]):focus-within { box-shadow: 0 0 0 var(--focus-halo) var(--danger-soft); }
+.input-group:has(> .input.is-valid) { border-color: var(--success); }
+.input-group:has(> .input:disabled) { opacity: var(--disabled-opacity); }
+.input-group:has(> .input[readonly]) { background: var(--surface-2); border-style: dashed; }
+.input-group > .input { flex: 1; height: auto; border: 0; border-radius: var(--seg-radius-inner); background: transparent; box-shadow: none; opacity: 1; padding-left: calc(var(--space-2) - var(--space-hairline)); }
+.input-group > .input:focus { box-shadow: none; }
+.input-group > .btn { flex: none; height: auto; border-color: transparent; border-radius: var(--seg-radius-inner); background: var(--surface-2); }
+.input-group > .btn:hover { background: var(--border); }
+/* sm: joined on the side, each with its own border. */
+.input-group:has(> .input--sm) { height: auto; padding: var(--space-0); gap: var(--space-0); border: 0; background: none; box-shadow: none; }
+.input-group:has(> .input--sm) > .input { height: var(--control-sm); border: var(--border-width) solid var(--text-3); border-radius: var(--input-radius) var(--space-0) var(--space-0) var(--input-radius); background: var(--surface); padding-left: var(--space-2); }
+.input-group:has(> .input--sm) > .input:focus { border-color: var(--accent); box-shadow: 0 0 0 var(--focus-halo) var(--accent-soft); }
+.input-group:has(> .input--sm) > .input[aria-invalid="true"] { border-color: var(--danger); }
+.input-group:has(> .input--sm) > .input.is-valid { border-color: var(--success); }
+.input-group:has(> .input--sm) > .btn { height: var(--control-sm); margin-left: calc(var(--border-width) * -1); border-color: var(--border-strong); border-radius: var(--space-0) var(--btn-radius-sm) var(--btn-radius-sm) var(--space-0); background: var(--surface); }
 
+/* Field: the label (with .field__required), the control, then .field__help or a .field__msg, and a .field__count.
+   Tie help and messages to the control with aria-describedby. */
 .field { display: flex; flex-direction: column; gap: var(--space-1); }
-.field__label { font-size: var(--text-sm); color: var(--text-2); font-weight: var(--weight-medium); }
+.field__label { display: flex; align-items: baseline; gap: var(--space-2); font-size: var(--text-sm); color: var(--text-2); font-weight: var(--weight-medium); }
+.field__required { font-size: var(--text-xs); font-weight: var(--weight-regular); color: var(--text-2); }
+.field__foot { display: flex; justify-content: space-between; gap: var(--space-3); font-size: var(--text-sm); }
+.field__foot:empty { display: none; }
+.field__help { color: var(--text-2); }
+.field__msg { display: inline-flex; align-items: center; gap: var(--space-1); }
+.field__msg > .icon { width: var(--icon-sm); height: var(--icon-sm); flex: none; }
+.field__msg--error { color: var(--danger); }
+.field__msg--success { color: var(--success-text); }
+.field__count { margin-left: auto; color: var(--text-2); font-variant-numeric: tabular-nums; }
 /* A form: fields in a column, form_gap apart (TOKENS.bend). */
 .form { display: flex; flex-direction: column; gap: var(--space-4); }
 

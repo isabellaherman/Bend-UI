@@ -122,6 +122,7 @@ const lawBlock = (l) => `<div class="docs-law">` +
 //   Laws            what is proved about it
 // The content comes from the page's examples, from CODE and FILES below, and from LAWS.bend.
 const FILES = {
+  input: ["TOKENS.bend", "ui.css"],
   segmented: ["TOKENS.bend", "MOTION.bend", "ui.css", "ui.js"],
   button: ["TOKENS.bend", "SPEC.bend", "ui.css", "ui.js"],
   color: ["TOKENS.bend", "ui.js", "ui.css"], space: ["TOKENS.bend", "ui.js", "ui.css"], size: ["TOKENS.bend", "ui.js", "ui.css"],
@@ -346,6 +347,39 @@ if (segPreview) {
       initSegmented(g);
     });
   });
+}
+// Input and field: the playground. Shape, size and state from the filters; five kinds of field below.
+const inputPreview = document.getElementById("input-preview");
+if (inputPreview) {
+  const pick = { shape: "rounded", size: "md", state: "focus" };
+  const icon = (n) => `<svg class="icon" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+  let uid = 0;
+  const TEXT = {
+    text: ["Name", "As it shows on your profile.", "Write a name.", "Looks good.", "Isabella", "Your name"],
+    icon: ["Search", "Laws, pages or people.", "Nothing matches.", "3 results.", "laws", "Search"],
+    button: ["Share link", "Anyone with the link can view.", "This link expired.", "Copied.", "https://bend-ui.dev/r/9f2", "https://"],
+    mono: ["Law name", "Lowercase, with underscores.", "Use lowercase and underscores.", "Available.", "mana_at_most_10", "law_name"],
+    area: ["Description", "", "Write at least 10 characters.", "Saved.", "Mana never goes above 10.", "What it guarantees"],
+  };
+  const field = (kind) => {
+    const [label, help, error, ok, value, placeholder] = TEXT[kind], id = "in" + ++uid, msg = id + "-m", st = pick.state;
+    const filled = st !== "rest" && st !== "focus";
+    const size = pick.size === "md" ? "" : " input--" + pick.size;
+    const cls = "input" + size + (kind === "mono" ? " input--mono" : "") + (st === "focus" ? " is-focus" : "") + (st === "success" ? " is-valid" : "");
+    const attrs = `id="${id}" class="${cls}" placeholder="${placeholder}" aria-describedby="${msg}"` + (st === "error" ? ' aria-invalid="true"' : "") + (st === "disabled" ? " disabled" : "") + (st === "readonly" ? " readonly" : "");
+    const input = kind === "area" ? `<textarea ${attrs}>${filled ? value : ""}</textarea>` : `<input ${attrs}${filled ? ` value="${value}"` : ""}>`;
+    const control = kind === "icon" ? `<span class="input-icon">${icon("search")}${input}</span>`
+      : kind === "button" ? `<span class="input-group">${input}<button type="button" class="btn${pick.size === "sm" ? " btn--sm" : ""}"${st === "disabled" || st === "readonly" ? " disabled" : ""}>${icon("copy")}Copy</button></span>` : input;
+    const say = st === "error" ? `<span class="field__msg field__msg--error" id="${msg}">${icon("circle-alert")}${error}</span>`
+      : st === "success" ? `<span class="field__msg field__msg--success" id="${msg}">${icon("check")}${ok}</span>`
+      : help ? `<span class="field__help" id="${msg}">${help}</span>` : `<span id="${msg}"></span>`;
+    const count = kind === "area" ? `<span class="field__count">${filled ? value.length : 0} / 280</span>` : "";
+    return `<label class="field" for="${id}"><span class="field__label">${label}${kind === "text" ? '<span class="field__required">Required</span>' : ""}</span>${control}<span class="field__foot">${say}${count}</span></label>`;
+  };
+  const ROWS = [["text", "Text"], ["icon", "With icon"], ["button", "With button"], ["mono", "Mono"], ["area", "Textarea"]];
+  const draw = () => { inputPreview.dataset.radius = pick.shape; inputPreview.innerHTML = ROWS.map(([k, n]) => `<span class="detail">${n}</span>${field(k)}`).join(""); };
+  document.querySelectorAll('[data-page="input"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
+  draw();
 }
 // Button animations: Publish shows busy, then done (a real app would wait for its work here).
 document.addEventListener("click", (e) => {

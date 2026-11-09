@@ -227,6 +227,9 @@ def breadcrumb_gap() -> U32: space_2()
 def btn_hover_brightness() -> String: "1.08"
 def disabled_opacity() -> U32: 50
 
+# Input: a textarea starts this tall (three md controls).
+def textarea_min_height() -> U32: 96
+
 # Canvas: the dots of an editable surface are this far apart.
 def canvas_gap() -> U32: space_5()
 

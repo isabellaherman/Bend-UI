@@ -39,7 +39,7 @@ const VARS = {
   "--btn-padding-x": () => px(T.btn_padding_x()), "--btn-padding-x-sm": () => px(T.btn_padding_x_sm()), "--btn-padding-x-lg": () => px(T.btn_padding_x_lg()), "--btn-padding-x-xl": () => px(T.btn_padding_x_xl()),
   "--btn-wide-padding-x": () => px(T.btn_wide_padding_x()), "--btn-wide-padding-x-sm": () => px(T.btn_wide_padding_x_sm()), "--btn-wide-padding-x-lg": () => px(T.btn_wide_padding_x_lg()), "--btn-wide-padding-x-xl": () => px(T.btn_wide_padding_x_xl()),
   "--control-lg": () => px(T.control_lg()), "--control-xl": () => px(T.control_xl()),
-  "--btn-hover-brightness": () => T.btn_hover_brightness(), "--disabled-opacity": () => String(T.disabled_opacity() / 100),
+  "--textarea-min-height": () => px(T.textarea_min_height()), "--btn-hover-brightness": () => T.btn_hover_brightness(), "--disabled-opacity": () => String(T.disabled_opacity() / 100),
   "--icon-sm": () => px(T.icon_sm()), "--icon-md": () => px(T.icon_md()),
   "--icon-lg": () => px(T.icon_lg()), "--icon-xl": () => px(T.icon_xl()), "--icon-stroke": () => T.icon_stroke(),
   "--dot-size": () => px(T.dot_size()), "--block-min-lines": () => String(T.block_min_lines()), "--ring-offset": () => px(T.ring_offset()), "--ring-width": () => px(T.ring_width()),

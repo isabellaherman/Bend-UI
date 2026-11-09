@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.19 (2026-11-08)
+
+- **Input at WCAG AA (changes existing fields)**: the border is now text-3 (3.35:1, was 1.59:1) and the placeholder text-2 (6.58:1, was the browser's light gray). A disabled field now uses `disabled_opacity`.
+- **Input sizes and shape**: `.input--sm` (24), `--lg` (36), `--xl` (48), the button heights, so a field and a button line up; the shape follows `theme({ radius })` and `data-radius` like buttons and segmented (a textarea stops at `radius_lg`).
+- **States**: error (`aria-invalid="true"`, danger border and halo), `.is-valid` (success), disabled, read-only (surface-2, dashed).
+- **Field**: `.field__required`, `.field__foot` with `.field__help`, `.field__msg--error` / `--success` (an icon and words), `.field__count`. `.input-icon` puts an icon inside a field; `.input-group` puts a button inside it, and the pair has one border, one focus ring and one state (in sm, where a 24px button doesn't fit inside, the button is joined on the side).
+- The textarea's minimum height is the token `textarea_min_height` (96), no longer a loose `* 3`.
+- Docs: the Input and field page in the standard format (Shape, Size and State filters over Text, With icon, With button, Mono, Textarea; Accessibility, collapsed, 9 of 9 pass; Code).
+
 ## 1.0.18 (2026-11-08)
 
 - **Docs: the Dropdown menu page in the standard format**: one real dropdown, open and centered, with Items (Plain, Icons, Check, Tag) and Position (Below, End, Up) filters; a separator and a disabled item are always there. Accessibility is collapsed with its summary (8 of 16 pass). The two Variants sections and the example canvases are gone; the node menu lives on the Diagram page. Nothing in the lib changes.

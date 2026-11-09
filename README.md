@@ -436,11 +436,15 @@ Motion, each for a reason:
 
 ### Input and field
 
+A text field and its label, help and messages. Sizes match buttons (`.input--sm` 24, md 32, `.input--lg` 36, `.input--xl` 48) and the shape follows `theme({ radius })` / `data-radius`. States: `aria-invalid="true"` (error), `.is-valid`, `disabled`, `readonly`. An icon inside: wrap in `.input-icon`. A button inside the field: `.input-group` (one border, one focus ring; joined on the side in sm). Under the field, `.field__help` or a `.field__msg--error` / `--success` (with an icon), and `.field__count`; tie them to the field with `aria-describedby`. The border (text-3) and the placeholder (text-2) are AA.
+
 ```html
-<label class="field">
-  <span class="field__label">Max</span>
-  <input class="input input--mono" value="10">
+<label class="field" for="name">
+  <span class="field__label">Name<span class="field__required">Required</span></span>
+  <input id="name" class="input" aria-invalid="true" aria-describedby="name-msg">
+  <span class="field__foot"><span class="field__msg field__msg--error" id="name-msg"><svg class="icon"><use href="#i-circle-alert"/></svg>Write a name.</span></span>
 </label>
+<span class="input-group"><input class="input" value="https://…"><button class="btn">Copy</button></span>
 ```
 
 ### Form
