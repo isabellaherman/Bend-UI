@@ -85,6 +85,8 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
   // A return arrow (it closes a loop, DIAGRAM.bend: back) doesn't push rows; it goes back up beside the others.
   const back = array(D.back(n, edgeList())).map((b) => Number(b) === 1);
   const row = array(rows), depth = Number(D.depth(rows));
+  // On a row, each node sits under the nodes it comes from (DIAGRAM.bend: order), so arrows cross less.
+  const place = array(D.order(n, edgeList()));
 
   // Free layout: with positions ([{ x, y }] per node, in px from the diagram's corner), the nodes sit
   // where the app says instead of in rows, and dragging a node calls onNodeMove(i, { x, y }) when let go.
@@ -105,7 +107,7 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
   svg.innerHTML = `<defs><marker id="${arrow}" viewBox="0 0 1 1" refX="1" refY="0.5" markerWidth="${head}" markerHeight="${head}" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L1,0.5 L0,1 Z"/></marker></defs>`;
   root.append(svg);
 
-  // Rows top to bottom; on a row, nodes keep their order (DIAGRAM.bend: columns).
+  // Rows top to bottom; on a row, nodes in their place (DIAGRAM.bend: order).
   const rowEls = free ? [] : Array.from({ length: depth }, () => root.appendChild(el("div", "diagram__row")));
   const boxes = nodes.map((node, i) => {
     const items = nodeMenu?.(i) ?? [];
@@ -133,9 +135,9 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
     }
     if (interactive && !items.length) b.tabIndex = 0;
     if (free) { const p = positions[i] ?? { x: 0, y: 0 }; b.style.left = p.x + "px"; b.style.top = p.y + "px"; root.append(b); }
-    else rowEls[row[i]].append(b);
     return b;
   });
+  if (!free) boxes.map((b, i) => i).sort((a, b) => place[a] - place[b]).forEach((i) => rowEls[row[i]].append(boxes[i]));
   const wires = edges.map(() => svg.appendChild(document.createElementNS(NS, "path")));
   wires.forEach((w) => w.setAttribute("marker-end", `url(#${arrow})`));
   const labels = edges.map((e) => (e.label ? root.appendChild(el("span", "diagram__label", e.label)) : null));
@@ -238,9 +240,28 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
   sizeNodes();
   fit();
 
+  // An arrow's words: the middle of its line first, else the first place along it (DIAGRAM.bend: label_tries)
+  // that covers no node and no words already placed (DIAGRAM.bend: covers).
+  const tries = (() => { const out = []; let l = D.label_tries(); while (l.$ === "Con") { out.push(l.head); l = l.tail; } return out; })();
+  const s3 = (p0, p1, p2, p3, t) => { const u = 1 - t; return u * u * u * p0 + 3 * u * u * t * p1 + 3 * u * t * t * p2 + t * t * t * p3; };
+  function placeLabels(box, curves) {
+    const taken = boxes.map((b) => { const r = b.getBoundingClientRect(); return [r.left - box.left, r.top - box.top, r.right - box.left, r.bottom - box.top]; });
+    const clear = (r) => !taken.some((o) => D.covers(r[0], r[1], r[2], r[3], o[0], o[1], o[2], o[3]));
+    curves.forEach(([i, c]) => {
+      const l = labels[i]; if (!l) return;
+      const w = l.offsetWidth, h = l.offsetHeight;
+      const at = (t) => ({ x: s3(c[0], c[2], c[4], c[6], t), y: s3(c[1], c[3], c[5], c[7], t) });
+      const rect = (p) => [p.x - w / 2, p.y - h / 2, p.x + w / 2, p.y + h / 2];
+      const spot = tries.map(at).find((p) => clear(rect(p))) ?? at(tries[0]);
+      l.style.left = spot.x + "px"; l.style.top = spot.y + "px";
+      taken.push(rect(spot));
+    });
+  }
+
   // An arrow leaves the bottom of its start and enters the top of its end, in a soft S.
   function draw() {
     const box = root.getBoundingClientRect();
+    const curves = [];
     svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
     edges.forEach((e, i) => {
       const a = boxes[e.from]?.getBoundingClientRect(), b = boxes[e.to]?.getBoundingClientRect();
@@ -269,8 +290,9 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
       const x2 = b.left + b.width / 2 - box.left, y2 = b.top - box.top;
       const bend = (y2 - y1) / 2;
       wires[i].setAttribute("d", `M${x1},${y1} C${x1},${y1 + bend} ${x2},${y2 - bend} ${x2},${y2}`);
-      if (labels[i]) { labels[i].style.left = (x1 + x2) / 2 + "px"; labels[i].style.top = (y1 + y2) / 2 + "px"; }
+      curves.push([i, [x1, y1, x1, y1 + bend, x2, y2 - bend, x2, y2]]);
     });
+    placeLabels(box, curves);
     if (!moving) remember(box);
   }
   function remember(box) {

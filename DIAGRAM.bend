@@ -3,7 +3,8 @@
 # A diagram is nodes (0, 1, 2, …) and arrows between them. It reads top to bottom:
 # a node's row is the longest path to it from a node nothing points to, so every
 # arrow goes down, except a return arrow (one that closes a loop), which goes back up
-# beside the others. Nodes on a row keep their order.
+# beside the others. On a row, nodes sit under the nodes they come from (order), so a
+# parent's children stay together and arrows cross less; ties keep the nodes' order.
 
 import Base
 
@@ -151,8 +152,79 @@ def depth(rows: List<&2, Nat>) -> Nat:
     case h <> t:
       max((h + 1n : Nat), depth(t))
 
+# ---------- Order on a row ----------
+# Rows are ordered top to bottom. A node's pull is where its parents sit (forward arrows only): the sum of
+# their places and how many they are. On its row a node goes after every node whose pull is further left
+# (sum / count, compared without dividing), and after the ones with the same pull that come before it.
+
+# The sum of the places of node i's parents.
+def pull.sum(es: List<&2, Edge>, +i: Nat, +pos: List<&2, Nat>) -> Nat:
+  match es:
+    case Nil{}:
+      0n
+    case +h <> t:
+      (Bool.pick(Nat, Nat.is_eq(to_of(h), i), get(pos, from_of(h)), 0n) + pull.sum(t, i, pos) : Nat)
+
+# How many parents node i has.
+def pull.count(es: List<&2, Edge>, +i: Nat) -> Nat:
+  match es:
+    case Nil{}:
+      0n
+    case +h <> t:
+      (Bool.pick(Nat, Nat.is_eq(to_of(h), i), 1n, 0n) + pull.count(t, i) : Nat)
+
+# Does node j go before node i (pull sj / cj against si / ci)?
+def goes_first(+sj: Nat, +cj: Nat, +j: Nat, +si: Nat, +ci: Nat, +i: Nat) -> Bool:
+  +a = (sj * ci : Nat)
+  +b = (si * cj : Nat)
+  (a < b : Nat) || (Nat.is_eq(a, b) && (j < i : Nat))
+
+# Node i's place on row r: how many nodes of row r go before it. j runs over every node.
+def rank.go(k: Nat, +j: Nat, +i: Nat, +r: Nat, +si: Nat, +ci: Nat, +rows: List<&2, Nat>, +es: List<&2, Edge>, +pos: List<&2, Nat>) -> Nat:
+  match k:
+    case 0n:
+      0n
+    case 1n+m:
+      +ahead = Nat.is_eq(get(rows, j), r) && goes_first(pull.sum(es, j, pos), pull.count(es, j), j, si, ci, i)
+      (Bool.pick(Nat, ahead, 1n, 0n) + rank.go(m, (j + 1n : Nat), i, r, si, ci, rows, es, pos) : Nat)
+
+# Every node's place, with row r put in order and the other rows as they were.
+def place.go(k: Nat, +i: Nat, +n: Nat, +r: Nat, +rows: List<&2, Nat>, +es: List<&2, Edge>, +pos: List<&2, Nat>) -> List<&2, Nat>:
+  match k:
+    case 0n:
+      Nil{}
+    case 1n+m:
+      +mine = Nat.is_eq(get(rows, i), r)
+      +here = Bool.pick(Nat, mine, rank.go(n, 0n, i, r, pull.sum(es, i, pos), pull.count(es, i), rows, es, pos), get(pos, i))
+      here <> place.go(m, (i + 1n : Nat), n, r, rows, es, pos)
+
+def order.go(k: Nat, +r: Nat, +n: Nat, +rows: List<&2, Nat>, +es: List<&2, Edge>, +pos: List<&2, Nat>) -> List<&2, Nat>:
+  match k:
+    case 0n:
+      pos
+    case 1n+m:
+      order.go(m, (r + 1n : Nat), n, rows, es, place.go(n, 0n, n, r, rows, es, pos))
+
+# Each node's place on its row, for n nodes: under the nodes it comes from.
+def order(+n: Nat, +es: List<&2, Edge>) -> List<&2, Nat>:
+  +fw = forward.go(es, n, Nil{})
+  +rs = rows.go(n, zeros(n), fw)
+  order.go(depth(rs), 0n, n, rs, fw, columns(rs, n))
+
 # ---------- Size ----------
 
 # A node's width: at least min, growing in whole steps, at most max (all in px).
 def node_width(+natural: F32, +min: F32, +step: F32, +max: F32) -> F32:
   F32.min(max, F32.max(min, ((0.0 - F32.floor(((0.0 - natural) / step : F32))) * step : F32)))
+
+# ---------- Arrow words ----------
+# An arrow's words sit on its line. The middle comes first; if the words would cover a node or words
+# already placed, they slide along the line, away from the middle, to the first place that is clear.
+
+# The places to try, as a share of the line from its start.
+def label_tries() -> List<&2, F32>:
+  [0.5, 0.35, 0.65, 0.25, 0.75, 0.15, 0.85]
+
+# Do two boxes cover each other? Each is left, top, right, bottom (px).
+def covers(+al: F32, +at: F32, +ar: F32, +ab: F32, +bl: F32, +bt: F32, +br: F32, +bb: F32) -> Bool:
+  F32.is_lt(al, br) && F32.is_lt(bl, ar) && F32.is_lt(at, bb) && F32.is_lt(bt, ab)

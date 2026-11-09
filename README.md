@@ -275,6 +275,8 @@ mountDiagram(el, {
 
 A node's `tone` is `accent`, `success`, `warning`, `danger`, or none (neutral); `tag` is a short word on it. Two looks: a colored border (default), or add `diagram--soft` to `el` for a soft fill with the tone in the text. Arrows with the same ends become one line, their labels joined.
 
+Order: on each row a node sits under the nodes it comes from (the average place of its parents, row by row from the top; ties keep your order), so a parent's children stay together and arrows cross less (`DIAGRAM.bend`: `order`). An arrow's words sit at the middle of its line, or slide along it to the first place that covers no node and no other words (`label_tries`, `covers`).
+
 Loops: an arrow that closes a loop (its end already leads back to its start, or a node pointing to itself) is a return arrow. Arrows are read in order, so the one that closes the loop is the return one. It doesn't push rows, so a loop never pushes its nodes down; it is drawn going back up on the diagram's nearer side, beside the forward arrows and never over them (`DIAGRAM.bend`: `back`). A node that points to itself gets a small loop into its top. Which arrows are allowed stays the app's choice.
 
 Connect (optional): pass `{ isValidConnection, onConnect }` as a third argument. Drag the dot under a node onto another node; both get `{ source, target }` (node indexes). The diagram doesn't change itself: add the edge to your data and draw again in the same element; the nodes glide to their new places and the new arrow runs in.
@@ -294,7 +296,7 @@ Rename (optional): pass `onLabelEdit: (i, label) => …`. A double-click on a no
 
 Motion follows what changed, with `MOTION.bend` and the duration tokens: a new node grows out of the node it comes from, a new arrow runs in, a renamed node takes its width while the others make room, and `await d.leave(i)` shrinks a node away before you draw without it. Reduced motion turns it all off.
 
-Size: a node is at least `diagram_node_min` wide (128) and grows in `diagram_node_step` steps (24), so short labels don't become chips (`DIAGRAM.bend`: `node_width`). On a narrow screen the diagram keeps its size; put it in a container that scrolls.
+Size: a node is at least `diagram_node_min` wide (128) and grows in `diagram_node_step` steps (24), so short labels don't become chips (`DIAGRAM.bend`: `node_width`). The diagram is never narrower than its widest row, so a wide row makes it wider instead of cutting nodes off; put it in a container that scrolls (an `.area` does).
 
 Accessibility (WCAG 2.2 AA): name the diagram with `label: "…"`. Each node tells screen readers its tone and where its arrows go and come from. Lines and borders are at 3:1 or more and soft text at 4.5:1 or more. Changes are announced in a polite live region: the diagram announces renames and drag connects, and `announce(text)` (exported) is for your own changes. `d.focusAfterDraw(label)` puts the focus back on a node after you draw again. Dragging must always have another way: offer "Connect to …" in the node menu, and in free layout `Shift` + an arrow moves the focused node one step.
 

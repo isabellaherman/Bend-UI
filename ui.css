@@ -663,7 +663,9 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
    A node takes a tone: .diagram__node--accent, --success, --warning, --danger (neutral without one).
    Two looks: a colored border (the default), or .diagram--soft on the diagram.
    Like Mermaid's flowchart TD and Unity's Animator, but the layout is Bend's and the look is the tokens. */
-.diagram { position: relative; display: flex; flex-direction: column; gap: var(--space-7); padding: var(--space-4) var(--space-2); }
+/* Never narrower than its widest row: a wide row makes the diagram wider (its container scrolls), so no node
+   is ever cut off on the left where scrolling can't reach. */
+.diagram { position: relative; display: flex; flex-direction: column; gap: var(--space-7); padding: var(--space-4) var(--space-2); min-width: max-content; }
 .diagram__row { position: relative; z-index: var(--layer-part); display: flex; justify-content: center; align-items: flex-start; gap: var(--space-5); }
 .diagram__node {
   position: relative;

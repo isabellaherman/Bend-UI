@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.2 (2026-11-09)
+
+Three diagram layout fixes, from real agent diagrams in Borzoi 1.1.0.
+
+- **A wide row is never cut off**: `.diagram` is never narrower than its widest row (`min-width: max-content`), so a row wider than its container widens the diagram and the container scrolls over all of it. Before, a centered row ran past both edges and its first nodes sat left of where scrolling can reach.
+- **Children sit under their parents** (`DIAGRAM.bend`: `order`): rows are ordered top to bottom, each node by the average place of its parents (compared without dividing); ties keep the given order. A parent's children stay together and arrows cross less (the Borzoi map: 6 crossings → 0, counted as straight lines).
+- **Arrow words never cover each other** (`DIAGRAM.bend`: `label_tries`, `covers`): an arrow's words sit at the middle of its line, or slide along it to the first place that covers no node and no words already placed.
+- Known limit: an arrow that skips a row can still pass beside a node on the row it skips.
+
 ## 1.1.1 (2026-11-09)
 
 - **Area** (`.area`): a region that knows its own width. Below `breakpoint` of its own width (`AREA.bend`: `narrow`) it gets `data-narrow`, and the components inside follow the room they have, not the screen. Form columns stack, an inline label goes above, a split pair stacks, `.doc`, `.chat` and `.composer` take their narrow padding, `.hide-narrow` / `.only-narrow` swap, the toolbar scrolls. What can't reflow scrolls inside the area; nothing spills over its neighbors. Window and side bar still follow the screen. `initArea(el)` is exported. No new token (reuses `breakpoint`), no new law.
