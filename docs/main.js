@@ -604,16 +604,23 @@ mountDiagram($("diagram-arrow"), { nodes: [{ label: "Node" }, { label: "Node", t
 mountDiagram($("diagram-label"), { nodes: [{ label: "Node", tone: "warning" }, { label: "Node", tone: "success" }], edges: [{ from: 0, to: 1, label: "Label" }] });
 mountDiagram($("diagram-branch"), { nodes: [{ label: "Node", tone: "accent" }, { label: "Node", tone: "success" }, { label: "Node", tone: "danger" }], edges: [{ from: 0, to: 1, label: "A" }, { from: 0, to: 2, label: "B" }] });
 mountDiagram($("diagram-join"), { nodes: [{ label: "Node" }, { label: "Node", tone: "warning" }], edges: [{ from: 0, to: 1, label: "A" }, { from: 0, to: 1, label: "B" }] });
-// Chart: the four marks, then the pie's looks. Each plays its entrance when the page shows, or on Play.
+// Chart: the playground. Type picks the chart, Look the pie's look (only a pie has looks), Play its entrance.
 const schools = [{ label: "Fire", value: 46 }, { label: "Water", value: 27 }, { label: "Earth", value: 17 }, { label: "Air", value: 10 }];
 const week = (values) => values.map((value, i) => ({ label: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][i], value }));
-const charts = [
-  mountPie($("chart-pie"), schools),
-  mountBars($("chart-bars"), week([42, 58, 51, 74, 66, 38, 47])),
-  mountLine($("chart-line"), week([28, 34, 31, 45, 52, 49, 61])),
-  mountArea($("chart-area"), week([12, 18, 15, 26, 31, 27, 36])),
-  ...["chart-plain", "chart-split", "chart-donut", "chart-donut-split"].map((id) => mountPie($(id), schools)),
-];
+const chartStage = document.getElementById("chart-stage");
+const chartPick = { type: "pie", look: "plain" };
+const charts = [];
+const drawChart = () => {
+  charts.pop()?.destroy();
+  const el = document.createElement("div");
+  if (chartPick.type === "pie") el.className = { plain: "", split: "chart--split", donut: "chart--donut", "donut-split": "chart--donut chart--split" }[chartPick.look];
+  chartStage.replaceChildren(el);
+  const mount = { pie: () => mountPie(el, schools), bars: () => mountBars(el, week([42, 58, 51, 74, 66, 38, 47])), line: () => mountLine(el, week([28, 34, 31, 45, 52, 49, 61])), area: () => mountArea(el, week([12, 18, 15, 26, 31, 27, 36])) };
+  charts.push(mount[chartPick.type]());
+  document.querySelector('[data-page="chart"] [data-filter="look"]').closest(".field").hidden = chartPick.type !== "pie";   // only a pie has looks
+};
+document.querySelectorAll('[data-page="chart"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { chartPick[g.dataset.filter] = e.detail.dataset.value; drawChart(); }));
+drawChart();
 $("chart-play").addEventListener("click", () => charts.forEach((c) => c.replay()));
 go(ID[START] ?? "overview", false);
 

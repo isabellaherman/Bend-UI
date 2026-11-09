@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.4 (2026-11-09)
+
+- New icon: `chart-column` (Lucide).
+- Docs: the **Chart** page in the standard format. A Playground: Type (Pie, Bars, Line, Area), Look (Plain, Split, Donut, Donut split; shown only for a pie) and Entrance (Play) on the right, one chart on the stage. The fixed widths written into the page are gone. Accessibility, collapsed: 2 of 7 pass. Contrast fails: three of the four tones are under 3:1 on the page, and axis ticks are 3.21:1. Keyboard and the chart's name are partial. Nothing else in the lib changes.
+
 ## 1.1.3 (2026-11-09)
 
 - **Art is now Image**: `.art` → `.image` (`.image--sm`, `--lg`, `--empty`, `--fill`), tokens `art_sm/md/lg` → `image_sm/md/lg`, CSS variables `--art-*` → `--image-*` (the chart's plot height reads `--image-lg`). Same values and look. An app that used `.art` renames its classes.
