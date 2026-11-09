@@ -275,6 +275,8 @@ mountDiagram(el, {
 
 A node's `tone` is `accent`, `success`, `warning`, `danger`, or none (neutral); `tag` is a short word on it. Two looks: a colored border (default), or add `diagram--soft` to `el` for a soft fill with the tone in the text. Arrows with the same ends become one line, their labels joined.
 
+Loops: an arrow that closes a loop (its end already leads back to its start, or a node pointing to itself) is a return arrow. Arrows are read in order, so the one that closes the loop is the return one. It doesn't push rows, so a loop never pushes its nodes down; it is drawn going back up on the diagram's nearer side, beside the forward arrows and never over them (`DIAGRAM.bend`: `back`). A node that points to itself gets a small loop into its top. Which arrows are allowed stays the app's choice.
+
 Connect (optional): pass `{ isValidConnection, onConnect }` as a third argument. Drag the dot under a node onto another node; both get `{ source, target }` (node indexes). The diagram doesn't change itself: add the edge to your data and draw again in the same element; the nodes glide to their new places and the new arrow runs in.
 
 ```js

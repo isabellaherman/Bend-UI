@@ -2,7 +2,8 @@
 #
 # A diagram is nodes (0, 1, 2, …) and arrows between them. It reads top to bottom:
 # a node's row is the longest path to it from a node nothing points to, so every
-# arrow goes down. Nodes on a row keep their order.
+# arrow goes down, except a return arrow (one that closes a loop), which goes back up
+# beside the others. Nodes on a row keep their order.
 
 import Base
 
@@ -61,7 +62,7 @@ def pass(es: List<&2, Edge>, +rows: List<&2, Nat>) -> List<&2, Nat>:
     case +h <> t:
       pass(t, raise(rows, to_of(h), (get(rows, from_of(h)) + 1n : Nat)))
 
-# As many passes as nodes: enough for the longest path. A loop stops there.
+# As many passes as nodes: enough for the longest path (the arrows here never loop).
 def rows.go(fuel: Nat, +rows: List<&2, Nat>, +es: List<&2, Edge>) -> List<&2, Nat>:
   match fuel:
     case 0n:
@@ -69,9 +70,55 @@ def rows.go(fuel: Nat, +rows: List<&2, Nat>, +es: List<&2, Edge>) -> List<&2, Na
     case 1n+k:
       rows.go(k, pass(es, rows), es)
 
-# Each node's row, for n nodes.
+# ---------- Return arrows ----------
+# An arrow that closes a loop (its end already reaches its start) is a return arrow: it is still drawn,
+# but it doesn't push rows, so a loop can't push its nodes down. Arrows are read in order; the first
+# arrows of a loop go down, the one that closes it goes back up.
+
+# One pass: every node an arrow leaves from a marked node gets marked too.
+def mark_pass(es: List<&2, Edge>, +marks: List<&2, Nat>) -> List<&2, Nat>:
+  match es:
+    case Nil{}:
+      marks
+    case +h <> t:
+      mark_pass(t, raise(marks, to_of(h), get(marks, from_of(h))))
+
+def marks.go(fuel: Nat, +marks: List<&2, Nat>, +es: List<&2, Edge>) -> List<&2, Nat>:
+  match fuel:
+    case 0n:
+      marks
+    case 1n+k:
+      marks.go(k, mark_pass(es, marks), es)
+
+# Does a reach b by these arrows (n nodes)? A node reaches itself.
+def reaches(+n: Nat, +es: List<&2, Edge>, +a: Nat, +b: Nat) -> Bool:
+  Nat.is_eq(get(marks.go(n, raise(zeros(n), a, 1n), es), b), 1n)
+
+# Each arrow, in order: 1 if it closes a loop (a return arrow), 0 if it goes forward.
+# kept: the forward arrows so far.
+def back.go(es: List<&2, Edge>, +n: Nat, +kept: List<&2, Edge>) -> List<&2, Nat>:
+  match es:
+    case Nil{}:
+      Nil{}
+    case +h <> t:
+      +closes = reaches(n, kept, to_of(h), from_of(h))
+      Bool.pick(Nat, closes, 1n, 0n) <> back.go(t, n, Bool.pick(List<&2, Edge>, closes, kept, h <> kept))
+
+def back(+n: Nat, +es: List<&2, Edge>) -> List<&2, Nat>:
+  back.go(es, n, Nil{})
+
+# The forward arrows only: the ones that don't close a loop.
+def forward.go(es: List<&2, Edge>, +n: Nat, +kept: List<&2, Edge>) -> List<&2, Edge>:
+  match es:
+    case Nil{}:
+      kept
+    case +h <> t:
+      +closes = reaches(n, kept, to_of(h), from_of(h))
+      forward.go(t, n, Bool.pick(List<&2, Edge>, closes, kept, h <> kept))
+
+# Each node's row, for n nodes: the longest path over the forward arrows (return arrows don't push).
 def rows(+n: Nat, +es: List<&2, Edge>) -> List<&2, Nat>:
-  rows.go(n, zeros(n), es)
+  rows.go(n, zeros(n), forward.go(es, n, Nil{}))
 
 # ---------- Columns ----------
 

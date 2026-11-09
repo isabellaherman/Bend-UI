@@ -80,7 +80,10 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
     if (!same) edges.push({ ...e });
     else if (e.label) same.label = same.label ? same.label + " · " + e.label : e.label;
   }
-  const rows = D.rows(n, list(edges.map((e) => ({ $: "Edge", from: e.from, to: e.to }))));
+  const edgeList = () => list(edges.map((e) => ({ $: "Edge", from: e.from, to: e.to })));
+  const rows = D.rows(n, edgeList());
+  // A return arrow (it closes a loop, DIAGRAM.bend: back) doesn't push rows; it goes back up beside the others.
+  const back = array(D.back(n, edgeList())).map((b) => Number(b) === 1);
   const row = array(rows), depth = Number(D.depth(rows));
 
   // Free layout: with positions ([{ x, y }] per node, in px from the diagram's corner), the nodes sit
@@ -242,6 +245,26 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
     edges.forEach((e, i) => {
       const a = boxes[e.from]?.getBoundingClientRect(), b = boxes[e.to]?.getBoundingClientRect();
       if (!a || !b) return;
+      if (back[i]) {
+        // A return arrow goes back up outside the forward arrows, on the diagram's nearer side: it leaves its
+        // start's side and curves into its end's side, never over the forward arrow or the nodes between.
+        // A node that points to itself loops from its side into its top.
+        const out = parseFloat(getComputedStyle(root).getPropertyValue("--space-7")) || 0;
+        const ca = a.left + a.width / 2, cb = b.left + b.width / 2;
+        const left = (ca + cb) / 2 < box.left + box.width / 2 - 1, dir = left ? -1 : 1;
+        const sx = (r) => (left ? r.left : r.right) - box.left, my = (r) => r.top + r.height / 2 - box.top;
+        if (e.from === e.to) {
+          const x1 = sx(a), y1 = my(a), x2 = sx(a) - dir * a.width / 4, y2 = a.top - box.top;
+          wires[i].setAttribute("d", `M${x1},${y1} C${x1 + dir * out},${y1} ${x2},${y2 - out} ${x2},${y2}`);
+          if (labels[i]) { labels[i].style.left = x1 + dir * out * 0.6 + "px"; labels[i].style.top = y2 - out * 0.4 + "px"; }
+          return;
+        }
+        const x1 = sx(a), y1 = my(a), x2 = sx(b), y2 = my(b);
+        const reach = (left ? Math.min(x1, x2) : Math.max(x1, x2)) + dir * out;
+        wires[i].setAttribute("d", `M${x1},${y1} C${reach},${y1} ${reach},${y2} ${x2},${y2}`);
+        if (labels[i]) { labels[i].style.left = reach - dir * out / 4 + "px"; labels[i].style.top = (y1 + y2) / 2 + "px"; }
+        return;
+      }
       const x1 = a.left + a.width / 2 - box.left, y1 = a.bottom - box.top;
       const x2 = b.left + b.width / 2 - box.left, y2 = b.top - box.top;
       const bend = (y2 - y1) / 2;

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.31 (2026-11-09)
+
+- **Diagram loops**: an arrow that closes a loop (its end already leads back to its start, or a node pointing to itself) is a return arrow (`DIAGRAM.bend`: `back`, read in order). Rows are the longest path over the other arrows only, so a loop no longer pushes its nodes down (A→B→A was rows 7, 0, 6; now 1, 0, 2). Every arrow is still drawn: a return arrow goes back up on the diagram's nearer side, beside the forward arrows and never over them; a node pointing to itself gets a small loop into its top. Drawing only: which arrows are allowed stays the app's choice.
+
 ## 1.0.30 (2026-11-09)
 
 - **Chat input AA**: `.composer__field` gets what `.input` got in 1.0.19. Its border is text-3 (3.35:1, was border-strong, 1.59:1), its placeholder text-2 (6.58:1), and its shape follows `theme({ radius })` / `data-radius` (a pill stops at radius_lg, since the field grows with the text).
