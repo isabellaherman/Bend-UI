@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.32 (2026-11-09)
+
+- Docs: **Accessibility** is its own page (`/accessibility`), next to Overview in the side bar. It holds what the Overview said: the three layers, how components are reviewed, and the sources. The Overview no longer has that section; each component's page keeps its own accessibility list. Nothing in the lib changes.
+
 ## 1.0.31 (2026-11-09)
 
 - **Diagram loops**: an arrow that closes a loop (its end already leads back to its start, or a node pointing to itself) is a return arrow (`DIAGRAM.bend`: `back`, read in order). Rows are the longest path over the other arrows only, so a loop no longer pushes its nodes down (A→B→A was rows 7, 0, 6; now 1, 0, 2). Every arrow is still drawn: a return arrow goes back up on the diagram's nearer side, beside the forward arrows and never over them; a node pointing to itself gets a small loop into its top. Drawing only: which arrows are allowed stays the app's choice.

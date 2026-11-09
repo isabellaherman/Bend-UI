@@ -178,7 +178,7 @@ const section = (title, ...kids) => {
 const box = (html) => { const d = document.createElement("div"); d.innerHTML = html; return d.firstElementChild; };
 document.querySelectorAll("[data-page]").forEach((page) => {
   const id = page.dataset.page;
-  if (id === "overview" || id.startsWith("pattern-")) return;
+  if (id === "overview" || id === "accessibility" || id.startsWith("pattern-")) return;
   const doc = page.querySelector(".doc");
   const kids = [...doc.children];
   const heading = kids.find((k) => k.classList.contains("heading"));
@@ -285,7 +285,7 @@ const PATH = {}, ID = {};
 document.querySelectorAll("#docs-nav [data-go]").forEach((b) => {
   const id = b.dataset.go;
   const group = b.closest(".side__section")?.querySelector(".side__toggle .side__text")?.textContent.trim().toLowerCase();
-  PATH[id] = id === "overview" || !group ? "" : group + "/" + id.replace(/^pattern-/, "");
+  PATH[id] = id === "overview" ? "" : !group ? id : group + "/" + id.replace(/^pattern-/, "");
   ID[PATH[id]] = id;
 });
 // Where the docs live (/ locally, /Bend-UI/ on GitHub Pages): the address minus the page's own path.
