@@ -527,6 +527,11 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 .art { display: block; width: auto; height: var(--art-md); max-width: 100%; object-fit: contain; flex: none; user-select: none; -webkit-user-drag: none; }
 .art--sm { height: var(--art-sm); }
 .art--lg { height: var(--art-lg); }
+/* An art with no image yet: the image symbol on a quiet ground, at the same heights (sm, md, lg).
+   <div class="art art--empty" role="img" aria-label="Image"><svg class="icon icon--lg"><use href="#i-image"/></svg></div>
+   It is 4:3; .art--fill makes it take the width it is given (a doc's column, a grid's cell). */
+.art--empty { display: grid; place-items: center; aspect-ratio: 4 / 3; background: var(--surface-2); border-radius: var(--radius-md); color: var(--text-3); }
+.art--empty.art--fill { width: 100%; aspect-ratio: auto; }
 
 /* ---------- Dot: a state beside a line. Not a toggle: each state is a color. ---------- */
 .dot {
@@ -608,6 +613,7 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 }
 html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); }
 .doc--wide { max-width: var(--window-max); }
+.doc--full { max-width: none; }   /* the whole page, less the gutters (the doc's padding) */
 .doc__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: 0 var(--space-2) var(--space-2); }
 .doc__note { padding: 0 var(--space-2) var(--space-4); }
 .doc__sub { padding: var(--space-6) var(--space-2) var(--space-2); }

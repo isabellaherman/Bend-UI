@@ -70,13 +70,6 @@ document.addEventListener("pick", (e) => {
   btn.querySelector("use").setAttribute("href", e.detail.querySelector("use").getAttribute("href"));
 });
 
-// pair: plain doc, stack, split
-document.getElementById("pair-mode").addEventListener("change", (e) => {
-  const d = document.getElementById("pair-demo");
-  d.classList.remove("doc--stack", "doc--split");
-  if (e.detail.dataset.mode) d.classList.add(e.detail.dataset.mode);
-});
-
 // thread: two pairs, the second one fails
 const threadDoc = document.getElementById("thread-demo");
 const thread = createThread(threadDoc);
@@ -447,6 +440,27 @@ if (formPreview) {
   document.querySelectorAll('[data-page="form"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
   draw();
 }
+// Page and doc: Width. Pair: Layout.
+{
+  const doc = document.getElementById("doc-demo");
+  const IMG = '<svg class="icon icon--lg" aria-hidden="true"><use href="#i-image"/></svg>';
+  const art = (cls = "") => `<div class="art art--empty${cls}" role="img" aria-label="Image">${IMG}</div>`;
+  // Lines: the lib's blocks as they are (a title, then lines to write in).
+  const line = (title) => `<div class="block${title ? " block--title" : ""}"><div class="block__slot"></div><div class="block__text" contenteditable="true" data-placeholder="${title ? "Title" : "Write a line"}"></div></div>`;
+  const CONTENT = {
+    art: () => art(" art--lg art--fill") + `<div class="v-doc__row">${art(" art--fill").repeat(3)}</div>` + art(" art--lg art--fill"),
+    lines: () => line(true) + line() + line() + line(),
+  };
+  const show = (v) => { doc.innerHTML = CONTENT[v](); };
+  document.querySelector("[data-doc-width]").addEventListener("change", (e) => doc.classList.toggle("doc--full", e.detail.dataset.value === "full"));
+  document.querySelector("[data-doc-content]").addEventListener("change", (e) => show(e.detail.dataset.value));
+  show("art");
+}
+document.querySelector("[data-pair-layout]")?.addEventListener("change", (e) => {
+  const d = document.getElementById("pair-demo"), v = e.detail.dataset.value;
+  d.classList.toggle("doc--stack", v === "stack"); d.classList.toggle("doc--split", v === "split");
+});
+
 // Code block: the playground. One real code block; language, head, numbers and long lines from the filters.
 const codePreview = document.getElementById("code-preview");
 if (codePreview) {

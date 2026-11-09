@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.27 (2026-11-09)
+
+- **Art**: `.art--empty`, an art with no image yet (the image symbol on a quiet ground, 4:3, at the sm/md/lg heights), and `.art--fill` to take the width it is given. The Art docs page shows it instead of the blue picture.
+- **Doc**: `.doc--full`, the whole page less the gutters (the doc's padding). `.doc` and `.doc--wide` are unchanged.
+- Docs: "Page and doc" is now **Pages**, in the standard format: Width (Reading, Full) and Content (Art, Docs), the lib's pieces as they are. **Pair** shows Hidden, Stack and Split with panels. No blocks or dots on either page; the README's example has none either.
+
 ## 1.0.26 (2026-11-09)
 
 - **Docs: every snippet is a code block**. Each page's Code section and the Overview's Install, Import and Use show their code in a code block: the language in the head (from the README's fence), Copy, the code colored in that language. Laws keep their own look. Nothing in the lib changes.

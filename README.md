@@ -78,18 +78,26 @@ Motion: the choice moves. `.segmented--slide` puts a thumb behind the chosen ite
 ## Page, doc and pair
 
 ```html
-<main class="page">
-  <div class="doc doc--stack">            <!-- or doc--split doc--wide, or plain doc -->
-    <div class="doc__columns"><span class="meta">Left</span><span class="meta">Right</span></div>
-    <div class="pair">
-      <div class="block">…</div>
-      <div class="block pair__aside">…</div>   <!-- empty: never shows -->
-    </div>
+<main class="page">                        <!-- the area that scrolls -->
+  <div class="doc">                        <!-- the column: doc (reading width), doc--wide, or doc--full -->
+    …
   </div>
 </main>
 ```
 
-A plain `doc` shows only the blocks; `doc--stack` shows each aside under its block; `doc--split` beside it (a stack on narrow screens). Every block starts at `block_min_lines()` lines; set `--block-min-lines` on a block to change it.
+The page scrolls; the doc is the column inside it, centered at a reading width (`measure`). `doc--wide` goes up to the window's width; `doc--full` takes the whole page, less the gutters (the doc's padding: `space_5` each side, `space_3` on narrow screens).
+
+```html
+<div class="doc doc--split">               <!-- or doc--stack, or a plain doc -->
+  <div class="doc__columns"><span class="meta">Main</span><span class="meta">Aside</span></div>
+  <div class="pair">
+    <div>…</div>
+    <div class="pair__aside">…</div>        <!-- empty: never shows -->
+  </div>
+</div>
+```
+
+A pair puts a second thing with the first: hidden in a plain `doc`, under it in `doc--stack`, beside it in `doc--split` (a stack on narrow screens). The Thread and the Law Editor make pairs of blocks: every block starts at `block_min_lines()` lines; set `--block-min-lines` on a block to change it.
 
 ## Thread
 
