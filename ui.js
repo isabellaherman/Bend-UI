@@ -102,7 +102,7 @@ const LIGHT = {
   "--danger": T.color_danger(), "--danger-soft": T.color_danger_soft(),
   // In light, words in a tone are the tone itself (color_accent_text, color_danger_text), so an app's accent carries.
   "--accent-text": "var(--accent)", "--danger-text": "var(--danger)",
-  "--shadow-float": T.shadow_float(),
+  "--shadow-float": T.shadow_float(), "--shadow-drop": T.shadow_drop(),
   // Chart tones: 2 steps toward the surface, 3 and 4 toward the text.
   "--chart-tone-2": T.chart_tone_2() + "%", "--chart-tone-3": T.chart_tone_3() + "%", "--chart-tone-4": T.chart_tone_4() + "%",
   "--chart-2-toward": "var(--surface)",
@@ -119,7 +119,7 @@ const DARK = {
   "--success-soft": T.dark_success_soft(), "--success-text": T.dark_success_text(),
   "--warning-soft": T.dark_warning_soft(), "--warning-text": T.dark_warning_text(),
   "--danger-text": T.dark_danger_text(), "--danger-soft": T.dark_danger_soft(),
-  "--shadow-float": T.dark_shadow_float(),
+  "--shadow-float": T.dark_shadow_float(), "--shadow-drop": T.dark_shadow_drop(),
   // Chart tones: on black all four step toward the text.
   "--chart-tone-2": T.dark_chart_tone_2() + "%", "--chart-tone-3": T.dark_chart_tone_3() + "%", "--chart-tone-4": T.dark_chart_tone_4() + "%",
   "--chart-2-toward": "var(--text)",

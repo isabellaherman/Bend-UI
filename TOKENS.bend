@@ -148,6 +148,8 @@ def leading_ui() -> String: "1.4"
 def leading_body() -> String: "1.65"
 def measure_ch() -> U32: 68
 def shadow_float() -> String: "0 4px 16px rgb(0 0 0 / 0.12), 0 0 0 1px rgb(0 0 0 / 0.04)"
+# The float shadow as one shadow, for a shape (CSS drop-shadow takes one).
+def shadow_drop() -> String: "0 4px 16px rgb(0 0 0 / 0.12)"
 
 # Text roles: a screen's hierarchy, section > group > item > detail. Each is a step of the type scale.
 def role_section() -> U32: text_xl()
@@ -247,6 +249,11 @@ def canvas_gap() -> U32: space_5()
 # Diagram: a node is at least this wide, and grows in steps of this much (DIAGRAM.bend: node_width).
 def diagram_node_min() -> U32: 128
 def diagram_node_step() -> U32: space_5()
+# Diagram shapes (DIAGRAM.bend: shape_w, shape_h). Process is the box with radius_xs, Event with radius_lg.
+def diagram_circle_min() -> U32: space_8()    # Start and Stop are at least this wide (smaller than the others)
+def diagram_frame() -> U32: space_2()         # Subprocess: its inner lines sit this far in
+def diagram_cap() -> U32: 6                   # Database: half the height of its top ellipse
+def diagram_ring_gap() -> U32: space_1()      # Stop: between its two circles
 
 # Chart: a series' color is the accent this strong (percent), mixed toward the surface.
 def chart_tone_1() -> U32: 100   # the accent
@@ -299,6 +306,7 @@ def dark_danger_text() -> String: "#da6a61"     # the danger 72% toward the text
 def dark_danger_soft() -> String: "#2e1d1c"     # 4.75:1
 # A shadow can't be seen on black: a deeper one, and a hairline of light around it.
 def dark_shadow_float() -> String: "0 4px 16px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(255 255 255 / 0.06)"
+def dark_shadow_drop() -> String: "0 4px 16px rgb(0 0 0 / 0.5)"
 # Chart: on black every tone steps from the accent toward the text, so all four stay vivid and 3:1 or more
 # (toward the surface would be darker, under 3:1). Percent of the accent: 3.08, 3.86, 4.95, 6.44:1.
 def dark_chart_tone_2() -> U32: 88

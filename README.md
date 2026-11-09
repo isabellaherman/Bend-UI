@@ -306,6 +306,17 @@ Rename (optional): pass `onLabelEdit: (i, label) => …`. A double-click on a no
 
 Motion follows what changed, with `MOTION.bend` and the duration tokens: a new node grows out of the node it comes from, a new arrow runs in, a renamed node takes its width while the others make room, and `await d.leave(i)` shrinks a node away before you draw without it. Reduced motion turns it all off.
 
+Shapes (optional): `shape` is one of Mermaid's 14 flowchart shapes, by Mermaid's own name: `rect` (Process), `rounded` (Event), `stadium` (Terminal point), `fr-rect` (Subprocess), `cyl` (Database), `circle` (Start), `dbl-circ` (Stop), `odd` (Odd), `diam` (Decision), `hex` (Prepare conditional), `lean-r` (Data input/output), `lean-l` (Data output/input), `trap-b` (Priority action), `trap-t` (Manual operation). No shape is the box, as before; an unknown name is drawn as the box, with a warning. Each takes the tones and both looks (in the soft look a shape keeps its outline). `DIAGRAM.bend` decides each shape's size around its text and where a return arrow and a self-loop meet it (`shape_w`, `shape_h`, `side_inset`, `top_at`), and the laws prove it on every shape. Screen readers hear the shape ("Shape: Decision."), and the focus ring follows it.
+
+```js
+mountDiagram(el, {
+  nodes: [{ label: "Needs data?", shape: "diam", tone: "accent" }, { label: "Orders", shape: "cyl" }, { label: "Write the answer\nfor the person", shape: "rounded" }],
+  edges: [{ from: 0, to: 1, label: "Yes" }, { from: 0, to: 2, label: "No" }],
+});
+```
+
+Lines: a `\n` in a label starts a new line; in rename, Shift+Enter adds one and Enter saves.
+
 Size: a node is at least `diagram_node_min` wide (128) and grows in `diagram_node_step` steps (24), so short labels don't become chips (`DIAGRAM.bend`: `node_width`). The diagram is never narrower than its widest row, so a wide row makes it wider instead of cutting nodes off; put it in a container that scrolls (an `.area` does).
 
 Accessibility (WCAG 2.2 AA): name the diagram with `label: "…"`. Each node tells screen readers its tone and where its arrows go and come from. Lines and borders are at 3:1 or more and soft text at 4.5:1 or more. Changes are announced in a polite live region: the diagram announces renames and drag connects, and `announce(text)` (exported) is for your own changes. `d.focusAfterDraw(label)` puts the focus back on a node after you draw again. Dragging must always have another way: offer "Connect to …" in the node menu, and in free layout `Shift` + an arrow moves the focused node one step.

@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.1.9 (2026-11-09)
+
+- **Diagram shapes**: a node takes `shape`, one of Mermaid's 14 flowchart shapes by Mermaid's own name: `rect` (Process), `rounded` (Event), `stadium` (Terminal point), `fr-rect` (Subprocess), `cyl` (Database), `circle` (Start), `dbl-circ` (Stop), `odd`, `diam` (Decision), `hex` (Prepare conditional), `lean-r`, `lean-l` (Data input/output, output/input), `trap-b` (Priority action), `trap-t` (Manual operation). An unknown name is the box, with a warning. Every shape takes the five tones and both looks; in the soft look a shape keeps its outline (text-3 or its tone), so it stays 3:1 against the page.
+- `DIAGRAM.bend` decides each shape's size around its text (`shape_w`, `shape_h`, `pad_left`) and where a return arrow and a self-loop meet it (`side_inset`, `top_at`), in whole px. Forward arrows still meet the top and bottom centers, which are on every outline. `diagram.js` draws the outline as an SVG behind the text and redraws it when the node's size changes.
+- **Five new laws** (31 in all): a return arrow meets the outline, a self-loop meets the outline, the text fits inside, a circle is round, and no shape is the box as before. Each is checked on all 14 shapes around four text boxes, against each outline's own equation. `bun run check` now takes about 20 seconds.
+- **Labels on several lines**: a `\n` in a label starts a new line. Rename is a textarea: Shift+Enter adds a line, Enter saves (not while composing with an input method).
+- Screen readers hear a node's shape ("Shape: Decision."). The focus ring follows the shape.
+- **Every diagram**: the box's corner is radius-xs (2px, was 6px), so Process and Event look different. Nodes of different heights in a row are centered, as Mermaid does; equal heights look as before.
+- Fixes: a diagram mounted while hidden (a docs page not shown yet) sized its nodes from zero; it now sizes them when it shows. The arrow memory joined two labels with a line break, which a label can now hold.
+- New tokens: `diagram_circle_min` (64), `diagram_frame` (8), `diagram_cap` (6), `diagram_ring_gap` (4), `shadow_drop` (and its dark value), for a shape's drag shadow.
+- Docs: the Diagram Playground gets a Shape control, and Composition a flowchart with every kind of arrow. The Accessibility table names shapes.
+
 ## 1.1.8 (2026-11-09)
 
 - **Dark theme**: a warm near-black, the light theme's stone grays turned over. Light stays the default; `theme({ mode: "dark" })`, or `"system"` to follow the computer. `currentTheme()` says which one shows. Every dark value is in `TOKENS.bend` (`dark_*`), each the gentlest that passes AA, as approved in the Black proposal.

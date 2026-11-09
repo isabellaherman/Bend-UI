@@ -4,6 +4,7 @@ import Base
 import ./TOKENS.bend as T
 import ./SPEC.bend as Spec
 import ./KEYS.bend as K
+import ./DIAGRAM.bend as D
 
 # LAW: the button's horizontal padding is on the space scale.
 law btn_padding_in_scale:
@@ -110,3 +111,26 @@ law mod_key_runs_while_typing:
 law app_scope_overlaps_all:
   for s: U32
   {Spec.scopes_overlap(0, s) == True{} : Bool}
+
+# ---------- Diagram shapes: Mermaid's 14 flowchart shapes (DIAGRAM.bend) ----------
+# Each is checked on all 14 shapes around four text boxes: one word, a long line, two lines, a short word.
+
+# LAW: a return arrow meets the outline. For every shape, the point on a side at mid-height lies on the outline.
+law return_arrow_meets_outline:
+  {D.returns_meet_outline() == True{} : Bool}
+
+# LAW: a self-loop meets the outline. For every shape, the point at the top where a self-loop enters lies on the outline.
+law self_loop_meets_outline:
+  {D.self_loops_meet_outline() == True{} : Bool}
+
+# LAW: the text fits inside. For every shape, the text box with its padding is inside the outline.
+law text_fits_inside:
+  {D.text_fits_inside() == True{} : Bool}
+
+# LAW: a circle is round. Start and Stop are as wide as they are tall.
+law circle_is_round:
+  {D.circles_are_round() == True{} : Bool}
+
+# LAW: no shape, same as before. A node without a shape keeps today's size and its arrows meet the box.
+law no_shape_same_as_before:
+  {D.no_shape_is_the_box() == True{} : Bool}

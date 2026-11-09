@@ -81,3 +81,18 @@ def Laws.mod_key_runs_while_typing():
 
 def Laws.app_scope_overlaps_all(s):
   {==}
+
+def Laws.return_arrow_meets_outline():
+  {==}
+
+def Laws.self_loop_meets_outline():
+  {==}
+
+def Laws.text_fits_inside():
+  {==}
+
+def Laws.circle_is_round():
+  {==}
+
+def Laws.no_shape_same_as_before():
+  {==}

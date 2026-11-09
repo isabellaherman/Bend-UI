@@ -36,6 +36,12 @@
 //
 // tone is "" (neutral), "accent", "success", "warning" or "danger". The node shows it as a colored border;
 // put .diagram--soft on el for the other look: a soft fill with the tone in the text.
+//
+// shape (optional) is one of Mermaid's 14 flowchart shapes, by Mermaid's name: rect (Process), rounded (Event),
+// stadium, fr-rect, cyl (Database), circle (Start), dbl-circ (Stop), odd, diam (Decision), hex, lean-r, lean-l,
+// trap-b, trap-t. No shape is today's box; an unknown name is drawn as the box, with a warning. A \n in a label
+// starts a new line, and in rename Shift+Enter adds one. DIAGRAM.bend decides each shape's size and where return
+// arrows and self-loops meet it; screen readers hear it ("Shape: Decision."); the focus ring follows it.
 // tag is a short word on the box. An arrow's label sits on its line.
 import D from "./DIAGRAM.bend";
 import M from "./MOTION.bend";
@@ -71,6 +77,41 @@ function tween(run, ms, ease, step) {
   });
 }
 
+// ---------- Shapes ----------
+// Mermaid's 14 flowchart shapes, by Mermaid's own name: the number DIAGRAM.bend knows it by, and what a
+// screen reader hears. DIAGRAM.bend decides each shape's size, and where a return arrow and a self-loop
+// meet its outline; this file only draws the outline from those numbers.
+export const SHAPES = {
+  rect: [1, "Process"], rounded: [2, "Event"], stadium: [3, "Terminal point"], "fr-rect": [4, "Subprocess"],
+  cyl: [5, "Database"], circle: [6, "Start"], "dbl-circ": [7, "Stop"], odd: [8, "Odd"], diam: [9, "Decision"],
+  hex: [10, "Prepare conditional"], "lean-r": [11, "Data input/output"], "lean-l": [12, "Data output/input"],
+  "trap-b": [13, "Priority action"], "trap-t": [14, "Manual operation"],
+};
+const code = (b) => SHAPES[b.dataset.shape]?.[0] ?? 0;
+const px = (x) => Math.round(x);
+const rr = (o, W, H, r) => { r = Math.min(r, (H - 2 * o) / 2, (W - 2 * o) / 2);
+  return `M${o + r},${o} H${W - o - r} A${r},${r} 0 0 1 ${W - o},${o + r} V${H - o - r} A${r},${r} 0 0 1 ${W - o - r},${H - o} H${o + r} A${r},${r} 0 0 1 ${o},${H - o - r} V${o + r} A${r},${r} 0 0 1 ${o + r},${o} Z`; };
+const circ = (cx, cy, r) => `M${cx - r},${cy} A${r},${r} 0 1 0 ${cx + r},${cy} A${r},${r} 0 1 0 ${cx - r},${cy} Z`;
+// The outline, W × H px, the stroke's middle o px in: a body (filled and stroked) and lines (stroked only).
+function outline(shape, W, H, o = 0.5) {
+  const k = D.slant(px(H)), m = H / 2, cap = T.diagram_cap(), fr = T.diagram_frame(), gap = T.diagram_ring_gap();
+  switch (shape) {
+    case "rounded": return { d: rr(o, W, H, T.radius_lg()) };
+    case "stadium": return { d: rr(o, W, H, H / 2) };
+    case "fr-rect": return { d: rr(o, W, H, T.radius_xs()), lines: `M${fr},${o} V${H - o} M${W - fr},${o} V${H - o}` };
+    case "cyl": { const rx = W / 2 - o; return { d: `M${o},${cap} A${rx},${cap} 0 0 1 ${W - o},${cap} V${H - cap} A${rx},${cap} 0 0 1 ${o},${H - cap} Z`, lines: `M${o},${cap} A${rx},${cap} 0 0 0 ${W - o},${cap}` }; }
+    case "circle": return { d: circ(W / 2, H / 2, W / 2 - o) };
+    case "dbl-circ": return { d: circ(W / 2, H / 2, W / 2 - o), lines: circ(W / 2, H / 2, W / 2 - o - gap) };
+    case "odd": return { d: `M${o},${o} H${W - o} V${H - o} H${o} L${m},${m} Z` };
+    case "diam": return { d: `M${W / 2},${o} L${W - o},${m} L${W / 2},${H - o} L${o},${m} Z` };
+    case "hex": return { d: `M${k},${o} H${W - k} L${W - o},${m} L${W - k},${H - o} H${k} L${o},${m} Z` };
+    case "lean-r": return { d: `M${k},${o} H${W - o} L${W - k},${H - o} H${o} Z` };
+    case "lean-l": return { d: `M${o},${o} H${W - k} L${W - o},${H - o} H${k} Z` };
+    case "trap-b": return { d: `M${k},${o} H${W - k} L${W - o},${H - o} H${o} Z` };
+    case "trap-t": return { d: `M${o},${o} H${W - o} L${W - k},${H - o} H${k} Z` };
+    default: return { d: rr(o, W, H, T.radius_xs()) };
+  }
+}
 export function mountDiagram(root, { nodes, edges: given }, { isValidConnection, onConnect, nodeMenu, positions, onNodeMove, onLabelEdit, label: title } = {}) {
   const n = nodes.length;
   // Arrows with the same ends are one line: their words join ("Add · Always add").
@@ -111,7 +152,10 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
   const rowEls = free ? [] : Array.from({ length: depth }, () => root.appendChild(el("div", "diagram__row")));
   const boxes = nodes.map((node, i) => {
     const items = nodeMenu?.(i) ?? [];
-    const b = el("div", "diagram__node" + (node.tone ? " diagram__node--" + node.tone : "") + (items.length ? " dropdown" : ""));
+    const shaped = Object.hasOwn(SHAPES, node.shape ?? "") && node.shape;
+    if (node.shape && !shaped) console.warn(`bend-ui: "${node.shape}" is not a node shape; drawn as the box.`);
+    const b = el("div", "diagram__node" + (node.tone ? " diagram__node--" + node.tone : "") + (items.length ? " dropdown" : "") + (shaped ? " diagram__node--shaped" : ""));
+    if (shaped) { b.dataset.shape = shaped; b.insertAdjacentHTML("afterbegin", '<svg class="diagram__shape" aria-hidden="true"><path class="diagram__ring"/><path class="diagram__body"/><path class="diagram__lines"/></svg>'); }
     if (!items.length) b.append(el("span", "diagram__text", node.label));
     else {
       // With a menu, the node is the trigger of a Dropdown menu: its label opens the lib's .menu, which holds
@@ -125,9 +169,9 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
     }
     if (node.tag) b.append(el("span", "tag tag--mono", node.tag));
     b.setAttribute("role", "graphics-object");
-    const name = (e, other) => nodes[other]?.label + (e.label ? " (" + e.label + ")" : "");
+    const name = (e, other) => nodes[other]?.label.replace(/\n/g, " ") + (e.label ? " (" + e.label + ")" : "");
     const out = edges.filter((e) => e.from === i).map((e) => name(e, e.to)), inn = edges.filter((e) => e.to === i).map((e) => name(e, e.from));
-    const said = [node.tone && "Tone: " + node.tone + ".", out.length && "Goes to " + out.join(", ") + ".", inn.length && "Comes from " + inn.join(", ") + "."].filter(Boolean).join(" ");
+    const said = [shaped && "Shape: " + SHAPES[shaped][1] + ".", node.tone && "Tone: " + node.tone + ".", out.length && "Goes to " + out.join(", ") + ".", inn.length && "Comes from " + inn.join(", ") + "."].filter(Boolean).join(" ");
     if (said) {
       const sr = b.appendChild(el("span", "sr-only", said)); sr.id = arrow + "-d" + i;
       const target = b.querySelector(".diagram__open") ?? b;
@@ -231,12 +275,37 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
   const nudgeBottom = () => parseFloat(getComputedStyle(root).getPropertyValue("--space-7")) || 0;
   // Size: a node is at least diagram_node_min wide and grows in diagram_node_step steps (DIAGRAM.bend: node_width),
   // so short labels don't become chips and a row reads as one family.
-  const sizeNodes = () => boxes.forEach((b) => {
+  // A diagram mounted while hidden (display: none) can't measure its text: it sizes itself when it shows.
+  let unsized = false;
+  const sizeNodes = () => (unsized = !root.offsetWidth) || boxes.forEach((b) => {
     if (b.classList.contains("is-editing")) return;
-    b.style.width = "";
+    b.style.width = ""; b.style.height = ""; b.style.paddingLeft = "";
+    const shape = b.dataset.shape;
+    if (shape) {
+      // DIAGRAM.bend: the shape's size around the text, and how far the flag's notch pushes the text right.
+      const r = b.getBoundingClientRect(), k = code(b), w = Math.ceil(r.width), h = Math.ceil(r.height);
+      const pad = D.pad_left(k, h);
+      b.style.width = D.shape_w(k, w, h) + "px"; b.style.height = D.shape_h(k, w, h) + "px";
+      if (pad) b.style.paddingLeft = `calc(${pad}px + var(--space-3))`;
+      drawShape(b); return;
+    }
     const natural = b.getBoundingClientRect().width, cap = parseFloat(getComputedStyle(b).maxWidth) || natural;
     b.style.width = D.node_width(natural, T.diagram_node_min(), T.diagram_node_step(), Math.max(cap, T.diagram_node_min())) + "px";
   });
+  function drawShape(b) {
+    const W = b.offsetWidth, H = b.offsetHeight, shape = b.dataset.shape, svg = b.querySelector(":scope > .diagram__shape");
+    if (!svg || !W) return;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const o = outline(shape, W, H);
+    svg.querySelector(".diagram__body").setAttribute("d", o.d);
+    svg.querySelector(".diagram__lines").setAttribute("d", o.lines ?? "");
+    // The focus ring that follows the outline: the same shape, grown by the focus offset and half the ring.
+    const g = parseFloat(getComputedStyle(b).getPropertyValue("--focus-offset")) + parseFloat(getComputedStyle(b).getPropertyValue("--focus-width")) / 2 + 0.5;
+    const ring = outline(shape, W + 2 * g, H + 2 * g, 0);
+    const ringEl = svg.querySelector(".diagram__ring"); ringEl.setAttribute("d", ring.d); ringEl.setAttribute("transform", `translate(${-g} ${-g})`);
+  }
+  const resized = new ResizeObserver((es) => es.forEach((e) => drawShape(e.target)));
+  boxes.forEach((b) => b.dataset.shape && resized.observe(b));
   sizeNodes();
   fit();
 
@@ -260,6 +329,7 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
 
   // An arrow leaves the bottom of its start and enters the top of its end, in a soft S.
   function draw() {
+    if (unsized && root.offsetWidth) { sizeNodes(); fit(); }
     const box = root.getBoundingClientRect();
     const curves = [];
     svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
@@ -273,14 +343,17 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
         const out = parseFloat(getComputedStyle(root).getPropertyValue("--space-7")) || 0;
         const ca = a.left + a.width / 2, cb = b.left + b.width / 2;
         const left = (ca + cb) / 2 < box.left + box.width / 2 - 1, dir = left ? -1 : 1;
-        const sx = (r) => (left ? r.left : r.right) - box.left, my = (r) => r.top + r.height / 2 - box.top;
+        // DIAGRAM.bend: how far in from the box a slanted side or the flag's notch is, at mid-height.
+        const inset = (r, k) => D.side_inset(code(boxes[k]), left ? 0 : 1, px(r.width), px(r.height));
+        const sx = (r, k) => (left ? r.left + inset(r, k) : r.right - inset(r, k)) - box.left, my = (r) => r.top + r.height / 2 - box.top;
         if (e.from === e.to) {
-          const x1 = sx(a), y1 = my(a), x2 = sx(a) - dir * a.width / 4, y2 = a.top - box.top;
+          const x1 = sx(a, e.from), y1 = my(a), x2 = sx(a, e.from) - dir * a.width / 4, k = code(boxes[e.from]);
+          const y2 = a.top - box.top + D.top_at(k, px(x2 + box.left - a.left), px(a.width), px(a.height));   // DIAGRAM.bend: where the top is
           wires[i].setAttribute("d", `M${x1},${y1} C${x1 + dir * out},${y1} ${x2},${y2 - out} ${x2},${y2}`);
           if (labels[i]) { labels[i].style.left = x1 + dir * out * 0.6 + "px"; labels[i].style.top = y2 - out * 0.4 + "px"; }
           return;
         }
-        const x1 = sx(a), y1 = my(a), x2 = sx(b), y2 = my(b);
+        const x1 = sx(a, e.from), y1 = my(a), x2 = sx(b, e.to), y2 = my(b);
         const reach = (left ? Math.min(x1, x2) : Math.max(x1, x2)) + dir * out;
         wires[i].setAttribute("d", `M${x1},${y1} C${reach},${y1} ${reach},${y2} ${x2},${y2}`);
         if (labels[i]) { labels[i].style.left = reach - dir * out / 4 + "px"; labels[i].style.top = (y1 + y2) / 2 + "px"; }
@@ -303,7 +376,7 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
   // Drawn again in the same element (a new arrow, a new node): nodes glide from where they were and new
   // arrows run in from their start, over duration_connect, eased by MOTION.bend (as the thread's line).
   // Nodes are matched by label, so a different diagram just appears.
-  const key = (e) => nodes[e.from].label + "\n" + nodes[e.to].label;
+  const key = (e) => nodes[e.from].label + "\u0001" + nodes[e.to].label;
   const before = last.get(root);
   let moving = false;
   const watch = new ResizeObserver(draw);
@@ -358,8 +431,8 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
     const b = boxes[i], text = b.querySelector(".diagram__text"), was = nodes[i].label;
     const menu = b.querySelector(":scope > .menu");
     if (menu) { menu.hidden = true; text.setAttribute("aria-expanded", "false"); }
-    const field = el("input", "input diagram__input");
-    field.value = was; field.size = Math.max(2, was.length); field.setAttribute("aria-label", "Rename " + was);
+    const field = el("textarea", "input diagram__input");
+    field.value = was; field.rows = 1; field.setAttribute("aria-label", "Rename " + was.replace(/\n/g, " ") + ". Shift+Enter starts a new line.");
     b.classList.add("is-editing"); b.style.width = "";
     await anim(text, gone, T.duration_enter_ms() * 0.6);
     text.hidden = true; text.before(field);
@@ -368,7 +441,7 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
     let done = false;
     const finish = async (save) => {
       if (done) return;
-      const name = field.value.trim();
+      const name = field.value.split("\n").map((l) => l.trim()).filter(Boolean).join("\n");
       if (save && !name) { shake(b); field.setAttribute("aria-invalid", "true"); announce("A node needs a name"); field.focus(); return; }
       done = true;
       if (save && name !== was) {
@@ -376,11 +449,11 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
         const mem = last.get(root);
         if (mem) {
           mem.places.set(name, mem.places.get(was));
-          mem.arrows = new Set([...mem.arrows].map((k) => k.split("\n").map((l) => (l === was ? name : l)).join("\n")));
+          mem.arrows = new Set([...mem.arrows].map((k) => k.split("\u0001").map((l) => (l === was ? name : l)).join("\u0001")));
           mem.formed = name;
         }
         editing = -1;
-        announce("Renamed " + was + " to " + name); refocus = name;
+        announce("Renamed " + was.replace(/\n/g, " ") + " to " + name.replace(/\n/g, " ")); refocus = name;
         onLabelEdit(i, name);
         return;
       }
@@ -391,7 +464,7 @@ export function mountDiagram(root, { nodes, edges: given }, { isValidConnection,
       if (text.matches("button")) text.focus();
     };
     field.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") { e.preventDefault(); finish(true); }
+      if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); finish(true); }
       if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); finish(false); }
       if (e.key === "ArrowUp" || e.key === "ArrowDown") e.stopPropagation();   // the field's, not the menu's
     });

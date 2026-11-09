@@ -666,13 +666,13 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 /* Never narrower than its widest row: a wide row makes the diagram wider (its container scrolls), so no node
    is ever cut off on the left where scrolling can't reach. */
 .diagram { position: relative; display: flex; flex-direction: column; gap: var(--space-7); padding: var(--space-4) var(--space-2); min-width: max-content; }
-.diagram__row { position: relative; z-index: var(--layer-part); display: flex; justify-content: center; align-items: flex-start; gap: var(--space-5); }
+.diagram__row { position: relative; z-index: var(--layer-part); display: flex; justify-content: center; align-items: center; gap: var(--space-5); }   /* nodes of different heights center, as Mermaid's ranks */
 .diagram__node {
   position: relative;
   display: flex; flex-direction: column; align-items: center; gap: var(--space-1);
   min-width: var(--diagram-node-min); max-width: calc(var(--measure) / 2);
   padding: var(--space-2) var(--space-3);
-  border: var(--border-width) solid var(--text-3); border-radius: var(--radius-md);
+  border: var(--border-width) solid var(--text-3); border-radius: var(--radius-xs);   /* Process: the box */
   background: var(--surface); color: var(--text);
   font-size: var(--text-md); line-height: var(--leading-ui); text-align: center;
   transition: border-color var(--duration-enter) var(--ease);
@@ -688,6 +688,35 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 .diagram--soft .diagram__node--success { background: var(--success-soft); color: var(--success-text); }
 .diagram--soft .diagram__node--warning { background: var(--warning-soft); color: var(--warning-text); }
 .diagram--soft .diagram__node--danger { background: var(--danger-soft); color: var(--danger-text); }
+/* A label's \n starts a new line. */
+.diagram__text { white-space: pre-line; }
+/* Shapes (node.shape, Mermaid's names): the node keeps its box for layout, focus and clicks; the outline is
+   an SVG behind the text, drawn by diagram.js from DIAGRAM.bend's numbers. It takes the tone's colors, and
+   keeps its outline in the soft look (text-3, or the tone), so the shape stays 3:1 against the page. */
+.diagram__node--shaped { min-width: 0; border-color: transparent; background: transparent; isolation: isolate; justify-content: center; }
+.diagram--soft .diagram__node--shaped { background: transparent; }
+.diagram__shape {
+  position: absolute; inset: calc(var(--border-width) * -1); z-index: -1;
+  width: calc(100% + var(--border-width) * 2); height: calc(100% + var(--border-width) * 2);
+  overflow: visible; pointer-events: none;
+}
+.diagram__body { fill: var(--surface); stroke: var(--text-3); stroke-width: var(--border-width); transition: stroke var(--duration-enter) var(--ease); }
+.diagram__lines { fill: none; stroke: var(--text-3); stroke-width: var(--border-width); }
+.diagram--soft .diagram__node--shaped .diagram__body { fill: var(--surface-2); }
+.diagram__node--accent .diagram__body, .diagram--soft .diagram__node--accent .diagram__body { fill: var(--accent-soft); stroke: var(--accent); }
+.diagram__node--success .diagram__body, .diagram--soft .diagram__node--success .diagram__body { fill: var(--success-soft); stroke: var(--success); }
+.diagram__node--warning .diagram__body, .diagram--soft .diagram__node--warning .diagram__body { fill: var(--warning-soft); stroke: var(--warning); }
+.diagram__node--danger .diagram__body, .diagram--soft .diagram__node--danger .diagram__body { fill: var(--danger-soft); stroke: var(--danger); }
+.diagram__node--accent .diagram__lines { stroke: var(--accent); }
+.diagram__node--success .diagram__lines { stroke: var(--success); }
+.diagram__node--warning .diagram__lines { stroke: var(--warning); }
+.diagram__node--danger .diagram__lines { stroke: var(--danger); }
+.diagram__node--shaped.is-target .diagram__body, .diagram__node--shaped.is-editing .diagram__body { stroke: var(--accent); }
+.diagram__node--shaped.is-editing { box-shadow: none; }
+/* The focus ring follows the shape: the outline grown by the focus offset, in the accent. */
+.diagram__ring { display: none; fill: none; stroke: var(--accent); stroke-width: var(--focus-width); }
+.diagram__node--shaped:focus-visible, .diagram__node--shaped:has(> .diagram__open:focus-visible) { outline: none; }
+.diagram__node--shaped:focus-visible .diagram__ring, .diagram__node--shaped:has(> .diagram__open:focus-visible) .diagram__ring { display: inline; }
 .diagram__wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; color: var(--text-3); }
 .diagram__wires path { fill: none; stroke: currentColor; stroke-width: var(--border-width); }
 .diagram__wires marker path { fill: currentColor; stroke: none; }
@@ -812,12 +841,14 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 .diagram--free { display: block; }
 .diagram--free > .diagram__node { position: absolute; z-index: var(--layer-part); cursor: grab; touch-action: none; }
 .diagram--free > .diagram__node.is-moving { cursor: grabbing; box-shadow: var(--shadow-float); transition: none; }
+.diagram--free > .diagram__node--shaped.is-moving { box-shadow: none; }
+.diagram__node--shaped.is-moving .diagram__shape { filter: drop-shadow(var(--shadow-drop)); }   /* the float shadow, around the shape */
 .diagram--free > .diagram__node:has(> .menu:not([hidden])) { z-index: var(--layer-menu); }
 .diagram--free .diagram__open { cursor: inherit; }
 
 /* ---------- Diagram: rename ----------
    d.editLabel(i), a double-click or F2: the node itself becomes the field (no box inside the box). */
-.diagram__node .diagram__input, .diagram__node .diagram__input:focus { position: relative; height: auto; min-width: var(--space-4); padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; outline: none; font: inherit; color: inherit; text-align: center; field-sizing: content; }
+.diagram__node .diagram__input, .diagram__node .diagram__input:focus { position: relative; height: auto; min-width: var(--space-4); padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; outline: none; font: inherit; color: inherit; text-align: center; field-sizing: content; resize: none; white-space: pre; }   /* a textarea: Shift+Enter adds a line */
 .diagram__node.is-editing { border-color: var(--accent); box-shadow: 0 0 0 var(--focus-halo) var(--accent-soft); }
 .diagram__node.is-editing .diagram__handle { display: none; }
 

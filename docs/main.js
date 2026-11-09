@@ -123,6 +123,7 @@ const LAWS_OF = {
   side: ["side_rail_fits", "side_width_on_grid"],
   window: ["window_max_on_grid", "window_margin_in_scale"],
   agent: ["agent_sm_in_scale", "agent_lg_on_grid"],
+  diagram: ["return_arrow_meets_outline", "self_loop_meets_outline", "text_fits_inside", "circle_is_round", "no_shape_same_as_before"],
 };
 const byName = Object.fromEntries(LAWS.map((l) => [l.name, l]));
 const lawBlock = (l) => `<div class="docs-law">` +
@@ -143,7 +144,7 @@ const FILES = {
   color: ["TOKENS.bend", "ui.js", "ui.css"], space: ["TOKENS.bend", "ui.js", "ui.css"], size: ["TOKENS.bend", "ui.js", "ui.css"],
   radius: ["TOKENS.bend", "ui.js", "ui.css"], type: ["TOKENS.bend", "ui.js", "ui.css"],
   icons: ["icons.js", "ui.js"], keyboard: ["KEYS.bend", "keys.js"],
-  diagram: ["DIAGRAM.bend", "diagram.js", "ui.css"], chart: ["CHART.bend", "chart.js", "MOTION.bend", "TOKENS.bend", "ui.css"], thread: ["MOTION.bend", "thread.js", "ui.css"],
+  diagram: ["DIAGRAM.bend", "diagram.js", "TOKENS.bend", "ui.css"], chart: ["CHART.bend", "chart.js", "MOTION.bend", "TOKENS.bend", "ui.css"], thread: ["MOTION.bend", "thread.js", "ui.css"],
   agent: ["MOTION.bend", "agent.js", "ui.css"],
   "code-block": ["SYNTAX.bend", "syntax.js", "TOKENS.bend", "ui.css"],
   dropdown: ["ui.js", "ui.css"],
@@ -351,16 +352,23 @@ if (btnPreview) {
 // Diagram: the playground. Every look (rows) in every tone (columns), all one width; pick a tag or none.
 const nodePreview = document.getElementById("node-preview");
 if (nodePreview) {
-  const pick = { tag: "off" };
+  const pick = { tag: "off", shape: "" };
   const looks = [["", "Border"], ["soft", "Soft"]];
   const tones = [["", "Neutral"], ["accent", "Accent"], ["success", "Success"], ["warning", "Warning"], ["danger", "Danger"]];
   const draw = () => {
     const tag = pick.tag === "on" ? '<span class="tag tag--mono">loop</span>' : "";
+    // A shape is drawn by diagram.js (an SVG outline), so each cell is a one-node diagram.
+    if (pick.shape) {
+      nodePreview.innerHTML = '<span></span>' + tones.map(([, n]) => `<span class="detail">${n}</span>`).join("") +
+        looks.map(([look, name]) => `<span class="detail">${name}</span>` + tones.map(([t, n]) => `<div class="diagram${look ? " diagram--soft" : ""}" data-tone="${t}" data-name="${n}"></div>`).join("")).join("");
+      nodePreview.querySelectorAll(".diagram").forEach((d) => mountDiagram(d, { nodes: [{ label: d.dataset.name, shape: pick.shape, tone: d.dataset.tone || undefined, tag: pick.tag === "on" ? "loop" : undefined }], edges: [] }, { label: d.dataset.name + " node" }));
+      return;
+    }
     nodePreview.innerHTML = '<span></span>' + tones.map(([, n]) => `<span class="detail">${n}</span>`).join("") +
       looks.map(([look, name]) => `<span class="detail">${name}</span>` + tones.map(([t, n]) =>
         `<div class="${look ? "diagram--soft" : ""}" style="display:contents"><div class="diagram__node${t ? " diagram__node--" + t : ""}"><span class="diagram__text">${n}</span>${tag}</div></div>`).join("")).join("");
   };
-  document.querySelectorAll('[data-page="diagram"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
+  document.querySelectorAll('[data-page="diagram"] [data-filter]').forEach((g) => g.addEventListener(g.classList.contains("dropdown") ? "pick" : "change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
   draw();
 }
 // A Playground control is a segmented ("change") or, when its options don't fit the column, a dropdown ("pick").
@@ -612,6 +620,16 @@ drawLive();
 // Diagram: its arrows.
 mountDiagram($("diagram-arrow"), { nodes: [{ label: "Node" }, { label: "Node", tone: "accent" }], edges: [{ from: 0, to: 1 }] });
 mountDiagram($("diagram-label"), { nodes: [{ label: "Node", tone: "warning" }, { label: "Node", tone: "success" }], edges: [{ from: 0, to: 1, label: "Label" }] });
+// Shapes: Mermaid's flowchart shapes, a label on two lines, a return arrow onto a slanted side and a self-loop.
+const shapesFlow = { nodes: [
+  { label: "Start", shape: "circle" }, { label: "Needs data?", shape: "diam", tone: "accent" }, { label: "Orders", shape: "cyl" },
+  { label: "Write the answer\nfor the person", shape: "rounded" }, { label: "Send it", shape: "lean-r", tone: "success" },
+  { label: "Retry", shape: "hex", tone: "warning" }, { label: "Done", shape: "dbl-circ" },
+], edges: [
+  { from: 0, to: 1 }, { from: 1, to: 2, label: "Yes" }, { from: 1, to: 3, label: "No" }, { from: 2, to: 4 }, { from: 3, to: 4 },
+  { from: 4, to: 6 }, { from: 4, to: 5, label: "Failed" }, { from: 5, to: 5, label: "Wait" }, { from: 5, to: 1, label: "Again" },
+] };
+mountDiagram($("diagram-shapes"), shapesFlow, { label: "Answering a request" });
 mountDiagram($("diagram-branch"), { nodes: [{ label: "Node", tone: "accent" }, { label: "Node", tone: "success" }, { label: "Node", tone: "danger" }], edges: [{ from: 0, to: 1, label: "A" }, { from: 0, to: 2, label: "B" }] });
 mountDiagram($("diagram-join"), { nodes: [{ label: "Node" }, { label: "Node", tone: "warning" }], edges: [{ from: 0, to: 1, label: "A" }, { from: 0, to: 1, label: "B" }] });
 // Chart: the playground. Type picks the chart, Look the pie's look (only a pie has looks), Size its size, Play its entrance.
