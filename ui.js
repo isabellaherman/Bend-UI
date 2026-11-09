@@ -39,7 +39,7 @@ const VARS = {
   "--btn-padding-x": () => px(T.btn_padding_x()), "--btn-padding-x-sm": () => px(T.btn_padding_x_sm()), "--btn-padding-x-lg": () => px(T.btn_padding_x_lg()), "--btn-padding-x-xl": () => px(T.btn_padding_x_xl()),
   "--btn-wide-padding-x": () => px(T.btn_wide_padding_x()), "--btn-wide-padding-x-sm": () => px(T.btn_wide_padding_x_sm()), "--btn-wide-padding-x-lg": () => px(T.btn_wide_padding_x_lg()), "--btn-wide-padding-x-xl": () => px(T.btn_wide_padding_x_xl()),
   "--control-lg": () => px(T.control_lg()), "--control-xl": () => px(T.control_xl()),
-  "--textarea-min-height": () => px(T.textarea_min_height()), "--btn-hover-brightness": () => T.btn_hover_brightness(), "--disabled-opacity": () => String(T.disabled_opacity() / 100),
+  "--textarea-min-height": () => px(T.textarea_min_height()), "--form-gap": () => px(T.form_gap()), "--form-label-width": () => px(T.form_label_width()), "--btn-hover-brightness": () => T.btn_hover_brightness(), "--disabled-opacity": () => String(T.disabled_opacity() / 100),
   "--icon-sm": () => px(T.icon_sm()), "--icon-md": () => px(T.icon_md()),
   "--icon-lg": () => px(T.icon_lg()), "--icon-xl": () => px(T.icon_xl()), "--icon-stroke": () => T.icon_stroke(),
   "--dot-size": () => px(T.dot_size()), "--block-min-lines": () => String(T.block_min_lines()), "--ring-offset": () => px(T.ring_offset()), "--ring-width": () => px(T.ring_width()),
@@ -307,6 +307,63 @@ document.addEventListener("keydown", (e) => {
   const i = items.indexOf(document.activeElement);
   const next = i < 0 ? items.findIndex((x) => x.getAttribute("aria-checked") === "true") : (i + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
   items[Math.max(0, next)].focus();
+});
+
+// ---------- Form: check on send ----------
+// <form class="form" data-validate novalidate>: on send, every field is checked (required, type, minlength,
+// pattern; data-error is the message to show). A wrong field gets aria-invalid and its message under it, and a
+// .form__summary at the top lists them all, linked, and takes the focus. If all is right, the submit button
+// (.btn--async) shows busy and the form fires "send" with { data, done(label), fail(message) }: the app sends.
+const ERROR_ICON = '<svg class="icon" aria-hidden="true"><use href="#i-circle-alert"/></svg>';
+function fieldWrong(c) {
+  if (!c.checkValidity()) return true;
+  return c.minLength > 0 && c.value.trim().length < c.minLength;
+}
+export function setFieldError(c, message) {
+  const field = c.closest(".field"); if (!field) return;
+  let foot = field.querySelector(".field__foot");
+  if (!foot) { foot = document.createElement("span"); foot.className = "field__foot"; field.append(foot); }
+  const id = (c.id || (c.id = "field-" + Math.random().toString(36).slice(2, 8))) + "-error";
+  foot.querySelector("#" + CSS.escape(id))?.remove();
+  const ids = (c.getAttribute("aria-describedby") || "").split(/\s+/).filter((x) => x && x !== id);
+  if (message) {
+    const m = document.createElement("span"); m.className = "field__msg field__msg--error"; m.id = id; m.innerHTML = ERROR_ICON;
+    m.append(message); foot.prepend(m);
+    c.setAttribute("aria-invalid", "true"); ids.unshift(id);
+  } else c.removeAttribute("aria-invalid");
+  ids.length ? c.setAttribute("aria-describedby", ids.join(" ")) : c.removeAttribute("aria-describedby");
+}
+const labelOf = (c) => (c.closest(".field")?.querySelector(".field__label")?.childNodes[0]?.textContent || c.name || c.id).trim();
+document.addEventListener("submit", (e) => {
+  const form = e.target.closest?.("form.form[data-validate]"); if (!form) return;
+  e.preventDefault();
+  const wrong = [...form.querySelectorAll("input, textarea, select")].filter((c) => c.willValidate && !c.disabled && !c.readOnly).filter((c) => {
+    const bad = fieldWrong(c); setFieldError(c, bad ? c.dataset.error || c.validationMessage || "Check this field." : null); return bad;
+  });
+  form.querySelector(":scope > .form__summary")?.remove();
+  if (wrong.length) {
+    const s = document.createElement("div"); s.className = "form__summary"; s.setAttribute("role", "alert"); s.tabIndex = -1;
+    s.innerHTML = ERROR_ICON + `<div><p class="item-title">${wrong.length} ${wrong.length === 1 ? "thing" : "things"} to fix</p><ul></ul></div>`;
+    wrong.forEach((c) => { const li = document.createElement("li"), a = document.createElement("a"); a.className = "link"; a.href = "#" + c.id; a.textContent = labelOf(c); li.append(a); s.querySelector("ul").append(li); });
+    form.prepend(s); s.focus();
+    return;
+  }
+  const btn = form.querySelector('[type="submit"].btn--async');
+  if (btn) busy(btn, true);
+  form.dispatchEvent(new CustomEvent("send", { bubbles: true, detail: {
+    data: new FormData(form),
+    done: (label) => (btn ? done(btn, label) : label && announce(label)),
+    fail: (message) => { if (btn) busy(btn, false); if (message) announce(message); },
+  } }));
+});
+// A summary link takes the focus to its field; fixing a field clears its error.
+document.addEventListener("click", (e) => {
+  const a = e.target.closest(".form__summary a"); if (!a) return;
+  e.preventDefault(); document.getElementById(a.getAttribute("href").slice(1))?.focus();
+});
+document.addEventListener("input", (e) => {
+  const c = e.target; if (c.getAttribute?.("aria-invalid") !== "true" || !c.closest("form.form[data-validate]")) return;
+  if (!fieldWrong(c)) setFieldError(c, null);
 });
 
 // ---------- Side bar row actions ----------

@@ -1,4 +1,4 @@
-import { busy, done, initSegmented } from "../ui.js";
+import { busy, done, initSegmented, initButtons, setFieldError } from "../ui.js";
 import { mountAgent } from "../agent.js";
 import { createThread, openBlock, formBlock } from "../thread.js";
 import claude from "../brand/claude.webp";
@@ -122,6 +122,7 @@ const lawBlock = (l) => `<div class="docs-law">` +
 //   Laws            what is proved about it
 // The content comes from the page's examples, from CODE and FILES below, and from LAWS.bend.
 const FILES = {
+  form: ["TOKENS.bend", "ui.css", "ui.js"],
   input: ["TOKENS.bend", "ui.css"],
   segmented: ["TOKENS.bend", "MOTION.bend", "ui.css", "ui.js"],
   button: ["TOKENS.bend", "SPEC.bend", "ui.css", "ui.js"],
@@ -385,6 +386,46 @@ if (inputPreview) {
   const ROWS = [["text", "Text"], ["icon", "With icon"], ["button", "With button"], ["mono", "Mono"], ["area", "Textarea"]];
   const draw = () => { inputPreview.dataset.radius = pick.shape; inputPreview.innerHTML = ROWS.map(([k, n]) => `<span class="detail">${n}</span>${field(k)}`).join(""); };
   document.querySelectorAll('[data-page="input"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
+  draw();
+}
+// Form: the playground. A real form (data-validate): Send checks it; the filters show its layouts and states.
+const formPreview = document.getElementById("form-preview");
+if (formPreview) {
+  const pick = { layout: "stacked", state: "empty" };
+  const icon = (n) => `<svg class="icon" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+  const FIELDS = {
+    first: ["Name", "input", "Isabella", 'required data-error="Write your name."'],
+    last: ["Last name", "input", "Herman", 'required data-error="Write your last name."'],
+    email: ["Email", "input", "isabella@", 'required type="email" data-error="Write an email like name@example.com."'],
+    message: ["Message", "textarea", "", 'required minlength="10" data-error="Write a message of at least 10 characters."'],
+  };
+  const field = (id, filled) => {
+    const [label, kind, value, rules] = FIELDS[id];
+    const attrs = `id="f-${id}" name="${id}" class="input" ${rules}`;
+    const control = kind === "textarea" ? `<textarea ${attrs}>${filled ? value : ""}</textarea>` : `<input ${attrs}${filled && value ? ` value="${value}"` : ""}>`;
+    return `<label class="field" for="f-${id}"><span class="field__label">${label}</span>${control}<span class="field__foot"></span></label>`;
+  };
+  const draw = () => {
+    const filled = pick.state !== "empty";
+    formPreview.className = "form v-form" + (pick.layout === "columns" ? " form--columns" : pick.layout === "inline" ? " form--inline" : "");
+    formPreview.innerHTML = '<p class="detail">All fields are required.</p>' +
+      `<fieldset class="form__section"><legend class="form__legend">Profile</legend><div class="form__row">${field("first", filled)}${field("last", filled)}</div>${field("email", filled)}</fieldset>` +
+      field("message", filled) +
+      `<div class="actions"><button type="button" class="btn btn--bordered btn--neutral">Cancel</button><button type="submit" class="btn btn--filled btn--async" data-reserve="Send|Sent"><svg class="icon btn__idle" aria-hidden="true"><use href="#i-arrow-right"/></svg><svg class="icon btn__done" aria-hidden="true"><use href="#i-check"/></svg><span class="btn__label">Send</span><svg class="btn__spin" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" pathLength="100"/></svg></button></div>`;
+    initButtons();
+    const send = formPreview.querySelector(".btn--async");
+    if (pick.state === "errors") {
+      // What a failed send looks like, without taking the focus: the same messages and summary ui.js makes.
+      const wrong = ["email", "message"].map((id) => formPreview.querySelector("#f-" + id));
+      wrong.forEach((c) => setFieldError(c, c.dataset.error));
+      formPreview.insertAdjacentHTML("afterbegin", `<div class="form__summary" role="alert" tabindex="-1">${icon("circle-alert")}<div><p class="item-title">2 things to fix</p><ul><li><a class="link" href="#f-email">Email</a></li><li><a class="link" href="#f-message">Message</a></li></ul></div></div>`);
+    }
+    if (pick.state === "sending") busy(send, true);
+    if (pick.state === "sent") { send.classList.add("is-done"); send.querySelector(".btn__label").textContent = "Sent"; }
+  };
+  // What "send" does is the app's: here it waits a moment, then says it's sent.
+  formPreview.addEventListener("send", (e) => setTimeout(() => e.detail.done("Sent"), 1500));
+  document.querySelectorAll('[data-page="form"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
   draw();
 }
 // Button animations: Publish shows busy, then done (a real app would wait for its work here).

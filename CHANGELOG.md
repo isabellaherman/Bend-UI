@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.21 (2026-11-08)
+
+- **Form layouts and sections**: `.form__section` + `.form__legend` (a fieldset), `.form__row` with `.form--columns` (fields side by side), `.form--inline` (labels in their own column, `form_label_width`, new token, 128). Both stack on narrow screens. `.form` now uses the `form_gap` token (same value).
+- **Form check on send** (`data-validate novalidate`): every field is checked (required, type, minlength, pattern; `data-error` is its message). Wrong fields get `aria-invalid` and their message; a `.form__summary` lists them all, linked, and takes the focus; fixing a field clears its error. If all is right, the submit `.btn--async` shows busy and the form fires `send` with `{ data, done(label), fail(message) }`. `setFieldError(control, message)` is exported. A plain `.form` stays as it is.
+- Docs: the Form page in the standard format (Layout and State filters over one real form, State from Empty to Errors; Accessibility, collapsed, 7 of 7 pass; Code).
+
 ## 1.0.20 (2026-11-08)
 
 - **Docs: the side bar shows where you are**: opening a page (from the side bar, a link, or back and forward) opens its section, closes the others, marks the page and scrolls it into view. Nothing in the lib changes.

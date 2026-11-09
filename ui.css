@@ -230,8 +230,27 @@ textarea.input { display: block; width: 100%; height: auto; min-height: var(--te
 .field__msg--error { color: var(--danger); }
 .field__msg--success { color: var(--success-text); }
 .field__count { margin-left: auto; color: var(--text-2); font-variant-numeric: tabular-nums; }
-/* A form: fields in a column, form_gap apart (TOKENS.bend). */
-.form { display: flex; flex-direction: column; gap: var(--space-4); }
+/* ---------- Form ----------
+   Fields in a column, form_gap apart. .form__section groups related fields under a legend (a fieldset);
+   .form__row puts fields side by side in .form--columns; .form--inline puts each label in its own column.
+   Both stack on narrow screens. .form__summary lists every error, linked to its field (ui.js, data-validate). */
+.form { display: flex; flex-direction: column; gap: var(--form-gap); }
+.form__section { display: flex; flex-direction: column; gap: var(--form-gap); min-width: 0; margin: 0; padding: 0; border: 0; }
+.form__legend { padding: 0; margin-bottom: var(--space-1); font-size: var(--role-item); font-weight: var(--weight-medium); color: var(--text); }
+.form__row { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--form-gap); }
+.form--columns .form__row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+html[data-narrow] .form--columns .form__row { grid-template-columns: minmax(0, 1fr); }
+.form--inline .field { display: grid; grid-template-columns: var(--form-label-width) minmax(0, 1fr); column-gap: var(--space-4); row-gap: var(--space-1); align-items: start; }
+.form--inline .field__label { padding-top: calc((var(--control-md) - var(--text-sm) * var(--leading-ui)) / 2); }
+.form--inline .field > :not(.field__label) { grid-column: 2; }
+.form--inline .form__legend { margin-left: calc(var(--form-label-width) + var(--space-4)); }
+html[data-narrow] .form--inline .field { display: flex; flex-direction: column; }
+html[data-narrow] .form--inline .form__legend { margin-left: 0; }
+.form__summary { display: flex; gap: var(--space-3); padding: var(--space-3) var(--space-4); border: var(--border-width) solid var(--danger); border-radius: var(--radius-md); background: var(--danger-soft); color: var(--text); }
+.form__summary > .icon { flex: none; color: var(--danger); margin-top: var(--space-hairline); }
+.form__summary ul { margin: var(--space-1) 0 0; padding-left: var(--space-4); }
+.form__summary .link { color: var(--danger); text-decoration: underline; }
+.form__summary:focus-visible { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-offset); }
 
 /* ---------- Segmented ----------
    The nested-radius formula: container radius-md (6) with hairline padding (2)

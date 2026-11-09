@@ -63,6 +63,7 @@ def icon_btn_xl_icon() -> U32: icon_xl()
 def icon_btn_xl_padding() -> U32: space_3()
 def field_gap() -> U32: space_1()
 def form_gap() -> U32: space_4()
+def form_label_width() -> U32: 128   # .form--inline: the labels' column
 def segmented_padding() -> U32: space_hairline()
 def segmented_outer_radius() -> U32: radius_md()
 def segmented_inner_radius() -> U32: radius_sm()

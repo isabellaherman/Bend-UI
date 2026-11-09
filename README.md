@@ -449,14 +449,25 @@ A text field and its label, help and messages. Sizes match buttons (`.input--sm`
 
 ### Form
 
+Fields in a column, `form_gap` apart. `.form__section` + `.form__legend` group related fields (a `fieldset`); `.form__row` puts fields side by side in `.form--columns`; `.form--inline` puts each label in its own column (both stack on narrow screens). Add `data-validate novalidate` and ui.js checks the form on send: a wrong field gets `aria-invalid` and its `data-error` under it, and a `.form__summary` lists every error, linked, and takes the focus. If all is right, the submit button (`.btn--async`) shows busy and the form fires `send` with `{ data, done(label), fail(message) }`.
+
 ```html
-<form class="form">
-  <label class="field"><span class="field__label">Name</span><input class="input"></label>
+<form class="form form--columns" data-validate novalidate>
+  <fieldset class="form__section"><legend class="form__legend">Profile</legend>
+    <div class="form__row">
+      <label class="field" for="first"><span class="field__label">Name</span><input id="first" name="first" class="input" required data-error="Write your name."></label>
+      <label class="field" for="last"><span class="field__label">Last name</span><input id="last" name="last" class="input" required data-error="Write your last name."></label>
+    </div>
+  </fieldset>
   <div class="actions">
     <button class="btn btn--ghost" type="button">Cancel</button>
-    <button class="btn btn--primary">Save</button>
+    <button class="btn btn--filled btn--async" type="submit">…<span class="btn__label">Send</span>…</button>
   </div>
 </form>
+```
+
+```js
+form.addEventListener("send", async (e) => { await save(e.detail.data); e.detail.done("Sent"); });
 ```
 
 ### Tag and kbd
