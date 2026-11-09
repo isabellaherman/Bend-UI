@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.20 (2026-11-08)
+
+- **Docs: the side bar shows where you are**: opening a page (from the side bar, a link, or back and forward) opens its section, closes the others, marks the page and scrolls it into view. Nothing in the lib changes.
+
 ## 1.0.19 (2026-11-08)
 
 - **Input at WCAG AA (changes existing fields)**: the border is now text-3 (3.35:1, was 1.59:1) and the placeholder text-2 (6.58:1, was the browser's light gray). A disabled field now uses `disabled_opacity`.

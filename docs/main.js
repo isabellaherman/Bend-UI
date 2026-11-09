@@ -289,6 +289,12 @@ function go(id, push = true) {
   if (!(id in PATH)) id = "overview";
   main.querySelectorAll("[data-page]").forEach((s) => (s.hidden = s.dataset.page !== id));
   document.querySelectorAll("#docs-nav [data-go]").forEach((b) => (b.dataset.go === id ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
+  // The side bar shows where you are: the current page's section opens (the others close, as they do on a
+  // click) and the page's item scrolls into view, also when the page was opened from a link.
+  const here = document.querySelector(`#docs-nav [data-go="${id}"]`), toggle = here?.closest(".side__section")?.querySelector(":scope > .side__toggle");
+  if (toggle && toggle.getAttribute("aria-expanded") !== "true")
+    document.querySelectorAll("#docs-nav .side__section > .side__toggle").forEach((t) => t.setAttribute("aria-expanded", String(t === toggle)));
+  here?.scrollIntoView({ block: "nearest" });
   main.scrollTop = 0;
   if (id === "chart") charts.forEach((c) => c.replay());   // the entrance plays when the page shows
   const url = BASE + PATH[id] + location.hash;
