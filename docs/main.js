@@ -148,6 +148,7 @@ const FILES = {
   "code-block": ["SYNTAX.bend", "syntax.js", "TOKENS.bend", "ui.css"],
   dropdown: ["ui.js", "ui.css"],
   responsive: ["TOKENS.bend", "AREA.bend", "ui.js", "ui.css"],
+  image: ["TOKENS.bend", "ui.js", "ui.css"],
 };
 // Code: the README's own snippets, so the docs and the README never disagree.
 // Each page shows the code blocks under its README heading (## or ###), colored in their own language (SYNTAX.bend).
@@ -356,6 +357,13 @@ if (nodePreview) {
 // The dropdown's button shows the option picked.
 const filterEvent = (g) => g.classList.contains("dropdown") ? "pick" : "change";
 document.addEventListener("pick", (e) => { const dd = e.target.closest(".v-filter__controls .dropdown"); if (dd) dd.querySelector(":scope > .btn > span").textContent = e.detail.textContent; });
+// Image: the playground. Size and Width from the filters, on one image.
+const imagePreview = document.getElementById("image-preview");
+if (imagePreview) {
+  const pick = { size: "md", width: "natural" };
+  const draw = () => { imagePreview.className = "image image--empty" + (pick.size === "md" ? "" : " image--" + pick.size) + (pick.width === "fill" ? " image--fill" : ""); };
+  document.querySelectorAll('[data-page="image"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
+}
 // Responsive: the playground. The Width filter sets how wide the area is; the area decides if it is narrow.
 const areaDemo = document.getElementById("area-demo");
 if (areaDemo) document.querySelector('[data-page="responsive"] [data-filter="width"]').addEventListener("change", (e) => { areaDemo.dataset.w = e.detail.dataset.value; });
@@ -496,17 +504,17 @@ document.querySelector("[data-panel-head]")?.addEventListener("change", (e) => {
 {
   const doc = document.getElementById("doc-demo");
   const IMG = '<svg class="icon icon--lg" aria-hidden="true"><use href="#i-image"/></svg>';
-  const art = (cls = "") => `<div class="art art--empty${cls}" role="img" aria-label="Image">${IMG}</div>`;
+  const image = (cls = "") => `<div class="image image--empty${cls}" role="img" aria-label="Image">${IMG}</div>`;
   // Lines: the lib's blocks as they are (a title, then lines to write in).
   const line = (title) => `<div class="block${title ? " block--title" : ""}"><div class="block__slot"></div><div class="block__text" contenteditable="true" data-placeholder="${title ? "Title" : "Write a line"}"></div></div>`;
   const CONTENT = {
-    art: () => art(" art--lg art--fill") + `<div class="v-doc__row">${art(" art--fill").repeat(3)}</div>` + art(" art--lg art--fill"),
+    image: () => image(" image--lg image--fill") + `<div class="v-doc__row">${image(" image--fill").repeat(3)}</div>` + image(" image--lg image--fill"),
     lines: () => line(true) + line() + line() + line(),
   };
   const show = (v) => { doc.innerHTML = CONTENT[v](); };
   document.querySelector("[data-doc-width]").addEventListener("change", (e) => doc.classList.toggle("doc--full", e.detail.dataset.value === "full"));
   document.querySelector("[data-doc-content]").addEventListener("change", (e) => show(e.detail.dataset.value));
-  show("art");
+  show("image");
 }
 document.querySelector("[data-pair-layout]")?.addEventListener("change", (e) => {
   const d = document.getElementById("pair-demo"), v = e.detail.dataset.value;

@@ -35,9 +35,9 @@ def icon_xl() -> U32: space_5()
 def icon_stroke() -> String: "1.75"
 
 # Art (game/product images): height
-def art_sm() -> U32: space_6()
-def art_md() -> U32: space_8()
-def art_lg() -> U32: 240
+def image_sm() -> U32: space_6()
+def image_md() -> U32: space_8()
+def image_lg() -> U32: 240
 
 # Components: the choices the laws watch
 # A button's padding on each side, per size (md is btn_padding_x, which the law checks).

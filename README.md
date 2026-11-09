@@ -530,10 +530,10 @@ form.addEventListener("send", async (e) => { await save(e.detail.data); e.detail
 </ol>
 ```
 
-### Art
+### Image
 
 ```html
-<img class="art art--sm" src="…" alt="">
+<img class="image image--sm" src="…" alt="">
 ```
 
 ### Panel
@@ -627,7 +627,7 @@ Row actions: wrap an item (or a section's toggle) in a `.side__row` with a `.dro
 | Components | `page`, `doc`, `pair`, `thread` + `node`, `chat` + `msg` + `composer`, `disclosure`, `form`, `link`, `dropdown` + `menu`, `btn` (`--primary`, `--ghost`, `--sm`, `--lg`, `--icon`, `--round`, `:disabled`, `[aria-current]`), `input`, `field`, `segmented` (`--icons`), `panel`, `toolbar`, `tag`, `kbd`, `icon`, `rows`/`row`, `art`, `dot`, `status-ring`, `block`, `prose`, `side`, `window`, `agent`, `diagram`, `chart` |
 | Text | `display`, `heading`, `lead`, `text`, `list`, `meta`, `mono` |
 | Icons | plus, arrow-up, shield, github, file-text, scale, triangle-alert, circle-check, x, chevron-down, list, code, wand-sparkles, search, panel-left, book-open, lock, minimize-2, maximize-2, minimize, maximize, text, rows-2, columns-2, heading-1, pilcrow, check |
-| Tokens | space, radius, type, controls, icons, art, status, side bar, window, agent, chat, chart, motion, color (light theme) |
+| Tokens | space, radius, type, controls, icons, image, status, side bar, window, agent, chat, chart, motion, color (light theme) |
 
 See everything: https://isabellaherman.github.io/Bend-UI/ (or `bun run docs`). After changing the docs, `bun run site` rebuilds `site/`; pushing it publishes the page.
 

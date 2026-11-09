@@ -528,15 +528,15 @@ textarea.input { display: block; width: 100%; height: auto; min-height: var(--te
 .row__meta { font-size: var(--text-sm); color: var(--text-3); white-space: nowrap; }
 a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text-underline-offset: var(--underline-offset); text-decoration-thickness: var(--underline-width); }
 
-/* ---------- Art: a game/product image, never distorted ---------- */
-.art { display: block; width: auto; height: var(--art-md); max-width: 100%; object-fit: contain; flex: none; user-select: none; -webkit-user-drag: none; }
-.art--sm { height: var(--art-sm); }
-.art--lg { height: var(--art-lg); }
-/* An art with no image yet: the image symbol on a quiet ground, at the same heights (sm, md, lg).
-   <div class="art art--empty" role="img" aria-label="Image"><svg class="icon icon--lg"><use href="#i-image"/></svg></div>
-   It is 4:3; .art--fill makes it take the width it is given (a doc's column, a grid's cell). */
-.art--empty { display: grid; place-items: center; aspect-ratio: 4 / 3; background: var(--surface-2); border-radius: var(--radius-md); color: var(--text-3); }
-.art--empty.art--fill { width: 100%; aspect-ratio: auto; }
+/* ---------- Image: a game or product picture, never distorted ---------- */
+.image { display: block; width: auto; height: var(--image-md); max-width: 100%; object-fit: contain; flex: none; user-select: none; -webkit-user-drag: none; }
+.image--sm { height: var(--image-sm); }
+.image--lg { height: var(--image-lg); }
+/* An image not there yet: the image symbol on a quiet ground, at the same heights (sm, md, lg).
+   <div class="image image--empty" role="img" aria-label="Image"><svg class="icon icon--lg"><use href="#i-image"/></svg></div>
+   It is 4:3; .image--fill makes it take the width it is given (a doc's column, a grid's cell). */
+.image--empty { display: grid; place-items: center; aspect-ratio: 4 / 3; background: var(--surface-2); border-radius: var(--radius-md); color: var(--text-3); }
+.image--empty.image--fill { width: 100%; aspect-ratio: auto; }
 
 /* ---------- Dot: a state beside a line. Not a toggle: each state is a color. ---------- */
 .dot {
@@ -713,8 +713,8 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 .chart [data-series="4"] { --series: var(--chart-4); }
 
 .chart__box { position: relative; width: 100%; }
-.chart__plot { display: block; width: 100%; height: var(--art-lg); overflow: visible; }
-.chart--pie .chart__box { max-width: var(--art-lg); }
+.chart__plot { display: block; width: 100%; height: var(--image-lg); overflow: visible; }
+.chart--pie .chart__box { max-width: var(--image-lg); }
 .chart--pie .chart__plot { height: auto; aspect-ratio: 1; }
 
 /* Pointing: the pointed mark stays, the rest dim. */

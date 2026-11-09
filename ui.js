@@ -66,7 +66,7 @@ const VARS = {
   "--role-section": () => px(T.role_section()), "--role-group": () => px(T.role_group()),
   "--role-item": () => px(T.role_item()), "--role-detail": () => px(T.role_detail()),
   "--outline-indent": () => px(T.outline_indent()),
-  "--art-sm": () => px(T.art_sm()), "--art-md": () => px(T.art_md()), "--art-lg": () => px(T.art_lg()),
+  "--image-sm": () => px(T.image_sm()), "--image-md": () => px(T.image_md()), "--image-lg": () => px(T.image_lg()),
   "--weight-regular": () => String(T.weight_regular()),
   "--weight-medium": () => String(T.weight_medium()),
   "--weight-semibold": () => String(T.weight_semibold()),

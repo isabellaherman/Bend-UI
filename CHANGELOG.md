@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.3 (2026-11-09)
+
+- **Art is now Image**: `.art` → `.image` (`.image--sm`, `--lg`, `--empty`, `--fill`), tokens `art_sm/md/lg` → `image_sm/md/lg`, CSS variables `--art-*` → `--image-*` (the chart's plot height reads `--image-lg`). Same values and look. An app that used `.art` renames its classes.
+- Docs: the **Image** page (was Art, now in the side bar after Form) has a Playground: Size (sm, md, lg) and Width (Natural, Fill) on the right, one image on the stage. Panel and Pages use `.image`; Pages' Content filter says Images.
+
 ## 1.1.2 (2026-11-09)
 
 Three diagram layout fixes, from real agent diagrams in Borzoi 1.1.0.
