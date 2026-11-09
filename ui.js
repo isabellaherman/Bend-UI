@@ -99,7 +99,7 @@ const VARS = {
   "--syntax-keyword": () => T.syntax_keyword(), "--syntax-type": () => T.syntax_type(),
   "--syntax-string": () => T.syntax_string(), "--syntax-number": () => T.syntax_number(),
   "--syntax-comment": () => T.syntax_comment(), "--syntax-punct": () => T.syntax_punct(),
-  "--syntax-name": () => T.syntax_name(),
+  "--syntax-name": () => T.syntax_name(), "--syntax-added": () => T.syntax_added(), "--syntax-removed": () => T.syntax_removed(),
 };
 
 for (const [name, get] of Object.entries(VARS)) {

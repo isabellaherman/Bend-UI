@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.22 (2026-11-08)
+
+- **Code block**: `codeBlock(code, { lang, name, head, numbers, wrap })` and `upgrade(pre)` in `bend-ui/syntax`. A head with the file or the language and Copy (the Button's `data-copy`), the code line by line; `.code-block--numbers` (screen readers skip the numbers), `--wrap`, `--bare`. The code box takes the focus, so a keyboard can scroll long lines.
+- **Seven more languages** in SYNTAX.bend: Python, Rust, Go, SQL (with `--` comments), YAML (read like TOML), Markdown and Diff (read a line at a time, `line_kind`). Two new kinds, added and removed, with tokens `syntax_added` (success-text, 5.38:1) and `syntax_removed` (danger, 5.46:1).
+- `toLines()` is new in syntax.js; `highlight()` and `toHtml()` work as before.
+- Docs: the Syntax page is now **Code block** (`/components/code-block`), in the standard format (Language, Header, Lines and Long lines filters; Accessibility, collapsed, 6 of 6 pass; Code).
+
 ## 1.0.21 (2026-11-08)
 
 - **Form layouts and sections**: `.form__section` + `.form__legend` (a fieldset), `.form__row` with `.form--columns` (fields side by side), `.form--inline` (labels in their own column, `form_label_width`, new token, 128). Both stack on narrow screens. `.form` now uses the `form_gap` token (same value).

@@ -332,18 +332,15 @@ A section that opens and closes, on the native `<details>` (keyboard and screen 
 </details>
 ```
 
-## Syntax
+## Code block
 
-Code in color, on a white ground (Snow): Bend, JS (and TS, JSON), CSS, HTML, shell and TOML. `SYNTAX.bend` cuts the code into pieces; `syntax.js` only draws them. Only color changes, so a box keeps its size.
+Code in color, in twelve languages: Bend, JS (and TS, JSON), CSS, HTML, Shell (and TOML, YAML), Python, Rust, Go, SQL, Markdown and Diff. `SYNTAX.bend` cuts the code into pieces (Markdown and Diff a line at a time); `syntax.js` only draws them. A code block has a head (the file or the language, and Copy) and the code line by line; `numbers` adds line numbers, `wrap` breaks long lines, `head: false` leaves Copy in the corner. The code box takes the focus, so a keyboard can scroll long lines.
 
 ```js
-import { highlight, toHtml } from "bend-ui/syntax";
-highlight(document.querySelector(".prose pre"));           // Bend, the default (or a .block--code)
-highlight(document.querySelector(".prose pre"), "html");   // another language
-```
-
-```html
-<pre data-lang="css"><code>.card { padding: var(--space-4); }</code></pre>
+import { codeBlock, upgrade, highlight, toHtml } from "bend-ui/syntax";
+el.innerHTML = codeBlock(code, { lang: "python", name: "laws.py", numbers: true });
+upgrade(document.querySelector('pre[data-lang="sql"]'));   // a <pre> becomes a code block in place
+highlight(document.querySelector(".prose pre"), "html");     // color only, as before
 ```
 
 ## Responsive

@@ -464,6 +464,27 @@ html[data-narrow] .form--inline .form__legend { margin-left: 0; }
 .syntax__com { color: var(--syntax-comment); }
 .syntax__punct { color: var(--syntax-punct); }
 .syntax__name { color: var(--syntax-name); }
+.syntax__add { color: var(--syntax-added); }
+.syntax__del { color: var(--syntax-removed); }
+
+/* ---------- Code block ----------
+   syntax.js codeBlock(): a head (the file or the language, and Copy, the Button's data-copy) and the code,
+   line by line. --numbers adds line numbers (screen readers skip them), --wrap breaks long lines instead
+   of scrolling, --bare has no head (Copy sits in the corner). The code box takes the focus, so a keyboard
+   can scroll long lines. */
+.code-block { position: relative; margin: 0; border: var(--border-width) solid var(--syntax-border); border-radius: var(--radius-md); background: var(--syntax-bg); color: var(--syntax-fg); overflow: hidden; }
+.code-block__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-1) var(--space-1) var(--space-1) var(--space-3); border-bottom: var(--border-width) solid var(--syntax-border); }
+.code-block__name { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-2); }
+.code-block--bare .code-block__copy { position: absolute; top: var(--space-1); right: var(--space-1); z-index: var(--layer-part); }
+.code-block__pre { margin: 0; padding: var(--space-3) 0; overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); line-height: var(--leading-body); }
+.code-block__pre:focus-visible { outline: var(--focus-width) solid var(--accent); outline-offset: calc(var(--focus-width) * -1); }
+.code-block__pre code { display: grid; min-width: max-content; counter-reset: line; font: inherit; }
+.code-block__line { display: block; padding: 0 var(--space-4) 0 var(--space-3); white-space: pre; }
+.code-block--numbers .code-block__line { counter-increment: line; padding-left: var(--space-0); }
+.code-block--numbers .code-block__line::before { content: counter(line) / ""; display: inline-block; width: calc(var(--space-6) + var(--space-1)); padding-right: var(--space-3); text-align: right; color: var(--text-3); user-select: none; }
+.code-block--wrap .code-block__pre code { min-width: var(--space-0); }
+.code-block--wrap .code-block__line { white-space: pre-wrap; overflow-wrap: anywhere; }
+.code-block--wrap.code-block--numbers .code-block__line { padding-left: calc(var(--space-6) + var(--space-1) + var(--space-3)); text-indent: calc((var(--space-6) + var(--space-1) + var(--space-3)) * -1); }
 
 /* ---------- Disclosure: a section that opens and closes ----------
    <details class="disclosure"><summary><svg class="icon icon--sm disclosure__chevron"><use href="#i-chevron-down"/></svg>

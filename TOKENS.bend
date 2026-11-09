@@ -205,6 +205,8 @@ def syntax_number() -> String: "#0550ae"
 def syntax_comment() -> String: "#5f6870"
 def syntax_punct() -> String: "#424a53"
 def syntax_name() -> String: "#5a32a3"
+def syntax_added() -> String: color_success_text()     # a diff's added line (5.38:1)
+def syntax_removed() -> String: color_danger()        # a diff's removed line (5.46:1)
 
 # Workspace components: every new visual value is owned here.
 def dialog_padding() -> U32: space_5()

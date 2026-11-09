@@ -82,7 +82,7 @@ document.getElementById("thread-play").addEventListener("click", async () => {
 // The docs: one page per foundation and component; each shows the laws that guard it.
 // =========================================================
 import { keyLabel } from "../keys.js";
-import { highlight } from "../syntax.js";
+import { highlight, codeBlock } from "../syntax.js";
 import { mountDiagram, announce } from "../diagram.js";
 import { mountPie, mountBars, mountLine, mountArea } from "../chart.js";
 import { LAWS } from "./laws.data.js";
@@ -131,7 +131,7 @@ const FILES = {
   icons: ["icons.js", "ui.js"], keyboard: ["KEYS.bend", "keys.js"],
   diagram: ["DIAGRAM.bend", "diagram.js", "ui.css"], chart: ["CHART.bend", "chart.js", "MOTION.bend", "TOKENS.bend", "ui.css"], thread: ["MOTION.bend", "thread.js", "ui.css"],
   agent: ["MOTION.bend", "agent.js", "ui.css"],
-  syntax: ["SYNTAX.bend", "syntax.js", "ui.css"],
+  "code-block": ["SYNTAX.bend", "syntax.js", "TOKENS.bend", "ui.css"],
   dropdown: ["ui.js", "ui.css"],
 };
 // Code: the README's own snippets, so the docs and the README never disagree.
@@ -264,7 +264,7 @@ document.querySelectorAll("[data-page]").forEach((page) => {
 });
 
 // Code in the lib's own syntax (Snow).
-document.querySelectorAll('[data-code], [data-syntax-demo], [data-page="overview"] .prose pre').forEach((el) => highlight(el));
+document.querySelectorAll('[data-code], [data-page="overview"] .prose pre').forEach((el) => highlight(el));
 const chatFace = $("chat-face"); if (chatFace) mountAgent(chatFace, { size: "sm", items: [] });
 
 // Navigation: one page at a time, each at its own address (/components/button, /foundations/color);
@@ -426,6 +426,32 @@ if (formPreview) {
   // What "send" does is the app's: here it waits a moment, then says it's sent.
   formPreview.addEventListener("send", (e) => setTimeout(() => e.detail.done("Sent"), 1500));
   document.querySelectorAll('[data-page="form"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
+  draw();
+}
+// Code block: the playground. One real code block; language, head, numbers and long lines from the filters.
+const codePreview = document.getElementById("code-preview");
+if (codePreview) {
+  const SAMPLES = {
+    bend: ["mana.bend", "# The mana never goes above ten.\nlaw mana_at_most_10:\n  for s: T.State\n  {(T.mana(s) <= 10 : U32) == True{} : Bool}"],
+    js: ["draw.js", 'import { mountDiagram } from "bend-ui/diagram";\n\n// Draw it again when the data changes.\nexport function draw(el, data) {\n  return mountDiagram(el, data, { label: `Flow of ${data.nodes.length} steps` });\n}'],
+    css: ["button.css", "/* A filled button, from the tokens. */\n.btn--filled {\n  background: var(--tone);\n  padding: 0 var(--btn-padding-x);\n}"],
+    html: ["index.html", '<button class="btn btn--filled" aria-pressed="false">\n  Save\n</button>'],
+    sh: ["install.sh", "# Add the library\nbun add github:isabellaherman/Bend-UI\nbun run check   # every law must hold"],
+    python: ["laws.py", "class Law:\n    def __init__(self, name: str):\n        self.name = name  # snake_case\n\n    def holds(self) -> bool:\n        return True"],
+    rust: ["mana.rs", "/// The mana never goes above ten.\npub fn clamp_mana(mana: u32) -> u32 {\n    let max = 10;\n    if mana > max { max } else { mana }\n}"],
+    go: ["mana.go", "package laws\n\n// ClampMana keeps the mana at ten or less.\nfunc ClampMana(mana int) int {\n\tif mana > 10 {\n\t\treturn 10\n\t}\n\treturn mana\n}"],
+    sql: ["laws.sql", "-- Laws that failed this week\nSELECT name, count(*) AS fails\nFROM checks\nWHERE ok = false AND day > '2026-11-01'\nGROUP BY name\nORDER BY fails DESC;"],
+    yaml: ["bend.yaml", "# Build settings\nname: bend-ui\nversion: 1.0.22\nlaws:\n  - mana_at_most_10   # must hold"],
+    markdown: ["README.md", "# Bend-UI\n\nA design system whose rules are **laws**.\n\n- Tokens in TOKENS.bend\n- Laws in LAWS.bend\n> Run the check before every commit."],
+    diff: ["ui.css", "@@ -51,3 +51,3 @@ .btn--ghost\n .btn--ghost { background: transparent; }\n-.btn--ghost { color: var(--text-3); }\n+.btn--ghost { color: var(--text-2); }"],
+  };
+  const pick = { lang: "bend", header: "file", lines: "on", wrap: "scroll" };
+  const draw = () => {
+    const [file, code] = SAMPLES[pick.lang];
+    codePreview.innerHTML = codeBlock(code, { lang: pick.lang, name: pick.header === "file" ? file : undefined, head: pick.header !== "none", numbers: pick.lines === "on", wrap: pick.wrap === "wrap" });
+    initButtons();
+  };
+  document.querySelectorAll('[data-page="code-block"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
   draw();
 }
 // Button animations: Publish shows busy, then done (a real app would wait for its work here).
