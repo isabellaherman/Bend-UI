@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.34 (2026-11-09)
+
+- Docs: every segmented that drives a page (the filters, Agent's Action and Open, Pages, Pair, Panel, Prose) is now a pill with the spring thumb (`.segmented--slide`, `data-motion="spring"`, `data-radius="pill"`). The Segmented page's own previews still follow its Shape and Animation filters. Nothing in the lib changes.
+
 ## 1.0.33 (2026-11-09)
 
 - **Code block inside prose** keeps its own look: `.prose` styles a bare `<pre>` and inline `<code>`, no longer a code block's (no box inside the box, no inline-code ground on its lines).
