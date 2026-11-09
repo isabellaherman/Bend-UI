@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.24 (2026-11-08)
+
+- **Docs: Components in alphabetical order** in the side bar. Nothing in the lib changes.
+
 ## 1.0.23 (2026-11-08)
 
 - **Docs: no Block page**. A block is the line the Thread runs through, not a component on its own; `.block` stays in the lib for the Thread and the Pair. Nothing in the lib changes.
