@@ -326,12 +326,12 @@ Pie, bars, line and area: one mark each, no card around them. `CHART.bend` place
 
 ```js
 import { mountPie, mountBars, mountLine, mountArea } from "bend-ui/chart";
-mountPie(el, [{ label: "Fire", value: 46 }, { label: "Air", value: 10 }]);
+mountPie(el, [{ label: "Fire", value: 46 }, { label: "Air", value: 10 }], { label: "Spells by school" });
 const bars = mountBars(el, [{ label: "Mon", value: 42 }]);
 bars.replay();   // the entrance again; also draw() and destroy()
 ```
 
-A pie takes up to 4 slices; line and area take the same points as bars. Colors are tones of the accent (`--chart-1` to `--chart-4`), so `theme({ accent })` recolors every chart. A pie takes two looks on `el`: `chart--split` (a gap between slices) and `chart--donut` (a hole). Pointing at a mark keeps it and dims the rest; line and area show the thread's node on the point.
+A pie takes up to 4 slices; line and area take the same points as bars. Colors are tones of the accent (`--chart-1` to `--chart-4`), so `theme({ accent })` recolors every chart. Three sizes on `el`: `chart--sm`, none (md) and `chart--lg` (160, 240, 320: the plot's height, the pie's width). A pie takes `chart--donut` (a hole) and `chart--soft` (lighter tones, each slice outlined in the accent); a hairline of surface always parts the slices. The four tones all pass 3:1 against the page (WCAG 1.4.11): two lighter and two darker around the accent. The area's fill stays light: it is a ground under the line, and the line carries the values. Name the chart with `{ label }` (the third argument), and a screen reader hears it before the values. Pointing at a mark keeps it and dims the rest; line and area show the thread's node on the point.
 
 ## Disclosure
 

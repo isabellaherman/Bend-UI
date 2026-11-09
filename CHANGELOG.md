@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.5 (2026-11-09)
+
+- **Chart colors pass AA**: the four tones are two lighter and two darker around the accent (`chart_tone_1..4`: 100, 75 toward the surface, 80 and 60 toward the text), each 3:1 or more on the page (5.43, 3.24, 6.94, 8.88; were 5.43, 2.70, 1.73, 1.30). Close to the accent on purpose: protected, not extreme. A hairline of surface always parts a pie's slices, so `.chart--split` is gone.
+- **`.chart--soft`**: the lighter tones (`chart_soft_2..4`: 66, 40, 22), each slice outlined in the accent (5.43:1), like `.diagram--soft`. It passes AA too; the lib has no look that doesn't.
+- **Sizes**: `.chart--sm`, none (md) and `.chart--lg`: 160, 240 and 320, the plot's height and the pie's width (`chart_sm`, `chart_md`, `chart_lg`; it no longer borrows `image_lg`).
+- **A name**: `mountPie`, `mountBars`, `mountLine` and `mountArea` take `{ label }`; a screen reader hears it before the values.
+- Percentages in the legend and axis numbers are a little darker (`chart_ink`: text-2 mixed 55% into text-3), the gentlest ink that gives small text 4.5:1 (were text-3, 3.21:1). Bars, lines and their colors don't change. The legend keeps its layout, and the area's fill keeps its light tones (it is a ground under the line, which carries the values).
+- Docs: the Chart Playground gets Size, and Look is Plain, Donut, Soft, Soft donut. Accessibility: 5 of 7 pass (keyboard for bars and points, and a table for screen readers, are next).
+
 ## 1.1.4 (2026-11-09)
 
 - New icon: `chart-column` (Lucide).

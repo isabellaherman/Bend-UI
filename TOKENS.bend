@@ -241,10 +241,22 @@ def diagram_node_min() -> U32: 128
 def diagram_node_step() -> U32: space_5()
 
 # Chart: a series' color is the accent this strong (percent), mixed toward the surface.
-def chart_tone_1() -> U32: 100
-def chart_tone_2() -> U32: 66
-def chart_tone_3() -> U32: 40
-def chart_tone_4() -> U32: 22
+def chart_tone_1() -> U32: 100   # the accent
+def chart_tone_2() -> U32: 75    # toward the surface (3.24:1 on the page)
+def chart_tone_3() -> U32: 80    # a little toward the text (6.94:1)
+def chart_tone_4() -> U32: 60    # more toward the text (8.88:1)
+# Chart, soft look (.chart--soft): lighter tones toward the surface, each slice outlined in the accent.
+# The area's fill (a ground under the line) uses soft 3 and 4.
+def chart_soft_2() -> U32: 66
+def chart_soft_3() -> U32: 40
+def chart_soft_4() -> U32: 22
+# Chart: axis numbers and the legend's percentages, text-2 mixed this much into text-3: the gentlest ink
+# that still gives small text 4.5:1 on the page.
+def chart_ink() -> U32: 55
+# Chart: how tall a plot is, and how wide a pie.
+def chart_sm() -> U32: 160
+def chart_md() -> U32: 240
+def chart_lg() -> U32: 320
 def chart_gap() -> U32: space_hairline()   # the surface between slices
 def chart_lift() -> U32: space_1()         # how far a pointed slice steps out
 def chart_hole() -> U32: 60                # a donut's hole, percent of its radius

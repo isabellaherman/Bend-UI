@@ -2,14 +2,16 @@
 // is MOTION.bend and TOKENS.bend. This file only reads the size and the pointer, asks Bend, and draws.
 //   import { mountPie, mountBars, mountLine, mountArea } from "bend-ui/chart";
 //
-//   const pie = mountPie(el, [{ label: "Fire", value: 46 }, …]);    // up to 4 slices
+//   const pie = mountPie(el, [{ label: "Fire", value: 46 }, …], { label: "Spells by school" });   // up to 4 slices
 //   const bars = mountBars(el, [{ label: "Mon", value: 42 }, …]);   // the same for line and area
 //   bars.replay()    // play the entrance again
 //   bars.draw()      // redraw after a look changes
 //   bars.destroy()
 //
 // Colors are tones of the accent (--chart-1 … --chart-4), so theme({ accent }) recolors every chart.
-// The pie takes two looks, classes on el: .chart--donut (a hole), .chart--split (a gap between slices).
+// Classes on el: .chart--donut (a hole in the pie), .chart--soft (lighter tones, each slice outlined in the accent),
+// .chart--sm / .chart--lg (160 / 320; 240 without). A hairline of surface always parts the slices, so each one has
+// 3:1 against the page. { label } names the chart for screen readers: mountPie(el, slices, { label: "…" }).
 import C from "./CHART.bend";
 import M from "./MOTION.bend";
 import T from "./TOKENS.bend";
@@ -59,11 +61,12 @@ function spring(run, step) {
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // The parts every chart has: a .chart root, a box that holds the plot and what floats over it.
-function frame(root, kind, label) {
+// The plot's name for screen readers: the chart's own name ({ label }), then every value.
+function frame(root, kind, values, title) {
   root.classList.add("chart", "chart--" + kind);
   root.replaceChildren();
   const box = make("div", "chart__box");
-  const svg = set(svgEl("svg", "chart__plot"), { role: "img", "aria-label": label });
+  const svg = set(svgEl("svg", "chart__plot"), { role: "img", "aria-label": title ? `${title}: ${values}` : values });
   box.append(svg);
   root.append(box);
   return { box, svg };
@@ -79,12 +82,12 @@ function pointer(root, groups) {
 
 /* ---------------- Pie ---------------- */
 
-export function mountPie(root, slices) {
+export function mountPie(root, slices, { label: title } = {}) {
   if (slices.length > 4) console.warn("bend-ui: a pie has up to 4 slices; fold the rest into one.");
   const starts = array(C.starts(list(slices.map((s) => s.value))));
   const ends = [...starts.slice(1), 1];
   const share = (i) => Math.round((ends[i] - starts[i]) * 100);
-  const { svg } = frame(root, "pie", slices.map((s, i) => `${s.label} ${share(i)}%`).join(", "));
+  const { svg } = frame(root, "pie", slices.map((s, i) => `${s.label} ${share(i)}%`).join(", "), title);
   const legend = make("ul", "chart__legend");
   root.append(legend);
 
@@ -138,14 +141,14 @@ export function mountPie(root, slices) {
 
 /* ---------------- Bars, line, area ---------------- */
 
-export const mountBars = (root, points) => plot(root, points, "bars");
-export const mountLine = (root, points) => plot(root, points, "line");
-export const mountArea = (root, points) => plot(root, points, "area");
+export const mountBars = (root, points, opts) => plot(root, points, "bars", opts);
+export const mountLine = (root, points, opts) => plot(root, points, "line", opts);
+export const mountArea = (root, points, opts) => plot(root, points, "area", opts);
 
-function plot(root, points, kind) {
+function plot(root, points, kind, { label: title } = {}) {
   const n = points.length, values = list(points.map((p) => p.value));
   const top = C.top(C.most(values)), step = C.step(C.most(values));
-  const { box, svg } = frame(root, kind, points.map((p) => `${p.label} ${p.value}`).join(", "));
+  const { box, svg } = frame(root, kind, points.map((p) => `${p.label} ${p.value}`).join(", "), title);
   const grid = svg.appendChild(svgEl("g", "chart__grid"));
   const tip = box.appendChild(make("span", "tag tag--mono chart__tip"));
 

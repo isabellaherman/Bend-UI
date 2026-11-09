@@ -696,13 +696,15 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
    chart.js fills <div class="chart">: mountPie, mountBars, mountLine, mountArea. Where every mark goes
    comes from CHART.bend; the motion is MOTION.bend and the duration tokens.
    Colors are tones of the accent (--chart-1 … --chart-4), so theme({ accent }) recolors every chart.
-   The pie takes two looks: .chart--donut (a hole), .chart--split (the surface shows between slices).
+   Sizes: .chart--sm, .chart--lg (chart_sm, chart_md, chart_lg). The pie: .chart--donut (a hole), .chart--soft (lighter
+   tones, outlined in the accent). A hairline of surface always parts the slices, so each one has 3:1 against the page.
    Line and area reuse the thread's pieces: its weight, its glow, its glint and its .node. */
 .chart {
   --chart-1: color-mix(in oklch, var(--accent) var(--chart-tone-1), var(--surface));
   --chart-2: color-mix(in oklch, var(--accent) var(--chart-tone-2), var(--surface));
-  --chart-3: color-mix(in oklch, var(--accent) var(--chart-tone-3), var(--surface));
-  --chart-4: color-mix(in oklch, var(--accent) var(--chart-tone-4), var(--surface));
+  --chart-3: color-mix(in oklch, var(--accent) var(--chart-tone-3), var(--text));
+  --chart-4: color-mix(in oklch, var(--accent) var(--chart-tone-4), var(--text));
+  --chart-size: var(--chart-md);
   display: grid;
   justify-items: center;
   gap: var(--space-4);
@@ -713,8 +715,10 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 .chart [data-series="4"] { --series: var(--chart-4); }
 
 .chart__box { position: relative; width: 100%; }
-.chart__plot { display: block; width: 100%; height: var(--image-lg); overflow: visible; }
-.chart--pie .chart__box { max-width: var(--image-lg); }
+.chart--sm { --chart-size: var(--chart-sm); }
+.chart--lg { --chart-size: var(--chart-lg); }
+.chart__plot { display: block; width: 100%; height: var(--chart-size); overflow: visible; }
+.chart--pie .chart__box { width: var(--chart-size); max-width: 100%; }
 .chart--pie .chart__plot { height: auto; aspect-ratio: 1; }
 
 /* Pointing: the pointed mark stays, the rest dim. */
@@ -726,23 +730,31 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 .chart__slice {
   fill: var(--series);
   stroke: var(--surface);
-  stroke-width: 0;
+  stroke-width: var(--chart-gap);   /* always: each slice borders the surface, so its 3:1 is against the surface */
   stroke-linejoin: round;
   transition: transform var(--duration-enter) var(--ease-spring), opacity var(--duration) var(--ease);
 }
-.chart--split .chart__slice { stroke-width: var(--chart-gap); }
+/* Soft: lighter tones toward the surface, each slice outlined in the accent so it still has 3:1 against the page
+   (the lines and bars keep the accent). Like .diagram--soft. */
+.chart--soft {
+  --chart-2: color-mix(in oklch, var(--accent) var(--chart-soft-2), var(--surface));
+  --chart-3: color-mix(in oklch, var(--accent) var(--chart-soft-3), var(--surface));
+  --chart-4: color-mix(in oklch, var(--accent) var(--chart-soft-4), var(--surface));
+}
+.chart--soft .chart__slice { stroke: var(--accent); stroke-width: var(--border-width); }
+.chart--soft .chart__key .dot { border-color: var(--accent); }
 .chart__slice.is-on { transform: translate(calc(var(--out-x) * var(--chart-lift)), calc(var(--out-y) * var(--chart-lift))); }
 
 .chart__legend { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2) var(--space-4); margin: 0; padding: 0; list-style: none; font-size: var(--text-sm); color: var(--text-2); }
 .chart__key { display: inline-flex; align-items: center; gap: var(--space-2); border-radius: var(--radius-sm); transition: opacity var(--duration) var(--ease); }
 .chart__key:focus-visible { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-offset); }
 .chart__key .dot { background: var(--series); border-color: var(--series); }
-.chart__value { font-family: var(--font-mono); color: var(--text-3); }
+.chart__value { font-family: var(--font-mono); color: color-mix(in oklab, var(--text-2) var(--chart-ink), var(--text-3)); }
 
 /* The grid: hairline rules, a stronger base, labels in the mono ink. */
 .chart__rule { stroke: var(--border); stroke-width: var(--border-width); }
 .chart__base { stroke: var(--border-strong); stroke-width: var(--border-width); }
-.chart__tick { font-family: var(--font-mono); font-size: var(--text-xs); fill: var(--text-3); }
+.chart__tick { font-family: var(--font-mono); font-size: var(--text-xs); fill: color-mix(in oklab, var(--text-2) var(--chart-ink), var(--text-3)); }
 .chart__tick--x { text-anchor: middle; }
 
 /* Bars */
@@ -754,8 +766,9 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
 .chart__glint { stroke: var(--chart-1); filter: drop-shadow(0 0 var(--space-1) var(--chart-1)); }
 .chart__glow { fill: var(--chart-1); opacity: 0; filter: blur(var(--space-1)); transition: opacity var(--duration-enter) var(--ease); }
 .chart__plot.is-running .chart__glow { opacity: .3; }
-.chart__fill-top { stop-color: var(--chart-3); }
-.chart__fill-end { stop-color: var(--chart-4); stop-opacity: 0; }
+/* The area's fill is only a ground under the line (the line carries the values), so it keeps the light tones. */
+.chart__fill-top { stop-color: color-mix(in oklch, var(--accent) var(--chart-soft-3), var(--surface)); }
+.chart__fill-end { stop-color: color-mix(in oklch, var(--accent) var(--chart-soft-4), var(--surface)); stop-opacity: 0; }
 .chart__guide { stroke: var(--border-strong); stroke-width: var(--border-width); opacity: 0; transition: opacity var(--duration) var(--ease); }
 .chart.is-pointing .chart__guide { opacity: 1; }
 
