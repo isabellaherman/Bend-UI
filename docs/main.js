@@ -57,8 +57,8 @@ hold.addEventListener("pointerdown", () => { hold.dataset.status = "hold"; holdT
     busy: (a) => busyThenDone(a, a.el.querySelector('[data-id="a"]').getAttribute("aria-pressed") === "true" ? "b" : "a"),
   };
   document.querySelector("[data-agent-open]").addEventListener("change", (e) => { open = e.detail.dataset.value; build(); });
-  // Action is a segmented: picking an option plays it, and picking it again plays it again.
-  document.querySelectorAll("[data-agent-actions] button").forEach((b) => b.addEventListener("click", () => agents.forEach(ACTIONS[b.dataset.value])));
+  // Action is a dropdown (its five options do not fit the column): picking one plays it, and picking it again plays it again.
+  document.querySelector("[data-agent-actions]").addEventListener("pick", (e) => agents.forEach(ACTIONS[e.detail.dataset.value]));
   build();
 }
 
@@ -147,6 +147,7 @@ const FILES = {
   agent: ["MOTION.bend", "agent.js", "ui.css"],
   "code-block": ["SYNTAX.bend", "syntax.js", "TOKENS.bend", "ui.css"],
   dropdown: ["ui.js", "ui.css"],
+  responsive: ["TOKENS.bend", "AREA.bend", "ui.js", "ui.css"],
 };
 // Code: the README's own snippets, so the docs and the README never disagree.
 // Each page shows the code blocks under its README heading (## or ###), colored in their own language (SYNTAX.bend).
@@ -355,6 +356,9 @@ if (nodePreview) {
 // The dropdown's button shows the option picked.
 const filterEvent = (g) => g.classList.contains("dropdown") ? "pick" : "change";
 document.addEventListener("pick", (e) => { const dd = e.target.closest(".v-filter__controls .dropdown"); if (dd) dd.querySelector(":scope > .btn > span").textContent = e.detail.textContent; });
+// Responsive: the playground. The Width filter sets how wide the area is; the area decides if it is narrow.
+const areaDemo = document.getElementById("area-demo");
+if (areaDemo) document.querySelector('[data-page="responsive"] [data-filter="width"]').addEventListener("change", (e) => { areaDemo.dataset.w = e.detail.dataset.value; });
 // Segmented: the playground. Shape and animation come from the filters; the three rows follow them.
 const segPreview = document.getElementById("seg-preview");
 if (segPreview) {

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.1 (2026-11-09)
+
+- **Area** (`.area`): a region that knows its own width. Below `breakpoint` of its own width (`AREA.bend`: `narrow`) it gets `data-narrow`, and the components inside follow the room they have, not the screen. Form columns stack, an inline label goes above, a split pair stacks, `.doc`, `.chat` and `.composer` take their narrow padding, `.hide-narrow` / `.only-narrow` swap, the toolbar scrolls. What can't reflow scrolls inside the area; nothing spills over its neighbors. Window and side bar still follow the screen. `initArea(el)` is exported. No new token (reuses `breakpoint`), no new law.
+- The component rules that read `html[data-narrow]` now read `[data-narrow]`, so they follow the nearest narrow area as well as a narrow screen.
+- **Segmented**: an item's text never wraps (its height is fixed).
+- Docs: every Playground stage is an area, so a big pick (Button xl + Wide, Diagram's grid) scrolls inside the stage instead of running over the controls. The Responsive page has a Playground: one area at 320, 576 or full width. Agent's Action is a pill dropdown (five options don't fit the column) and in a narrow area its two agents stack, so the small one's options never open over the large one. The Rows and Toolbar demos lose their inline widths. Measured at 1280, 1024 and 390px with every option of every control: nothing spills.
+
 ## 1.1.0 (2026-11-09)
 
 - **10 new icons** (Lucide): `square-round-corner`, `ruler`, `move-horizontal`, `toggle-right`, `tag`, `move`, `list-ordered`, `text-wrap`, `play`, `mouse-pointer-click`.

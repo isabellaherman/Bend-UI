@@ -18,8 +18,8 @@ body {
 }
 
 /* ---------- Responsive utilities ---------- */
-html[data-narrow] .hide-narrow { display: none !important; }
-html:not([data-narrow]) .only-narrow { display: none !important; }
+[data-narrow] .hide-narrow, .hide-narrow[data-narrow] { display: none !important; }
+.only-narrow:not([data-narrow] *, [data-narrow]) { display: none !important; }
 
 /* ---------- Button ----------
    Horizontal padding (12) larger than vertical (set by the height):
@@ -239,13 +239,13 @@ textarea.input { display: block; width: 100%; height: auto; min-height: var(--te
 .form__legend { padding: 0; margin-bottom: var(--space-1); font-size: var(--role-item); font-weight: var(--weight-medium); color: var(--text); }
 .form__row { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--form-gap); }
 .form--columns .form__row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-html[data-narrow] .form--columns .form__row { grid-template-columns: minmax(0, 1fr); }
+[data-narrow] .form--columns .form__row { grid-template-columns: minmax(0, 1fr); }
 .form--inline .field { display: grid; grid-template-columns: var(--form-label-width) minmax(0, 1fr); column-gap: var(--space-4); row-gap: var(--space-1); align-items: start; }
 .form--inline .field__label { padding-top: calc((var(--control-md) - var(--text-sm) * var(--leading-ui)) / 2); }
 .form--inline .field > :not(.field__label) { grid-column: 2; }
 .form--inline .form__legend { margin-left: calc(var(--form-label-width) + var(--space-4)); }
-html[data-narrow] .form--inline .field { display: flex; flex-direction: column; }
-html[data-narrow] .form--inline .form__legend { margin-left: 0; }
+[data-narrow] .form--inline .field { display: flex; flex-direction: column; }
+[data-narrow] .form--inline .form__legend { margin-left: 0; }
 .form__summary { display: flex; gap: var(--space-3); padding: var(--space-3) var(--space-4); border: var(--border-width) solid var(--danger); border-radius: var(--radius-md); background: var(--danger-soft); color: var(--text); }
 .form__summary > .icon { flex: none; color: var(--danger); margin-top: var(--space-hairline); }
 .form__summary ul { margin: var(--space-1) 0 0; padding-left: var(--space-4); }
@@ -265,6 +265,7 @@ html[data-narrow] .form--inline .form__legend { margin-left: 0; }
 }
 .segmented button {
   height: var(--segmented-item);
+  white-space: nowrap;
   padding: 0 var(--space-3);
   border: 0;
   border-radius: var(--seg-radius-inner);
@@ -615,7 +616,7 @@ a.row:hover .row__title { color: var(--text-2); text-decoration: underline; text
   flex-direction: column;
   gap: var(--space-hairline);
 }
-html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); }
+[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); }
 .doc--wide { max-width: var(--window-max); }
 .doc--full { max-width: none; }   /* the whole page, less the gutters (the doc's padding) */
 .doc__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: 0 var(--space-2) var(--space-2); }
@@ -817,8 +818,8 @@ html[data-narrow] .doc { padding: var(--space-5) var(--space-3) var(--space-8); 
 .pair__aside { display: none; }
 :is(.doc--stack, .doc--split) .pair__aside:not(:empty) { display: grid; }
 .doc__columns { display: none; }
-html:not([data-narrow]) .doc--split .pair,
-html:not([data-narrow]) .doc--split .doc__columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--space-hairline); align-items: start; }
+.doc--split:not([data-narrow] *, [data-narrow]) .pair,
+.doc--split:not([data-narrow] *, [data-narrow]) .doc__columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--space-hairline); align-items: start; }
 .doc__columns { padding: 0 var(--space-2) var(--space-2); }
 
 /* ---------- Thread: a line that ties each block of a .pair to its aside while work runs ----------
@@ -883,7 +884,7 @@ html:not([data-narrow]) .doc--split .doc__columns { display: grid; grid-template
   flex-direction: column;
   gap: var(--msg-gap);
 }
-html[data-narrow] .chat { padding: var(--space-5) var(--space-3); }
+[data-narrow] .chat { padding: var(--space-5) var(--space-3); }
 .msg { min-width: 0; font-size: var(--text-lg); line-height: var(--leading-body); overflow-wrap: anywhere; }
 .msg .prose { font-size: inherit; }
 .msg .prose > :last-child { margin-bottom: 0; }
@@ -896,7 +897,7 @@ html[data-narrow] .chat { padding: var(--space-5) var(--space-3); }
   white-space: pre-wrap;
 }
 .composer { flex: none; padding: var(--space-3) var(--space-5) var(--space-5); background: var(--bg); }
-html[data-narrow] .composer { padding: var(--space-2) var(--space-3) var(--space-3); }
+[data-narrow] .composer { padding: var(--space-2) var(--space-3) var(--space-3); }
 .composer__box {
   max-width: var(--measure);
   margin: 0 auto;
@@ -1119,3 +1120,12 @@ html:not([data-narrow]) .window:not(.is-full) {
   [data-status="ok"] > .status-ring circle, [data-status="hold"] > .status-ring circle { stroke-dasharray: none; }
   .window, .side { transition: none; }
 }
+
+/* ---------- Area: a region that knows its own width ----------
+   ui.js marks .area[data-narrow] below T.breakpoint() of its own width (AREA.bend), so everything that
+   follows [data-narrow] follows the space it really has, not the screen. What can reflow, reflows
+   (form columns stack, a split pair stacks, a toolbar scrolls); what can't scrolls inside the area.
+   Nothing spills out. Window and side bar still follow the screen. */
+.area { min-width: 0; max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+[data-narrow] .toolbar { overflow-x: auto; }
+[data-narrow] .toolbar > * { flex: none; }

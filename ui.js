@@ -6,6 +6,7 @@
 import T from "./TOKENS.bend";
 import MENU from "./MENU.bend";
 import MOTION from "./MOTION.bend";
+import AREA from "./AREA.bend";
 import { ICONS } from "./icons.js";
 import "./ui.css";
 
@@ -114,6 +115,16 @@ const markNarrow = () => document.documentElement.toggleAttribute("data-narrow",
 markNarrow();
 narrow.addEventListener("change", markNarrow);
 export const isNarrow = () => narrow.matches;
+// ---------- Area: a region that knows its own width ----------
+// .area gets data-narrow when its own width is below the breakpoint (AREA.bend decides), so the
+// components inside follow the room they have. initArea(el) for areas added later.
+// The mark waits for the next frame and changes only when it flips, so the change it makes inside
+// (a stacked form is taller) never feeds back into the same round of measuring.
+const areaMark = (el, width) => { const n = !!AREA.narrow(width, T.breakpoint()); if (el.hasAttribute("data-narrow") !== n) el.toggleAttribute("data-narrow", n); };
+const areaSeen = new ResizeObserver((all) => requestAnimationFrame(() => all.forEach((e) => areaMark(e.target, e.contentRect.width))));
+export function initArea(el) { areaSeen.observe(el); }
+const initAreaAll = () => document.querySelectorAll(".area").forEach(initArea);
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initAreaAll); else initAreaAll();
 
 // ---------- Segmented: one choice per group ----------
 // Clicking a button marks it pressed and unmarks the others, then fires "change"

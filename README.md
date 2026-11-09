@@ -355,16 +355,21 @@ highlight(document.querySelector(".prose pre"), "html");     // color only, as b
 
 ## Responsive
 
-Below `breakpoint()` in `TOKENS.bend` (720px), `ui.js` sets `<html data-narrow>`, and the components adapt: the window fills the screen, the side bar becomes a drawer. CSS can't read variables in media queries, so the breakpoint lives in Bend and nowhere else.
+Below `breakpoint()` in `TOKENS.bend` (720px), `ui.js` sets `<html data-narrow>`: the window fills the screen and the side bar becomes a drawer. CSS can't read variables in media queries, so the breakpoint lives in Bend and nowhere else.
+
+An `.area` does the same for the room it has, not the screen: below the breakpoint of its own width (`AREA.bend`: `narrow`) it gets `data-narrow`, and the components inside follow it. Form columns stack, an inline label goes above, a pair stacks, the toolbar scrolls, `hide-narrow` and `only-narrow` swap. What can't reflow scrolls inside the area; nothing spills over its neighbors. `initArea(el)` for an area added later.
 
 | Class | |
 |---|---|
-| `hide-narrow` | hidden on narrow screens |
-| `only-narrow` | shown only on narrow screens |
+| `area` | a region that knows its own width |
+| `hide-narrow` | hidden on narrow screens and in narrow areas |
+| `only-narrow` | shown only on narrow screens and in narrow areas |
 
 ```html
-<span class="tag hide-narrow">wide</span>
-<span class="tag only-narrow">narrow</span>
+<div class="area">
+  <span class="tag hide-narrow">wide</span>
+  <span class="tag only-narrow">narrow</span>
+</div>
 ```
 
 ## Agent
