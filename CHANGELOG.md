@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.18 (2026-11-08)
+
+- **Docs: the Dropdown menu page in the standard format**: one real dropdown, open and centered, with Items (Plain, Icons, Check, Tag) and Position (Below, End, Up) filters; a separator and a disabled item are always there. Accessibility is collapsed with its summary (8 of 16 pass). The two Variants sections and the example canvases are gone; the node menu lives on the Diagram page. Nothing in the lib changes.
+
 ## 1.0.17 (2026-11-08)
 
 - **Segmented motion (opt-in)**: the choice moves. `.segmented--slide` puts a thumb behind the chosen item that travels to the next one; `data-motion="stretch"` leads with the edge you went toward, `data-motion="spring"` overshoots and settles. `.segmented--extend` is for icon items: the chosen one also shows its name and the thumb rides it as it opens. Text changes color in the thumb's time and curve. `initSegmented(group)` is exported. A plain `.segmented` looks and works as before.

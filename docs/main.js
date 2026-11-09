@@ -417,35 +417,30 @@ const charts = [
 $("chart-play").addEventListener("click", () => charts.forEach((c) => c.replay()));
 go(ID[START] ?? "overview", false);
 
-// Dropdown menu: a diagram whose nodes are triggers; the items are built as any Dropdown menu's.
+// Dropdown menu: the playground. One real dropdown, open; Items picks the kind of item, Position where it opens.
 {
-  const NS = "http://www.w3.org/2000/svg";
-  const make = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text != null) x.textContent = text; return x; };
-  const icon = (name, cls = "icon icon--sm") => { const x = document.createElementNS(NS, "svg"); x.setAttribute("class", cls); x.setAttribute("aria-hidden", "true"); if (name) { const u = document.createElementNS(NS, "use"); u.setAttribute("href", "#i-" + name); x.append(u); } return x; };
-  const item = (label, name, onClick) => { const b = make("button", "menu__item"); b.type = "button"; b.setAttribute("role", "menuitem"); b.append(icon(name), make("span", "", label)); b.addEventListener("click", onClick); return b; };
-  const radio = (tone, label, checked, onClick) => { const b = make("button", "menu__item"); b.type = "button"; b.setAttribute("role", "menuitemradio"); b.setAttribute("aria-checked", String(checked)); const s = make("span", ""); s.append(make("span", "tag" + (tone ? " tag--" + tone : ""), label)); b.append(icon(), s, icon("check", "icon icon--sm menu__check")); b.addEventListener("click", onClick); return b; };
-  const sep = () => make("hr", "separator");
-  const COLORS = [["accent", "Blue"], ["success", "Green"], ["warning", "Yellow"], ["danger", "Red"], ["", "None"]];
-  const el = $("dropdown-diagram");
-  let s = { nodes: [{ label: "Idea", tone: "accent" }, { label: "Draft", tone: "warning" }, { label: "Review", tone: "" }, { label: "Fix", tone: "danger" }, { label: "Publish", tone: "success" }], edges: [{ from: 0, to: 1 }, { from: 1, to: 2 }, { from: 2, to: 3 }, { from: 2, to: 4 }], next: 1 };
-  let d;
-  const has = (a, b) => s.edges.some((e) => e.from === a && e.to === b);
-  const reaches = (a, b) => a === b || s.edges.some((e) => e.from === a && reaches(e.to, b));
-  const after = (focus) => { draw(); d.focusAfterDraw?.(focus); };
-  const menu = (i) => {
-    const n = s.nodes[i], out = s.edges.filter((e) => e.from === i).map((e) => e.to);
-    const targets = s.nodes.map((_, j) => j).filter((j) => j !== i && !has(i, j) && !reaches(j, i));
-    return [
-      item("Add node below", "plus", () => { const label = "New " + s.next++; s.nodes.push({ label, tone: "" }); s.edges.push({ from: i, to: s.nodes.length - 1 }); after(label); }),
-      item("Rename", "text", () => d.editLabel?.(i)),
-      ...(targets.length ? [sep(), ...targets.map((j) => item("Connect to " + s.nodes[j].label, "", () => { s.edges.push({ from: i, to: j }); after(n.label); }))] : []),
-      sep(),
-      ...COLORS.map(([t, name]) => radio(t, name, t === n.tone, () => { n.tone = t; after(n.label); })),
-      sep(),
-      ...out.map((j) => item("Remove arrow to " + s.nodes[j].label, "x", () => { s.edges = s.edges.filter((e) => !(e.from === i && e.to === j)); after(n.label); })),
-      item("Delete node", "x", async () => { await d.leave?.(i); s.edges = s.edges.filter((e) => e.from !== i && e.to !== i).map((e) => ({ from: e.from - (e.from > i), to: e.to - (e.to > i) })); s.nodes.splice(i, 1); after(s.nodes[0]?.label); }),
-    ];
+  const dd = document.getElementById("dd-preview");
+  const trigger = dd.querySelector(":scope > button"), menu = dd.querySelector(":scope > .menu");
+  const pick = { items: "plain", position: "below" };
+  const icon = (n, cls = "icon icon--sm") => `<svg class="${cls}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+  const plain = (label, ic, off) => `<button type="button" class="menu__item" role="menuitem"${off ? " disabled" : ""}>${ic ? icon(ic) : ""}<span>${label}</span></button>`;
+  const radio = (label, on, tag) => `<button type="button" class="menu__item" role="menuitemradio" aria-checked="${on}"><span>${tag ? `<span class="tag${tag === "none" ? "" : " tag--" + tag}">${label}</span>` : label}</span>${icon("check", "icon icon--sm menu__check")}</button>`;
+  const sets = {
+    plain: () => plain("Rename") + plain("Duplicate") + '<hr class="separator">' + plain("Delete") + plain("Archive", null, true),
+    icons: () => plain("Rename", "pencil") + plain("Duplicate", "copy") + '<hr class="separator">' + plain("Delete", "trash-2") + plain("Archive", "folder", true),
+    check: () => radio("Title", false) + radio("Text", true) + radio("Heading", false) + '<hr class="separator">' + plain("Archive", null, true),
+    tag: () => radio("Blue", false, "accent") + radio("Green", true, "success") + radio("Yellow", false, "warning") + radio("Red", false, "danger") + '<hr class="separator">' + radio("None", false, "none"),
   };
-  function draw() { d?.destroy(); d = mountDiagram(el, { nodes: s.nodes.map((n) => ({ label: n.label, tone: n.tone })), edges: s.edges }, { label: "Release flow", nodeMenu: menu, onLabelEdit: (i, label) => { s.nodes[i].label = label; after(label); } }); }
-  draw();
+  const open = () => { if (menu.hidden) trigger.click(); };
+  const draw = () => {
+    menu.innerHTML = sets[pick.items]();
+    menu.classList.toggle("menu--end", pick.position === "end");
+    menu.classList.toggle("menu--up", pick.position === "up");
+    if (!menu.hidden) trigger.click();   // close and open again, so it is placed for the new items
+    open();
+  };
+  document.querySelectorAll('[data-page="dropdown"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; requestAnimationFrame(draw); }));
+  // It opens when the page shows (a closed menu shows nothing to look at).
+  new IntersectionObserver((list) => list.forEach((e) => { if (e.isIntersecting) open(); })).observe(dd);
+  menu.innerHTML = sets.plain();
 }
