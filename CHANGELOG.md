@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.30 (2026-11-09)
+
+- **Chat input AA**: `.composer__field` gets what `.input` got in 1.0.19. Its border is text-3 (3.35:1, was border-strong, 1.59:1), its placeholder text-2 (6.58:1), and its shape follows `theme({ radius })` / `data-radius` (a pill stops at radius_lg, since the field grows with the text).
+- Docs: the **Chat** page shows only the chat's UI, live, in a small window: your message arrives, the reply's words fade in, Start over. No agent here; Patterns → Chat shows them together.
+
 ## 1.0.29 (2026-11-09)
 
 - Docs: the **Prose** page in the standard format. A Prose filter (On, Off) over the same HTML on a panel without a header: On shows the lib's type, Off what the browser draws. Nothing in the lib changes.

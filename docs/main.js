@@ -277,7 +277,6 @@ document.querySelectorAll("[data-page]").forEach((page) => {
 // Overview: Install, Import and Use are code blocks too; laws (.block--code) are colored in place.
 document.querySelectorAll('[data-page="overview"] .prose pre[data-lang]').forEach((pre) => upgrade(pre));
 document.querySelectorAll('[data-code], [data-page="overview"] .prose pre').forEach((el) => highlight(el));
-const chatFace = $("chat-face"); if (chatFace) mountAgent(chatFace, { size: "sm", items: [] });
 
 // Navigation: one page at a time, each at its own address (/components/button, /foundations/color);
 // the side bar marks it, and back and forward work. The group comes from the side bar's section.
@@ -440,6 +439,45 @@ if (formPreview) {
   document.querySelectorAll('[data-page="form"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
   draw();
 }
+// Chat: the lib's chat UI, live. Your message arrives (.msg--me.is-arriving); the reply's words fade in
+// (.msg__word). The timing is the demo's.
+{
+  const page = $("chat-page"), list = $("chat-list"), form = $("chat-form");
+  const text = form.querySelector(".composer__text"), send = form.querySelector(".composer__send");
+  const ANSWERS = [
+    "The law fails because the rule never says how much a spell costs. Add a sentence that says it, and the check can prove it.",
+    "Two laws talk about the same thing. The second one is stricter, so you can keep only the second.",
+    "Yes. Every token is on the 4 grid, so the spacing laws hold.",
+  ];
+  const less = matchMedia("(prefers-reduced-motion: reduce)");
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  let n = 0, answering = false;
+  const sync = () => { send.disabled = answering || !text.value.trim(); };
+  const down = () => page.scrollTo({ top: page.scrollHeight, behavior: less.matches ? "auto" : "smooth" });
+  const answer = async () => {
+    const m = document.createElement("div"); m.className = "msg"; list.append(m);
+    const words = ANSWERS[n++ % ANSWERS.length].split(/(\s+)/).filter(Boolean);
+    await sleep(500);
+    for (const w of words) {
+      const s = document.createElement("span"); if (/\S/.test(w)) s.className = "msg__word"; s.textContent = w; m.append(s);
+      if (/\S/.test(w) && !less.matches) { down(); await sleep(30); }
+    }
+    down();
+  };
+  text.addEventListener("input", sync);
+  text.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); } });
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const t = text.value.trim(); if (!t || answering) return;
+    const me = document.createElement("div"); me.className = "msg msg--me is-arriving"; me.textContent = t; list.append(me); down();
+    text.value = ""; answering = true; sync();
+    await answer();
+    answering = false; sync(); text.focus();
+  });
+  $("chat-again").addEventListener("click", () => { list.replaceChildren(); n = 0; text.focus(); });
+  sync();
+}
+
 // Prose: on or off, over the same HTML.
 document.querySelector("[data-prose-on]")?.addEventListener("change", (e) => document.getElementById("prose-demo").classList.toggle("prose", e.detail.dataset.value === "on"));
 // Panel: with or without its header.
