@@ -92,7 +92,7 @@ const VARS = {
   "--bg": () => T.color_bg(), "--surface": () => T.color_surface(),
   "--surface-2": () => T.color_surface_2(), "--border": () => T.color_border(),
   "--border-strong": () => T.color_border_strong(), "--text": () => T.color_text(),
-  "--text-2": () => T.color_text_2(), "--text-3": () => T.color_text_3(),
+  "--text-2": () => T.color_text_2(), "--text-3": () => T.color_text_3(), "--text-detail": () => T.color_text_detail(),
   "--accent": () => T.color_accent(), "--accent-fg": () => T.color_accent_fg(),
   "--accent-soft": () => T.color_accent_soft(),
   "--success": () => T.color_success(), "--success-soft": () => T.color_success_soft(),
@@ -495,7 +495,7 @@ document.addEventListener("click", (e) => {
 // radius: "rounded" (default) | "pill" | "sharp", for every button and segmented; data-radius on a container does the same inside it.
 const THEME_KEYS = {
   bg: "--bg", surface: "--surface", surface2: "--surface-2", border: "--border", borderStrong: "--border-strong",
-  text: "--text", text2: "--text-2", text3: "--text-3",
+  text: "--text", text2: "--text-2", text3: "--text-3", textDetail: "--text-detail",
   accent: "--accent", accentFg: "--accent-fg", accentSoft: "--accent-soft",
   success: "--success", successSoft: "--success-soft", successText: "--success-text", warning: "--warning", warningSoft: "--warning-soft", warningText: "--warning-text",
   danger: "--danger", dangerSoft: "--danger-soft",

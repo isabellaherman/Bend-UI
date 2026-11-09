@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.7 (2026-11-09)
+
+- **Small text passes AA**: a new color, `color_text_detail` (`--text-detail`, theme key `textDetail`): text-3 moved 59% toward text-2, the gentlest that gives 4.5:1 on surface, page and surface-2 (4.95, 4.74, 4.50; text-3 was 3.35, 3.21, 3.03). It colors the small text people read: `.meta`, `.detail`, a row's lead and date (`.row__lead`, `.row__meta`), a muted outline item (`.outline__item.is-off`) and a block's placeholder.
+- text-3 doesn't change and keeps what needs only 3:1: lines, borders, chevrons, the diagram's arrows. Code line numbers and the thread's reading pass also keep it (decoration, and text passing by). Nothing else changes.
+- Docs: the Color page shows `--text-detail`.
+
 ## 1.1.6 (2026-11-09)
 
 - Docs: **Prose** moves from Foundations to Components in the side bar (after Panel), so its address is now `/components/prose`. The page itself doesn't change.

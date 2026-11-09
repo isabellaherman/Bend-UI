@@ -180,6 +180,10 @@ def color_border_strong() -> String: "#cfcdc7"
 def color_text() -> String: "#1c1b19"
 def color_text_2() -> String: "#5f5d58"
 def color_text_3() -> String: "#8f8c86"
+# Small text that is read (meta, detail, a row's lead and date, a muted outline item, a block's placeholder).
+# text-3 moved 59% toward text-2: the gentlest that gives 4.5:1 on surface, page and surface-2 (4.95, 4.74, 4.50).
+# text-3 stays for lines, borders and icons, which need 3:1.
+def color_text_detail() -> String: "#72706a"
 def color_accent() -> String: "#3b5bdb"
 def color_accent_fg() -> String: "#ffffff"
 def color_accent_soft() -> String: "#eef1fd"
