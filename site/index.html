@@ -45,6 +45,9 @@
   .v-btn-grid > .detail { padding-right: var(--space-3); }
   /* Dropdown playground: one real dropdown, open, with room for its menu below or above. */
   .v-dd-stage { display: flex; align-items: center; justify-content: center; min-height: calc(var(--space-8) * 4); }
+  /* Form playground: one real form, as wide as a form reads well. */
+  .v-form { max-width: calc(var(--measure) * 0.8); }
+  .v-form .input:not(textarea) { width: 100%; }
   /* Input playground: each kind of field as a row, its name on the left; .is-focus only shows the focus look. */
   .v-input-grid { display: grid; grid-template-columns: max-content minmax(0, 360px); align-items: start; gap: var(--space-5); padding-block: var(--space-3); }
   .v-input-grid > .detail { padding-top: var(--space-5); }
@@ -70,7 +73,7 @@
   .v-agent-lg { width: 280px; height: 280px; display: flex; align-items: flex-end; justify-content: flex-end; padding: var(--space-5); }
   .v-radius { width: 48px; height: 48px; background: var(--accent-soft); border: var(--border-width) solid var(--accent); }
 </style>
-<link rel="stylesheet" crossorigin href="./chunk-y6zbtk6g.css"><script type="module" crossorigin src="./chunk-fwd6f9me.js"></script></head>
+<link rel="stylesheet" crossorigin href="./chunk-gchnpaz9.css"><script type="module" crossorigin src="./chunk-aecdcsy2.js"></script></head>
 <body class="desk">
 <div class="window" id="docs" data-agent="lg">
   <aside class="side is-open" id="docs-side">
@@ -221,7 +224,9 @@
       <section class="view" data-page="form" hidden><div class="doc doc--wide">
 <p class="heading">Form</p>
 <article class="prose"><h2>Examples</h2></article>
-<div><div class="v-item"><form class="form" style="width:320px" onsubmit="return false"><label class="field"><span class="field__label">Name</span><input class="input" placeholder="Mana"></label><label class="field"><span class="field__label">Max</span><input class="input input--mono" value="10"></label><div class="actions"><button class="btn btn--ghost" type="button">Cancel</button><button class="btn btn--primary" type="button">Save</button></div></form><code>.form · .field · .actions</code></div></div>
+<div data-section="Playground"><div class="v-filter"><div class="v-filter__bar"><span class="v-filter__group"><span class="detail">Layout</span><div class="segmented" role="group" aria-label="Layout" data-filter="layout"><button type="button" data-value="stacked" aria-pressed="true">Stacked</button><button type="button" data-value="columns" aria-pressed="false">Two columns</button><button type="button" data-value="inline" aria-pressed="false">Labels left</button></div></span><span class="v-filter__group"><span class="detail">State</span><div class="segmented" role="group" aria-label="State" data-filter="state"><button type="button" data-value="empty" aria-pressed="true">Empty</button><button type="button" data-value="sending" aria-pressed="false">Sending</button><button type="button" data-value="sent" aria-pressed="false">Sent</button><button type="button" data-value="errors" aria-pressed="false">Errors</button></div></span></div><form class="form v-form" id="form-preview" data-validate novalidate></form></div></div>
+<div data-section="Accessibility"><details class="disclosure"><summary><svg class="icon icon--sm disclosure__chevron"><use href="#i-chevron-down"/></svg><span class="disclosure__title">WCAG 2.2 AA</span><span class="meta">7 of 7 pass · not yet tested with VoiceOver or NVDA</span></summary><article class="prose"><table><thead><tr><th>Criterion</th><th>Status</th><th>How</th></tr></thead><tbody><tr><td>1.3.1 Info and relationships</td><td>Pass</td><td>Related fields sit in a fieldset named by its legend; every field has its label.</td></tr><tr><td>3.3.1 Error identification</td><td>Pass</td><td>On a failed send, a summary lists every error, linked to its field; each field says its own error, with aria-invalid.</td></tr><tr><td>3.3.3 Error suggestion</td><td>Pass</td><td>Each error says how to fix it (data-error).</td></tr><tr><td>2.4.3 Focus order</td><td>Pass</td><td>The focus goes to the summary on a failed send; a link takes it to its field.</td></tr><tr><td>3.3.2 Labels or instructions</td><td>Pass</td><td>"All fields are required" before the fields; labels and help on each.</td></tr><tr><td>4.1.3 Status messages</td><td>Pass</td><td>The summary is role=alert; sending and sent are announced.</td></tr><tr><td>1.4.10 Reflow</td><td>Pass</td><td>Two columns and labels-left stack on narrow screens.</td></tr></tbody></table></article></details></div>
+<article class="prose"><p>Fields, sections and actions put together, and what happens on send: errors are listed and linked, then the submit button shows busy and done.</p></article>
 <div data-laws="form"></div>
       </div></section>
       <section class="view" data-page="tag" hidden><div class="doc doc--wide">
