@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.6 (2026-11-09)
+
+- Docs: **Prose** moves from Foundations to Components in the side bar (after Panel), so its address is now `/components/prose`. The page itself doesn't change.
+
 ## 1.1.5 (2026-11-09)
 
 - **Chart colors pass AA**: the four tones are two lighter and two darker around the accent (`chart_tone_1..4`: 100, 75 toward the surface, 80 and 60 toward the text), each 3:1 or more on the page (5.43, 3.24, 6.94, 8.88; were 5.43, 2.70, 1.73, 1.30). Close to the accent on purpose: protected, not extreme. A hairline of surface always parts a pie's slices, so `.chart--split` is gone.
