@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.23 (2026-11-08)
+
+- **Docs: no Block page**. A block is the line the Thread runs through, not a component on its own; `.block` stays in the lib for the Thread and the Pair. Nothing in the lib changes.
+
 ## 1.0.22 (2026-11-08)
 
 - **Code block**: `codeBlock(code, { lang, name, head, numbers, wrap })` and `upgrade(pre)` in `bend-ui/syntax`. A head with the file or the language and Copy (the Button's `data-copy`), the code line by line; `.code-block--numbers` (screen readers skip the numbers), `--wrap`, `--bare`. The code box takes the focus, so a keyboard can scroll long lines.
