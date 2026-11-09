@@ -440,6 +440,10 @@ if (formPreview) {
   document.querySelectorAll('[data-page="form"] [data-filter]').forEach((g) => g.addEventListener("change", (e) => { pick[g.dataset.filter] = e.detail.dataset.value; draw(); }));
   draw();
 }
+// Panel: with or without its header.
+document.querySelector("[data-panel-head]")?.addEventListener("change", (e) => {
+  document.querySelector("#panel-demo .panel__header").hidden = e.detail.dataset.value === "off";
+});
 // Page and doc: Width. Pair: Layout.
 {
   const doc = document.getElementById("doc-demo");

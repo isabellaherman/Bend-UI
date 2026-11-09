@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.28 (2026-11-09)
+
+- Docs: **Responsive** and **Prose** move to Foundations (`/foundations/responsive` after Size, `/foundations/prose` after Type). **Panel** is in the standard format: a Header filter (With, Without) over one panel with an empty art in its body. Nothing in the lib changes.
+
 ## 1.0.27 (2026-11-09)
 
 - **Art**: `.art--empty`, an art with no image yet (the image symbol on a quiet ground, 4:3, at the sm/md/lg heights), and `.art--fill` to take the width it is given. The Art docs page shows it instead of the blue picture.
