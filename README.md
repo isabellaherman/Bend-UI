@@ -735,3 +735,33 @@ See [the needs register](docs/BORZOI-NEEDS.md) for every Borzoi requirement and 
 </div>
 ```
 
+## Editor extension
+
+`import "bend-ui/editor"` adds a block document people write in. It is modeled on ProseMirror's architecture, with the model in Bend: `EDITOR.bend` has the document (a list of blocks under a schema), the steps that change it, each with its inverse and its position map, the history built on them (undo, redo) and what each key means. `editor.js` only draws the blocks, reads where the caret is and tells Bend which key was pressed. Letters typed inside one block are written by the browser, so spelling, dictation and accents work as anywhere.
+
+Blocks: paragraph, heading (levels 1 to 3), bulleted and numbered list items, quote, and a figure with a caption. A figure shows what the application gives it (a diagram, say): the editor keeps its `lang` and `source` and never looks inside. Each block has an alignment (left, center, right) and a place on the page (where it is written, or the top of the page; the place is kept for a print layout and changes nothing on screen). While writing, `# `, `## `, `### `, `- `, `1. ` and `> ` at the start of a paragraph turn it into that block.
+
+```html
+<div class="editor" data-placeholder="Write here"></div>
+```
+
+```js
+import { mountEditor } from "bend-ui/editor";
+
+const editor = mountEditor(el, {
+  markdown: "# Title\n\nText",            // the document to open
+  figure: (block) => myDrawing(block.kind.lang, block.kind.source),   // the element a figure shows
+  onChange: () => save(editor.markdown()),  // the document or the history changed
+  onSelect: () => toolbar(editor.state()),  // the caret went to another block
+  onSlash: () => openMyMenu(),              // "/" on an empty paragraph
+});
+editor.setKind("Head", 2);                  // the caret's block: "Para", "Head", "Bullet", "Number", "Quote"
+editor.setAlign(1);                         // 0 left, 1 center, 2 right
+editor.insertFigure("mermaid", source);     // a figure where the caret was
+editor.undo(); editor.redo(); editor.move(-1);
+```
+
+The document is saved as standard Markdown (`EDITOR_MARKDOWN.bend`, `editor.markdown()`): headings, lists and quotes as usual, a figure as a fenced code block with its `lang`, and alignment, the top of the page and a figure's caption as Pandoc fenced divs (`::: {.figure .center .top}`). A paragraph that starts like other syntax is written after a backslash, and a block with no text is not written. What is written is read back as the same document.
+
+The laws are in `EDITOR_LAWS.bend`: each step followed by its inverse gives the document back, positions follow each step, undo and redo, every key's meaning, and the Markdown round trip. The editor adds no value of its own: `editor.css` uses only the tokens. Still to come: bold, italic and links inside a block, and a menu for "/" (today the application hears `onSlash`).
+

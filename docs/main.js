@@ -100,6 +100,7 @@ import { highlight, codeBlock, upgrade } from "../syntax.js";
 import { mountDiagram, announce } from "../diagram.js";
 import { mountPie, mountBars, mountLine, mountArea } from "../chart.js";
 import { LAWS, BOARD_VALUES } from "./laws.data.js";
+import { mountEditor } from "../editor.js";
 import { BOARD, initBoard, cardCheck, newCard, fitField, formCard } from "../board.js";
 import pkg from "../package.json";
 import { mountChatPattern } from "./patterns/chat.js";
@@ -126,6 +127,7 @@ const LAWS_OF = {
   agent: ["agent_sm_in_scale", "agent_lg_on_grid"],
   board: BOARD_VALUES.filter((v) => v.state === "law").map((v) => `${v.key}_is_fixed`),
   diagram: ["return_arrow_meets_outline", "self_loop_meets_outline", "text_fits_inside", "circle_is_round", "no_shape_same_as_before"],
+  editor: ["skip_changes_nothing", "skip_is_undone_by_skip", "kind_moves_no_position", "align_moves_no_position", "place_moves_no_position", "replace_is_undone", "split_is_undone", "join_is_undone", "insert_is_undone", "remove_is_undone", "kind_is_undone", "align_is_undone", "place_is_undone", "move_is_undone", "step_past_the_end_changes_nothing", "step_past_the_end_is_undone_by_skip", "replace_changes_only_its_range", "line_breaks_never_enter_a_block", "schema_fits_values", "move_lands_at_its_place", "position_moves_with_typed_text", "position_before_typed_text_stays", "position_follows_a_split", "position_follows_a_join", "position_follows_a_moved_block", "position_steps_back_past_a_moved_block", "position_after_an_inserted_block", "position_after_a_removed_block", "undo_of_nothing", "redo_of_nothing", "no_steps_no_entry", "empty_opens_with_a_paragraph", "undo_gives_the_document_back", "undo_puts_the_caret_back", "redo_makes_the_change_again", "a_run_of_typing_is_one_undo", "typing_after_a_pause_is_its_own_undo", "typing_is_the_smallest_replacement", "hash_makes_a_heading", "dash_makes_a_list_item", "shortcut_only_in_a_paragraph", "enter_splits_a_paragraph", "enter_goes_on_with_a_list", "enter_on_an_empty_item_leaves_the_list", "enter_after_a_heading_is_a_paragraph", "enter_in_a_caption_writes_under_the_figure", "backspace_joins_the_block_before", "backspace_makes_a_heading_a_paragraph", "backspace_never_joins_a_figure", "selection_across_blocks_is_taken_out", "a_letter_typed_over_a_selection", "figure_takes_an_empty_paragraph", "figure_goes_under_text", "caret_goes_after_the_figure", "last_block_out_leaves_a_paragraph", "pasted_blocks_go_under", "pasted_line_goes_into_the_text", "markdown_of_a_document", "markdown_is_read_back", "lists_are_read_back", "lists_are_written_back", "alignment_is_a_fenced_div", "fenced_div_is_read_back", "paragraph_that_looks_like_a_heading", "escaped_paragraph_is_read_back", "empty_blocks_are_not_written", "open_fence_is_still_a_figure"],
 };
 const byName = Object.fromEntries(LAWS.map((l) => [l.name, l]));
 const lawBlock = (l) => `<div class="docs-law">` +
@@ -153,6 +155,7 @@ const FILES = {
   responsive: ["TOKENS.bend", "AREA.bend", "ui.js", "ui.css"],
   image: ["TOKENS.bend", "ui.js", "ui.css"],
   board: ["BOARD.bend", "BOARD_LAWS.bend", "board.css", "board.js", "board-check.js"],
+  editor: ["EDITOR.bend", "EDITOR_MARKDOWN.bend", "EDITOR_LAWS.bend", "editor.js", "editor.css"],
 };
 // Code: the README's own snippets, so the docs and the README never disagree.
 // Each page shows the code blocks under its README heading (## or ###), colored in their own language (SYNTAX.bend).
@@ -174,7 +177,7 @@ const SNIPPETS = (() => {
 const README_OF = {
   color: "Tokens", space: "Tokens", size: "Tokens", radius: "Tokens", type: "Type: one ladder", keyboard: "Keys",
   page: "Page, doc and pair", pair: "Page, doc and pair", thread: "Thread",
-  section: "Page head and sections", dropdown: "Dropdown", board: "Board extension (1.1.11)",
+  section: "Page head and sections", dropdown: "Dropdown", board: "Board extension (1.1.11)", editor: "Editor extension",
 };
 const section = (title, ...kids) => {
   const s = document.createElement("section"); s.className = "section";
@@ -790,4 +793,30 @@ go(ID[START] ?? "overview", false);
   // It opens when the page shows (a closed menu shows nothing to look at).
   new IntersectionObserver((list) => list.forEach((e) => { if (e.isIntersecting) open(); })).observe(dd);
   menu.innerHTML = sets.plain();
+}
+
+// Editor: the playground. The controls show the caret's block (editor.state()) and change it; the Markdown under
+// it is what the document is saved as. A figure shows what the application gives it: here, always this diagram.
+const editorDemo = $("editor-demo");
+if (editorDemo) {
+  const kinds = $("editor-kind"), aligns = $("editor-align"), out = $("editor-markdown");
+  const drawing = () => { const d = document.createElement("div"); mountDiagram(d, { nodes: [{ label: "Ask" }, { label: "Answer" }], edges: [{ from: 0, to: 1 }] }); return d; };
+  const show = () => {
+    const s = editor.state();
+    kinds.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.kind === s.kind && (s.kind !== "Head" || Number(b.dataset.level) === s.level))));
+    aligns.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.align) === s.align)));
+    kinds.querySelectorAll("button").forEach((b) => { b.disabled = s.kind === "Figure"; });
+    $("editor-undo").disabled = !s.canUndo; $("editor-redo").disabled = !s.canRedo;
+  };
+  const write = () => { out.innerHTML = codeBlock(editor.markdown(), { lang: "markdown", head: false, wrap: true }); show(); };
+  const editor = mountEditor(editorDemo, {
+    markdown: "# A study\n\nWrite here. Select across blocks, paste Markdown, undo with Ctrl or Cmd + Z.\n\n- Every change is a step with an inverse\n- A block can be aligned\n\n::: {.figure .center}\n```mermaid\nflowchart TD\n  A[Ask] --> B[Answer]\n```\nA figure shows what the application gives it\n:::\n\n> Bend holds the document; the browser only draws it.",
+    figure: drawing, onChange: write, onSelect: show,
+  });
+  kinds.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) editor.setKind(b.dataset.kind, Number(b.dataset.level) || 1); });
+  aligns.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) editor.setAlign(Number(b.dataset.align)); });
+  $("editor-undo").addEventListener("click", () => editor.undo()); $("editor-redo").addEventListener("click", () => editor.redo());
+  $("editor-up").addEventListener("click", () => editor.move(-1)); $("editor-down").addEventListener("click", () => editor.move(1));
+  $("editor-figure").addEventListener("click", () => editor.insertFigure("mermaid", "flowchart TD\n  A[Ask] --> B[Answer]"));
+  write();
 }

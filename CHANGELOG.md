@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- **Editor (opt-in)**: `import "bend-ui/editor"` adds a block document people write in, modeled on ProseMirror's architecture with the model in Bend. `EDITOR.bend`: the document (paragraph, headings 1 to 3, list items, quote, a figure with a caption; each block with an alignment and a place on the page), steps with their inverses and position maps, the history (undo, redo; a run of typing is one undo) and what each key means (Enter, Backspace, Delete, a selection across blocks, paste, Markdown shortcuts). `EDITOR_MARKDOWN.bend`: the document as standard Markdown and back (figures as fenced code blocks; alignment, the top of the page and captions as Pandoc fenced divs). `editor.js`: `mountEditor(root, { markdown, figure, onChange, onSelect, onSlash })` draws it and reads the keys; the application gives the element each figure shows.
+- `editor.css` uses only existing tokens: no new value. A quote has a line at its start; a figure's caption is in the detail role; an empty document and an empty caption show what to write.
+- `EDITOR_LAWS.bend`: 67 laws (11 for every value, 56 on an example document), proved in `EDITOR_PROOF.bend` through `PROOF.bend`. `LAWS.bend` and `SPEC.bend` are unchanged.
+- The defs that walk a text or the document are written as loops, so a long paragraph or a long document never grows the browser's stack.
+- Docs: Editor page, with a live document, its block and alignment controls and the Markdown it writes.
+- Not in this version: bold, italic and links; a menu for "/"; the page place has no effect on screen.
+
 ## 1.1.18 (2026-11-17)
 
 - Side bar: a long name in a button (a conversation's title) ends in "…" instead of being cut at the bar's edge.

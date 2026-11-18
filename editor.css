@@ -1,0 +1,27 @@
+/* Editor (opt-in): a block document people write in. import "bend-ui/editor".
+   Bend holds the document and decides every change (EDITOR.bend); editor.js draws it here.
+   Every value is a token: this file adds no number of its own. */
+.editor { max-width: var(--measure); color: var(--text); font-size: var(--text-lg); line-height: var(--leading-body); white-space: pre-wrap; overflow-wrap: anywhere; outline: none; }
+.editor > * { margin: var(--space-0) var(--space-0) var(--space-3); }
+.editor > :last-child { margin-bottom: var(--space-0); }
+.editor h1 { font-size: var(--role-section); font-weight: var(--weight-semibold); line-height: var(--leading-tight); }
+.editor h2 { font-size: var(--role-group); font-weight: var(--weight-semibold); line-height: var(--leading-tight); margin-top: var(--space-6); margin-bottom: var(--space-2); }
+.editor h3 { font-size: var(--role-item); font-weight: var(--weight-medium); margin-top: var(--space-4); margin-bottom: var(--space-2); }
+.editor > :first-child { margin-top: var(--space-0); }
+.editor ul, .editor ol { padding-left: var(--space-4); }
+.editor li { margin: var(--space-0) var(--space-0) var(--space-1); }
+.editor blockquote { padding-left: var(--space-3); border-left: var(--space-hairline) solid var(--border-strong); color: var(--text-2); }
+
+/* A block's alignment (EDITOR.bend align: 1 center, 2 right). */
+.editor [data-align="center"] { text-align: center; }
+.editor [data-align="right"] { text-align: right; }
+
+/* A figure: what the application shows (a diagram, say), then its caption. Not written in, except the caption. */
+.editor__figure { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-2); }
+.editor__figure[data-align="center"] { align-items: center; }
+.editor__figure[data-align="right"] { align-items: flex-end; }
+.editor__figure > * { max-width: 100%; min-width: var(--space-0); }
+.editor__caption { font-size: var(--role-detail); line-height: var(--leading-ui); color: var(--text-detail); outline: none; }
+
+/* What to write, shown while there is nothing: in an empty document's first paragraph and in an empty caption. */
+.editor [data-placeholder]::before { content: attr(data-placeholder); position: absolute; color: var(--text-detail); pointer-events: none; }

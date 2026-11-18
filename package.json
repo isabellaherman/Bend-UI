@@ -29,7 +29,11 @@
     "./board": "./board.js",
     "./board.css": "./board.css",
     "./BOARD.bend": "./BOARD.bend",
-    "./DRAG.bend": "./DRAG.bend"
+    "./DRAG.bend": "./DRAG.bend",
+    "./editor": "./editor.js",
+    "./editor.css": "./editor.css",
+    "./EDITOR.bend": "./EDITOR.bend",
+    "./EDITOR_MARKDOWN.bend": "./EDITOR_MARKDOWN.bend"
   },
   "files": [
     "ui.js",
@@ -68,7 +72,13 @@
     "BOARD_PROOF.bend",
     "DRAG.bend",
     "MOTION_LAWS.bend",
-    "MOTION_PROOF.bend"
+    "MOTION_PROOF.bend",
+    "editor.js",
+    "editor.css",
+    "EDITOR.bend",
+    "EDITOR_MARKDOWN.bend",
+    "EDITOR_LAWS.bend",
+    "EDITOR_PROOF.bend"
   ],
   "scripts": {
     "check": "bend PROOF.bend && bun board-check.js",
