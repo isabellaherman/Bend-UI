@@ -649,8 +649,14 @@ form.addEventListener("send", async (e) => { await save(e.detail.data); e.detail
 <article class="prose">
   <h1>Spells</h1>
   <p>Every spell costs at least 1 <code>mana</code>.</p>
+  <div class="table-block"><table>
+    <thead><tr><th>Spell</th><th data-align="right">Mana</th></tr></thead>
+    <tbody><tr><td>Spark</td><td data-align="right">1</td></tr></tbody>
+  </table></div>
 </article>
 ```
+
+A table goes in a `.table-block`, which scrolls a wide table inside itself. It reads as part of the text: a rule under the header, a lighter one between rows, no box. `data-align="right"` or `"center"` on a cell aligns it, as Markdown's `---:` and `:-:` do.
 
 ### Rows
 

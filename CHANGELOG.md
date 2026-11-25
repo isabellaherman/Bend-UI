@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.37 (2026-11-25)
+
+Tables in prose, for LawEditor's chat (approved in the artifact "Bend-UI Prose Tables", option A · Lines). Only adds: no existing component, token or law changes.
+
+- **`.prose table`**, in a **`.table-block`**: a table reads as part of the text. A rule under the header (`--border-strong`), a lighter one between rows (`--border`), no box and no fill; the first and last columns line up with the paragraphs. Cells are `--text-md`, the header semibold. The `.table-block` scrolls a wide table inside itself, so the text never gets wider.
+- **`data-align="right"`** and **`"center"`** on a cell align it, as Markdown's `---:` and `:-:` do; right-aligned numbers line up (tabular figures).
+- The Prose page of the docs shows a table, and says how it is used.
+
 ## 1.1.36 (2026-11-24)
 
 A skill the chat used, for LawEditor's chat (approved in the artifact "LawEditor Fairy Holds the Skill"). Only adds: no existing component, token or law changes.
